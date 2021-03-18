@@ -4,7 +4,8 @@
   "description": "A wrapper for creating API based oracles for ethereum on the top of iExec",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/babel src --out-dir dist --copy-files"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,26 @@
   "bugs": {
     "url": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper/issues"
   },
-  "homepage": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper#readme"
+  "homepage": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "10.12.0",
+            "browsers": [
+              "defaults",
+              "not IE 11"
+            ]
+          }
+        }
+      ]
+    ]
+  }
 }
