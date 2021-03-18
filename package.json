@@ -1,0 +1,24 @@
+{
+  "name": "iexec-oracle-factory-wrapper",
+  "version": "0.0.1",
+  "description": "A wrapper for creating API based oracles for ethereum on the top of iExec",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper.git"
+  },
+  "keywords": [
+    "iExec",
+    "ethereum",
+    "oracles"
+  ],
+  "author": "iExec",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper/issues"
+  },
+  "homepage": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper#readme"
+}
