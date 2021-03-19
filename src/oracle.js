@@ -1,6 +1,5 @@
 const { Buffer } = require('buffer');
-const fetch = require('cross-fetch');
-const Ipfs = require('ipfs');
+const ipfs = require('./ipfsService');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults } = require('./conf');
 
@@ -24,27 +23,8 @@ const createApiKeyDataset = ({ iexec, apiKey, ipfsConfig }) => new Observable((o
         checksum,
       });
 
-      const ipfs = await Ipfs.create();
-      // not released yet
-      // if (ipfsConfig && ipfsConfig.pinService) {
-      //   await ipfs.pin.remote.service
-      //     .add('pin-service', ipfsConfig.pinService)
-      //     .catch((e) => console.log(e));
-      // }
-
-      const uploadResult = await ipfs.add(encryptedFile);
-      const { cid } = uploadResult;
-      await ipfs.pin.add(cid, { timeout: 10000 }).catch((e) => console.log(e));
-
+      const cid = await ipfs.add(encryptedFile, ipfsConfig);
       const multiaddr = `/ipfs/${cid.toString()}`;
-      const publicUrl = `https://ipfs.io${multiaddr}`;
-      await fetch(publicUrl).then((res) => {
-        if (!res.ok) {
-          throw Error(`Failed to load encryptedFile from ${publicUrl}`);
-        }
-      });
-      await ipfs.stop(); // not working: https://github.com/libp2p/js-libp2p/issues/779
-
       safeObserver.next({
         message: 'ENCRYPTED_FILE_UPLOADED',
         cid: cid.toString(),
