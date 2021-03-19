@@ -1,5 +1,5 @@
 const { Buffer } = require('buffer');
-const ipfs = require('./ipfsService');
+const ipfs = require('./ipfs-service');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults } = require('./conf');
 const { WorkflowError } = require('./errors');

@@ -1,5 +1,8 @@
 const Ipfs = require('ipfs');
 const fetch = require('cross-fetch');
+const { getLogger } = require('./logger');
+
+const log = getLogger('ipfs-service');
 
 const add = async (content, ipfsConfig) => {
   const ipfs = await Ipfs.create();
@@ -8,14 +11,12 @@ const add = async (content, ipfsConfig) => {
   // if (ipfsConfig && ipfsConfig.pinService) {
   //   await ipfs.pin.remote.service
   //     .add('pin-service', ipfsConfig.pinService)
-  //     .catch((e) => console.log(e));
+  //     .catch((e) => log(e));
   // }
 
   const uploadResult = await ipfs.add(content);
   const { cid } = uploadResult;
-  await ipfs.pin
-    .add(cid, { timeout: 10000 })
-    .catch((e) => console.warn('Ipfs add: pinning failed', e));
+  await ipfs.pin.add(cid, { timeout: 10000 }).catch((e) => log('Ipfs add pin failed', e));
   const multiaddr = `/ipfs/${cid.toString()}`;
   const publicUrl = `https://ipfs.io${multiaddr}`;
   await fetch(publicUrl).then((res) => {
