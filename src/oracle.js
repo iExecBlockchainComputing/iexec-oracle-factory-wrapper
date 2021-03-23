@@ -1,10 +1,14 @@
 const { Buffer } = require('buffer');
+const CID = require('cids');
 const ipfs = require('./ipfs-service');
+const { formatParamsJson } = require('./formatter');
 const { Observable, SafeObserver } = require('./reactive');
-const { getDefaults } = require('./conf');
+const { getDefaults, DEFAULT_IPFS_GATEWAY } = require('./conf');
 const { WorkflowError } = require('./errors');
 
-const createApiKeyDataset = ({ iexec, apiKey, ipfsConfig }) => new Observable((observer) => {
+const createApiKeyDataset = ({
+  iexec, apiKey, ipfsGateway, ipfsConfig,
+}) => new Observable((observer) => {
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
@@ -32,13 +36,13 @@ const createApiKeyDataset = ({ iexec, apiKey, ipfsConfig }) => new Observable((o
         checksum,
       });
 
-      const cid = await ipfs.add(encryptedFile, ipfsConfig).catch((e) => {
+      const cid = await ipfs.add(encryptedFile, { ipfsGateway, ipfsConfig }).catch((e) => {
         throw new WorkflowError('Failed to upload encrypted API key', e);
       });
-      const multiaddr = `/ipfs/${cid.toString()}`;
+      const multiaddr = `/ipfs/${cid}`;
       safeObserver.next({
         message: 'ENCRYPTED_FILE_UPLOADED',
-        cid: cid.toString(),
+        cid,
         multiaddr,
       });
 
@@ -121,6 +125,233 @@ const createApiKeyDataset = ({ iexec, apiKey, ipfsConfig }) => new Observable((o
   return safeObserver.unsubscribe.bind(safeObserver);
 });
 
+const updateOracle = ({
+  paramsSetOrCid, workerpool, iexec, ipfsGateway = DEFAULT_IPFS_GATEWAY,
+}) => new Observable((observer) => {
+  const safeObserver = new SafeObserver(observer);
+  const start = async () => {
+    try {
+      const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } = getDefaults(iexec.network.id);
+
+      // ensure params
+      let cid;
+      let paramsSet;
+      safeObserver.next({
+        message: 'ENSURE_PARAMS',
+      });
+      try {
+        cid = new CID(paramsSetOrCid).toString();
+        const paramsBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
+          throw new WorkflowError('Failed to load params from CID', e);
+        });
+        const paramsJson = paramsBuffer.toString();
+        try {
+          paramsSet = JSON.parse(paramsJson);
+        } catch (e) {
+          throw new WorkflowError('Content associated to CID is not JSON type', e);
+        }
+      } catch (e) {
+        if (e instanceof WorkflowError) throw e;
+        let paramsJson;
+        try {
+          paramsJson = formatParamsJson(paramsSetOrCid); // todo validate paramsSet
+        } catch (e2) {
+          throw new WorkflowError('Invalid params', e2);
+        }
+        cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e2) => {
+          throw new WorkflowError('Failed to upload params', e2);
+        });
+        paramsSet = JSON.parse(paramsJson);
+      }
+      safeObserver.next({
+        message: 'ENSURE_PARAMS_SUCCESS',
+        paramsSet,
+        cid,
+      });
+
+      const datasetAddress = paramsSet.dataset;
+
+      safeObserver.next({
+        message: 'FETCH_APP_ORDER',
+      });
+      const apporderbook = await iexec.orderbook
+        .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
+          minTag: ['tee'],
+          maxTag: ['tee'],
+          requester: await iexec.wallet.getAddress(),
+          workerpool,
+          dataset: datasetAddress,
+        })
+        .catch((e) => {
+          throw new WorkflowError('Failed to fetch apporder', e);
+        });
+      const apporder = apporderbook && apporderbook.appOrders[0] && apporderbook.appOrders[0].order;
+      if (!apporder) {
+        throw new WorkflowError('No apporder published');
+      }
+      safeObserver.next({
+        message: 'FETCH_APP_ORDER_SUCCESS',
+        order: apporder,
+      });
+
+      let datasetorder;
+      if (datasetAddress) {
+        safeObserver.next({
+          message: 'FETCH_DATASET_ORDER',
+        });
+        const datasetorderbook = await iexec.orderbook
+          .fetchDatasetOrderbook(datasetAddress, {
+            minTag: ['tee'],
+            maxTag: ['tee'],
+            requester: await iexec.wallet.getAddress(),
+            workerpool,
+            app: ORACLE_APP_ADDRESS,
+          })
+          .catch((e) => {
+            throw new WorkflowError('Failed to fetch datasetorder', e);
+          });
+        datasetorder = datasetorderbook
+            && datasetorderbook.datasetOrders[0]
+            && datasetorderbook.datasetOrders[0].order;
+        if (!datasetorder) {
+          throw new WorkflowError('No datasetorder published');
+        }
+        safeObserver.next({
+          message: 'FETCH_DATASET_ORDER_SUCCESS',
+          order: datasetorder,
+        });
+      }
+
+      safeObserver.next({
+        message: 'FETCH_WORKERPOOL_ORDER',
+      });
+      const workerpoolorderbook = await iexec.orderbook
+        .fetchWorkerpoolOrderbook({
+          minTag: ['tee'],
+          requester: await iexec.wallet.getAddress(),
+          workerpool,
+          app: ORACLE_APP_ADDRESS,
+          dataset: datasetAddress,
+        })
+        .catch((e) => {
+          throw new WorkflowError('Failed to fetch workerpoolorder', e);
+        });
+      const workerpoolorder = workerpoolorderbook
+          && workerpoolorderbook.workerpoolOrders[0]
+          && workerpoolorderbook.workerpoolOrders[0].order;
+      if (!workerpoolorder) {
+        throw new WorkflowError('No workerpoolorder published');
+      }
+      safeObserver.next({
+        message: 'FETCH_WORKERPOOL_ORDER_SUCCESS',
+        order: workerpoolorder,
+      });
+
+      const requestorderToSign = await iexec.order
+        .createRequestorder({
+          app: ORACLE_APP_ADDRESS,
+          category: workerpoolorder.category,
+          dataset: datasetAddress,
+          workerpool,
+          callback: ORACLE_CONTRACT_ADDRESS,
+          appmaxprice: apporder.appprice,
+          datasetmaxprice: datasetorder && datasetorder.datasetprice,
+          workerpoolmaxprice: workerpoolorder.workerpoolprice,
+          tag: ['tee'],
+          params: {
+            iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
+          },
+        })
+        .catch((e) => {
+          throw new WorkflowError('Failed to create requestorder', e);
+        });
+      safeObserver.next({
+        message: 'REQUEST_ORDER_SIGNATURE_SIGN_REQUEST',
+        order: requestorderToSign,
+      });
+      const requestorder = await iexec.order
+        .signRequestorder(requestorderToSign, { checkRequest: false })
+        .catch((e) => {
+          throw new WorkflowError('Failed to sign oracle update requestorder', e);
+        });
+      safeObserver.next({
+        message: 'REQUEST_ORDER_SIGNATURE_SUCCESS',
+        order: requestorderToSign,
+      });
+
+      safeObserver.next({
+        message: 'MATCH_ORDERS_SIGN_TX_REQUEST',
+        apporder,
+        datasetorder,
+        workerpoolorder,
+        requestorder,
+      });
+      const { dealid, txHash } = await iexec.order
+        .matchOrders(
+          {
+            apporder,
+            datasetorder,
+            workerpoolorder,
+            requestorder,
+          },
+          { checkRequest: false },
+        )
+        .catch((e) => {
+          throw new WorkflowError('Failed to match orders', e);
+        });
+      safeObserver.next({
+        message: 'MATCH_ORDERS_SUCCESS',
+        dealid,
+        txHash,
+      });
+
+      // task
+      const taskid = await iexec.deal.computeTaskId(dealid, 0);
+
+      const executionPromise = new Promise((resolve, reject) => {
+        iexec.task.obsTask(taskid, { dealid }).subscribe({
+          next: (value) => {
+            const { message } = value;
+            if (message === 'TASK_TIMEDOUT') {
+              reject(new WorkflowError('Oracle update task timed out, update failed'));
+            }
+            if (message === 'TASK_COMPLETED') {
+              resolve();
+            }
+            if (message === 'TASK_UPDATED') {
+              safeObserver.next({
+                message: 'TASK_UPDATED',
+                dealid,
+                taskid,
+                status: value.task && value.task.statusName,
+              });
+            }
+          },
+          error: (e) => reject(new WorkflowError('Failed to monitor oracle update task', e)),
+        });
+      });
+      await executionPromise;
+
+      safeObserver.next({
+        message: 'UPDATE_TASK_COMPLETED',
+      });
+      safeObserver.complete();
+    } catch (e) {
+      if (e instanceof WorkflowError) {
+        safeObserver.error(e);
+      } else {
+        safeObserver.error(new WorkflowError('Oracle update unexpected error', e));
+      }
+    }
+  };
+  safeObserver.unsub = () => {
+    // teardown callback
+  };
+  start();
+  return safeObserver.unsubscribe.bind(safeObserver);
+});
+
 module.exports = {
   createApiKeyDataset,
+  updateOracle,
 };

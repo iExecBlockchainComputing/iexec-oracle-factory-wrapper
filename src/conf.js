@@ -5,6 +5,8 @@ const confMap = {
   },
 };
 
+const DEFAULT_IPFS_GATEWAY = 'https://ipfs.io';
+
 const getDefaults = (chainId) => {
   const conf = confMap[chainId];
   if (!conf) throw Error(`Unsupported Chain ${chainId}`);
@@ -13,4 +15,5 @@ const getDefaults = (chainId) => {
 
 module.exports = {
   getDefaults,
+  DEFAULT_IPFS_GATEWAY,
 };

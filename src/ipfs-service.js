@@ -1,10 +1,22 @@
 const Ipfs = require('ipfs');
 const fetch = require('cross-fetch');
 const { getLogger } = require('./logger');
+const { DEFAULT_IPFS_GATEWAY } = require('./conf');
 
 const log = getLogger('ipfs-service');
 
-const add = async (content, ipfsConfig) => {
+const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
+  const multiaddr = `/ipfs/${cid.toString()}`;
+  const publicUrl = `${ipfsGateway}${multiaddr}`;
+  const res = await fetch(publicUrl);
+  if (!res.ok) {
+    throw Error(`Failed to load content from ${publicUrl}`);
+  }
+  const arrayBuffer = await res.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+};
+
+const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const ipfs = await Ipfs.create();
 
   // not released yet
@@ -14,20 +26,22 @@ const add = async (content, ipfsConfig) => {
   //     .catch((e) => log(e));
   // }
 
-  const uploadResult = await ipfs.add(content);
-  const { cid } = uploadResult;
+  const { cid } = await ipfs.add(content);
   await ipfs.pin.add(cid, { timeout: 10000 }).catch((e) => log('Ipfs add pin failed', e));
-  const multiaddr = `/ipfs/${cid.toString()}`;
-  const publicUrl = `https://ipfs.io${multiaddr}`;
-  await fetch(publicUrl).then((res) => {
-    if (!res.ok) {
-      throw Error(`Failed to load from ${publicUrl}`);
-    }
-  });
+  await get(cid.toString(), { ipfsGateway });
   await ipfs.stop(); // not working: https://github.com/libp2p/js-libp2p/issues/779
-  return cid;
+  return cid.toString();
+};
+
+const getCid = async (content) => {
+  const ipfs = await Ipfs.create();
+  const { cid } = await ipfs.add(content, { onlyHash: true });
+  await ipfs.stop(); // not working: https://github.com/libp2p/js-libp2p/issues/779
+  return cid.toString();
 };
 
 module.exports = {
   add,
+  get,
+  getCid,
 };
