@@ -5,14 +5,19 @@ const { formatParamsJson } = require('./format');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY, API_KEY_PLACEHOLDER } = require('./conf');
 const { WorkflowError } = require('./errors');
-const { paramsSetJsonSchema, paramsSetSchema, throwIfMissing } = require('./validators');
-const { isOracleId, computeOracleId } = require('./hash');
+const {
+  paramsSetJsonSchema,
+  paramsSetSchema,
+  rawParamsSchema,
+  throwIfMissing,
+} = require('./validators');
+const { isOracleId, computeOracleId, computeCallId } = require('./hash');
 
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
   apiKey = throwIfMissing(),
+  callId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
-  ipfsConfig,
 } = {}) => new Observable((observer) => {
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
@@ -25,8 +30,12 @@ const createApiKeyDataset = ({
         key,
       });
 
+      const dataset = JSON.stringify({
+        apiKey,
+        callId,
+      });
       const encryptedFile = await iexec.dataset
-        .encrypt(Buffer.from(apiKey, 'utf8'), key)
+        .encrypt(Buffer.from(dataset, 'utf8'), key)
         .catch((e) => {
           throw new WorkflowError('Failed to encrypt API key', e);
         });
@@ -41,7 +50,7 @@ const createApiKeyDataset = ({
         checksum,
       });
 
-      const cid = await ipfs.add(encryptedFile, { ipfsGateway, ipfsConfig }).catch((e) => {
+      const cid = await ipfs.add(encryptedFile, { ipfsGateway }).catch((e) => {
         throw new WorkflowError('Failed to upload encrypted API key', e);
       });
       const multiaddr = `/ipfs/${cid}`;
@@ -395,8 +404,109 @@ const readOracle = async ({
   throw Error(`TODO ${oracleId}`);
 };
 
+const createOracle = ({
+  rawParams = throwIfMissing(),
+  iexec = throwIfMissing(),
+  ipfsGateway = DEFAULT_IPFS_GATEWAY,
+}) => new Observable((observer) => {
+  const safeObserver = new SafeObserver(observer);
+  const start = async () => {
+    try {
+      const {
+        JSONPath,
+        url,
+        method,
+        headers,
+        body,
+        dataType,
+        apiKey,
+      } = await rawParamsSchema().validate(rawParams);
+
+      let dataset;
+      // check use api
+      const useApiKey = JSON.stringify({ url, headers }).indexOf(API_KEY_PLACEHOLDER) !== -1;
+      if (useApiKey && !apiKey) {
+        throw new WorkflowError(
+          `Using ${API_KEY_PLACEHOLDER} placeholder but no apiKey provided`,
+        );
+      }
+      if (!useApiKey && apiKey) {
+        throw new WorkflowError(
+          `Provided apiKey but no ${API_KEY_PLACEHOLDER} placeholder found in url or headers`,
+        );
+      }
+      if (useApiKey) {
+        const callId = await computeCallId({
+          url, method, headers, body,
+        });
+        await new Promise((resolve, reject) => {
+          createApiKeyDataset({
+            iexec,
+            apiKey,
+            callId,
+            ipfsGateway,
+          }).subscribe({
+            error: (e) => reject(e),
+            next: (v) => {
+              if (v.message === 'DATASET_DEPLOYMENT_SUCCESS') {
+                dataset = v.address;
+              }
+              safeObserver.next(v);
+            },
+            complete: () => resolve(),
+          });
+        });
+      }
+
+      const paramsSet = await paramsSetSchema().validate({
+        JSONPath,
+        url,
+        method,
+        headers,
+        body,
+        dataType,
+        dataset,
+      });
+      const jsonParams = await paramsSetJsonSchema().validate(formatParamsJson(paramsSet));
+      safeObserver.next({
+        message: 'PARAMS_SET_CREATED',
+        paramsSet: JSON.parse(jsonParams),
+      });
+
+      const oracleId = await computeOracleId(paramsSet);
+      safeObserver.next({
+        message: 'ORACLE_ID_COMPUTED',
+        oracleId,
+      });
+
+      const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
+        throw new WorkflowError('Failed to upload paramsSet', e);
+      });
+      const multiaddr = `/ipfs/${cid}`;
+      safeObserver.next({
+        message: 'PARAMS_SET_UPLOADED',
+        cid,
+        multiaddr,
+      });
+
+      safeObserver.complete();
+    } catch (e) {
+      if (e instanceof WorkflowError) {
+        safeObserver.error(e);
+      } else {
+        safeObserver.error(new WorkflowError('Create oracle unexpected error', e));
+      }
+    }
+  };
+  safeObserver.unsub = () => {
+    // teardown callback
+  };
+  start();
+  return safeObserver.unsubscribe.bind(safeObserver);
+});
+
 module.exports = {
-  createApiKeyDataset,
+  createOracle,
   updateOracle,
   readOracle,
 };

@@ -1,7 +1,9 @@
 const { paramsSetSchema, callParamsSchema } = require('./validators');
 const { sortObjKeys } = require('./format');
 
-const isOracleId = async (oracleId) => false; // todo
+const bytes32Regex = /^(0x)([0-9a-f]{2}){32}$/;
+
+const isOracleId = async (oracleId) => typeof oracleId === 'string' && oracleId.match(bytes32Regex);
 
 const computeOracleId = async (paramsSet) => {
   const vParamsSet = await paramsSetSchema().validate(paramsSet);

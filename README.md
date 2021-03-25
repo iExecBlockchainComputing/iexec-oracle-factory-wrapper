@@ -10,8 +10,8 @@ messages :
 
 - \[optional - API key only\] createApiKeyDataset values
 - PARAMS_SET_CREATED (paramsSet)
-- ORACLE_KEY_COMPUTED (oracle key)
-- UPLOAD_PARAMS_SET_SUCCESS (cid)
+- ORACLE_ID_COMPUTED (oracleId)
+- PARAMS_SET_UPLOADED (cid)
 - COMPLETED
 
 #### factory.readOracle(paramsSet|ipfsCid) => Promise\<value: String\>
