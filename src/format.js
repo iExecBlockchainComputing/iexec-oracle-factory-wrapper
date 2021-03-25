@@ -1,7 +1,11 @@
 const sortObjKeys = (obj) => Object.keys(obj)
   .sort()
   .reduce((acc, curr) => {
-    acc[curr] = obj[curr];
+    if (typeof obj[curr] === 'object') {
+      acc[curr] = sortObjKeys(obj[curr]);
+    } else {
+      acc[curr] = obj[curr];
+    }
     return acc;
   }, {});
 
@@ -14,4 +18,5 @@ const formatParamsJson = (obj) => {
 
 module.exports = {
   formatParamsJson,
+  sortObjKeys,
 };

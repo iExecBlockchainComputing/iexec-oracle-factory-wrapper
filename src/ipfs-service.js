@@ -1,4 +1,5 @@
 const Ipfs = require('ipfs');
+const CID = require('cids');
 const fetch = require('cross-fetch');
 const { getLogger } = require('./logger');
 const { DEFAULT_IPFS_GATEWAY } = require('./conf');
@@ -40,8 +41,18 @@ const getCid = async (content) => {
   return cid.toString();
 };
 
+const isCid = (value) => {
+  try {
+    const cid = new CID(value);
+    return CID.isCID(cid);
+  } catch (e) {
+    return false;
+  }
+};
+
 module.exports = {
   add,
   get,
   getCid,
+  isCid,
 };

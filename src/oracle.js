@@ -1,14 +1,19 @@
 const { Buffer } = require('buffer');
 const CID = require('cids');
 const ipfs = require('./ipfs-service');
-const { formatParamsJson } = require('./formatter');
+const { formatParamsJson } = require('./format');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY } = require('./conf');
 const { WorkflowError } = require('./errors');
+const { paramsSetJsonSchema, paramsSetSchema, throwIfMissing } = require('./validators');
+const { isOracleId, computeOracleId } = require('./hash');
 
 const createApiKeyDataset = ({
-  iexec, apiKey, ipfsGateway, ipfsConfig,
-}) => new Observable((observer) => {
+  iexec = throwIfMissing(),
+  apiKey = throwIfMissing(),
+  ipfsGateway = DEFAULT_IPFS_GATEWAY,
+  ipfsConfig,
+} = {}) => new Observable((observer) => {
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
@@ -126,42 +131,44 @@ const createApiKeyDataset = ({
 });
 
 const updateOracle = ({
-  paramsSetOrCid, workerpool, iexec, ipfsGateway = DEFAULT_IPFS_GATEWAY,
-}) => new Observable((observer) => {
+  paramsSetOrCid = throwIfMissing(),
+  iexec = throwIfMissing(),
+  workerpool,
+  ipfsGateway = DEFAULT_IPFS_GATEWAY,
+} = {}) => new Observable((observer) => {
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
       const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } = getDefaults(iexec.network.id);
 
-      // ensure params
       let cid;
       let paramsSet;
       safeObserver.next({
         message: 'ENSURE_PARAMS',
       });
-      try {
+      if (ipfs.isCid(paramsSetOrCid)) {
         cid = new CID(paramsSetOrCid).toString();
-        const paramsBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
+        const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
           throw new WorkflowError('Failed to load params from CID', e);
         });
-        const paramsJson = paramsBuffer.toString();
+        const contentText = contentBuffer.toString();
         try {
+          const paramsJson = await paramsSetJsonSchema().validate(contentText);
           paramsSet = JSON.parse(paramsJson);
         } catch (e) {
-          throw new WorkflowError('Content associated to CID is not JSON type', e);
+          throw new WorkflowError('Content associated to CID is not a valid paramsSet', e);
         }
-      } catch (e) {
-        if (e instanceof WorkflowError) throw e;
+      } else {
         let paramsJson;
         try {
-          paramsJson = formatParamsJson(paramsSetOrCid); // todo validate paramsSet
+          paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
+          paramsJson = await paramsSetJsonSchema().validate(formatParamsJson(paramsSet));
         } catch (e2) {
-          throw new WorkflowError('Invalid params', e2);
+          throw new WorkflowError('Invalid paramsSet', e2);
         }
         cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e2) => {
           throw new WorkflowError('Failed to upload params', e2);
         });
-        paramsSet = JSON.parse(paramsJson);
       }
       safeObserver.next({
         message: 'ENSURE_PARAMS_SUCCESS',
@@ -169,11 +176,10 @@ const updateOracle = ({
         cid,
       });
 
-      const datasetAddress = paramsSet.dataset;
-
       safeObserver.next({
         message: 'FETCH_APP_ORDER',
       });
+      const datasetAddress = paramsSet.dataset;
       const apporderbook = await iexec.orderbook
         .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
           minTag: ['tee'],
@@ -308,7 +314,7 @@ const updateOracle = ({
       // task
       const taskid = await iexec.deal.computeTaskId(dealid, 0);
 
-      const executionPromise = new Promise((resolve, reject) => {
+      const watchExecution = () => new Promise((resolve, reject) => {
         iexec.task.obsTask(taskid, { dealid }).subscribe({
           next: (value) => {
             const { message } = value;
@@ -330,7 +336,7 @@ const updateOracle = ({
           error: (e) => reject(new WorkflowError('Failed to monitor oracle update task', e)),
         });
       });
-      await executionPromise;
+      await watchExecution();
 
       safeObserver.next({
         message: 'UPDATE_TASK_COMPLETED',
@@ -351,7 +357,44 @@ const updateOracle = ({
   return safeObserver.unsubscribe.bind(safeObserver);
 });
 
+const readOracle = async ({
+  paramsSetOrCidOrOracleId = throwIfMissing(),
+  ethersProvider = throwIfMissing(),
+  ipfsGateway = DEFAULT_IPFS_GATEWAY,
+} = {}) => {
+  let oracleId;
+  if (await isOracleId(paramsSetOrCidOrOracleId)) {
+    oracleId = paramsSetOrCidOrOracleId;
+  } else {
+    let paramsSet;
+    if (ipfs.isCid(paramsSetOrCidOrOracleId)) {
+      const cid = new CID(paramsSetOrCidOrOracleId).toString();
+      const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
+        throw new WorkflowError('Failed to load params from CID', e);
+      });
+      const contentText = contentBuffer.toString();
+      try {
+        const paramsJson = await paramsSetJsonSchema().validate(contentText);
+        paramsSet = JSON.parse(paramsJson);
+      } catch (e) {
+        throw new WorkflowError('Content associated to CID is not a valid paramsSet', e);
+      }
+    } else {
+      try {
+        paramsSet = await paramsSetSchema().validate(paramsSetOrCidOrOracleId);
+      } catch (e) {
+        throw new WorkflowError('Invalid paramsSet', e);
+      }
+    }
+    oracleId = await computeOracleId(paramsSet);
+  }
+
+  throw Error(`TODO ${oracleId}`);
+  // todo
+};
+
 module.exports = {
   createApiKeyDataset,
   updateOracle,
+  readOracle,
 };

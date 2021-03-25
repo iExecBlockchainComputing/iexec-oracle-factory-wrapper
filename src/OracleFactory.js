@@ -1,27 +1,27 @@
 const { IExec } = require('iexec');
-const { updateOracle, createApiKeyDataset } = require('./oracle');
+const { Web3Provider } = require('ethers').providers;
+const { updateOracle, createApiKeyDataset, readOracle } = require('./oracle');
 
 class IExecOracleFactory {
-  constructor(ethProvider, chainId, { ipfsGateway = 'https://ipfs.iex.ec' } = {}) {
-    // const ipfsConfig = {};
-    // if (ipfsPinService) {
-    //   if (!ipfsPinService.endpoint) throw Error('Missing endpoint key for ipfsPinService option');
-    //   ipfsConfig.pinService = {
-    //     endpoint: ipfsPinService.endpoint,
-    //     key: ipfsPinService.key,
-    //   };
-    // }
+  constructor(ethProvider, chainId, { ipfsGateway } = {}) {
+    const iexec = new IExec({ ethProvider, chainId }, { confirms: 3 });
+    const ethersProvider = ethProvider.provider || new Web3Provider(ethProvider);
 
-    const iexec = new IExec({ ethProvider, chainId });
     this.createOracle = () => {
       throw Error('TODO');
     };
     this.updateOracle = (paramsSetOrCid, { workerpool } = {}) => updateOracle({
-      paramsSetOrCid, iexec, ipfsGateway, workerpool,
+      paramsSetOrCid,
+      iexec,
+      ipfsGateway,
+      workerpool,
     });
-    this.readOracle = () => {
-      throw Error('TODO');
-    };
+    this.readOracle = (paramsSetOrCidOrOracleId) => readOracle({
+      paramsSetOrCidOrOracleId,
+      ethersProvider,
+      ipfsGateway,
+    });
+
     this.getIExec = () => iexec;
 
     this.createApiKeyDataset = (apiKey) => createApiKeyDataset({ iexec, ipfsGateway, apiKey });
