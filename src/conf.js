@@ -1,3 +1,5 @@
+const API_KEY_PLACEHOLDER = '%API_KEY%';
+
 const confMap = {
   5: {
     ORACLE_APP_ADDRESS: '0x0000000000000000000000000000000000000000',
@@ -14,6 +16,7 @@ const getDefaults = (chainId) => {
 };
 
 module.exports = {
+  API_KEY_PLACEHOLDER,
   getDefaults,
   DEFAULT_IPFS_GATEWAY,
 };

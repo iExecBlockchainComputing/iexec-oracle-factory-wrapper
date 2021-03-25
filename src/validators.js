@@ -2,9 +2,20 @@ const {
   string, object, array, ValidationError,
 } = require('yup');
 const { getAddress } = require('ethers').utils;
+const { API_KEY_PLACEHOLDER } = require('./conf');
 
 const httpsUrlSchema = () => string()
-  .url()
+  .test('is-url-allow-placeholder', '${path} must be a valid url', async (value) => {
+    try {
+      const originalUrl = value || '';
+      await string()
+        .url()
+        .validate(originalUrl.replace(API_KEY_PLACEHOLDER, 'API_KEY_PLACEHOLDER'));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  })
   .test('is-https', '${path} is not https', (value) => !value || value.indexOf('https://') === 0);
 
 const httpMethodSchema = () => string().oneOf(['GET', 'POST', 'PUT', 'DELETE']);
@@ -44,6 +55,8 @@ const datasetAddressSchema = () => string()
 
 const jsonPathSchema = () => string();
 
+const dataTypeSchema = () => string().oneOf(['number', 'string']);
+
 const callParamsSchema = () => object({
   url: httpsUrlSchema().required(),
   method: httpMethodSchema().required(),
@@ -54,6 +67,7 @@ const callParamsSchema = () => object({
 const rawParamsSchema = () => callParamsSchema()
   .shape({
     JSONPath: jsonPathSchema().required(),
+    dataType: dataTypeSchema().required(),
     apiKey: apiKeySchema(),
   })
   .noUnknown(true);
@@ -61,6 +75,7 @@ const rawParamsSchema = () => callParamsSchema()
 const paramsSetSchema = () => callParamsSchema()
   .shape({
     JSONPath: jsonPathSchema().required(),
+    dataType: dataTypeSchema().required(),
     dataset: datasetAddressSchema(),
   })
   .noUnknown(true);
@@ -86,6 +101,7 @@ const paramsSetJsonSchema = () => string()
           headers: headersMapSchema().required(),
           body: bodySchema(),
           JSONPath: jsonPathSchema().required(),
+          dataType: dataTypeSchema().required(),
           dataset: datasetAddressSchema().required(),
         })
           .required()
@@ -99,6 +115,7 @@ const paramsSetJsonSchema = () => string()
           headers: headersMapSchema().required(),
           body: bodySchema().required(),
           JSONPath: jsonPathSchema().required(),
+          dataType: dataTypeSchema().required(),
           dataset: datasetAddressSchema().required(),
         })
           .required()
