@@ -130,6 +130,35 @@ const createApiKeyDataset = ({
   return safeObserver.unsubscribe.bind(safeObserver);
 });
 
+const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
+  let paramsSet;
+  let paramsJson;
+  let isUploaded = false;
+  if (ipfs.isCid(paramsSetOrCid)) {
+    const cid = new CID(paramsSetOrCid).toString();
+    const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
+      throw new WorkflowError('Failed to load paramsSet from CID', e);
+    });
+    const contentText = contentBuffer.toString();
+    try {
+      paramsJson = await paramsSetJsonSchema().validate(contentText);
+      paramsSet = JSON.parse(paramsJson);
+      isUploaded = true;
+    } catch (e) {
+      throw new WorkflowError('Content associated to CID is not a valid paramsSet', e);
+    }
+  } else {
+    try {
+      paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
+      paramsJson = await paramsSetJsonSchema().validate(formatParamsJson(paramsSet));
+    } catch (e) {
+      throw new WorkflowError('Invalid paramsSet', e);
+    }
+  }
+
+  return { paramsSet, paramsJson, isUploaded };
+};
+
 const updateOracle = ({
   paramsSetOrCid = throwIfMissing(),
   iexec = throwIfMissing(),
@@ -142,32 +171,21 @@ const updateOracle = ({
       const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } = getDefaults(iexec.network.id);
 
       let cid;
-      let paramsSet;
       safeObserver.next({
         message: 'ENSURE_PARAMS',
       });
-      if (ipfs.isCid(paramsSetOrCid)) {
-        cid = new CID(paramsSetOrCid).toString();
-        const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
-          throw new WorkflowError('Failed to load params from CID', e);
-        });
-        const contentText = contentBuffer.toString();
-        try {
-          const paramsJson = await paramsSetJsonSchema().validate(contentText);
-          paramsSet = JSON.parse(paramsJson);
-        } catch (e) {
-          throw new WorkflowError('Content associated to CID is not a valid paramsSet', e);
-        }
+      const { isUploaded, paramsSet, paramsJson } = await getParamsSet({
+        paramsSetOrCid,
+        ipfsGateway,
+      });
+      if (isUploaded) {
+        cid = paramsSetOrCid;
       } else {
-        let paramsJson;
-        try {
-          paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
-          paramsJson = await paramsSetJsonSchema().validate(formatParamsJson(paramsSet));
-        } catch (e2) {
-          throw new WorkflowError('Invalid paramsSet', e2);
-        }
-        cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e2) => {
-          throw new WorkflowError('Failed to upload params', e2);
+        safeObserver.next({
+          message: 'ENSURE_PARAMS_UPLOAD',
+        });
+        cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e) => {
+          throw new WorkflowError('Failed to upload params', e);
         });
       }
       safeObserver.next({
@@ -363,34 +381,18 @@ const readOracle = async ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
 } = {}) => {
   let oracleId;
+
   if (await isOracleId(paramsSetOrCidOrOracleId)) {
     oracleId = paramsSetOrCidOrOracleId;
   } else {
-    let paramsSet;
-    if (ipfs.isCid(paramsSetOrCidOrOracleId)) {
-      const cid = new CID(paramsSetOrCidOrOracleId).toString();
-      const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
-        throw new WorkflowError('Failed to load params from CID', e);
-      });
-      const contentText = contentBuffer.toString();
-      try {
-        const paramsJson = await paramsSetJsonSchema().validate(contentText);
-        paramsSet = JSON.parse(paramsJson);
-      } catch (e) {
-        throw new WorkflowError('Content associated to CID is not a valid paramsSet', e);
-      }
-    } else {
-      try {
-        paramsSet = await paramsSetSchema().validate(paramsSetOrCidOrOracleId);
-      } catch (e) {
-        throw new WorkflowError('Invalid paramsSet', e);
-      }
-    }
+    const { paramsSet } = await getParamsSet({
+      paramsSetOrCid: paramsSetOrCidOrOracleId,
+      ipfsGateway,
+    });
     oracleId = await computeOracleId(paramsSet);
   }
 
   throw Error(`TODO ${oracleId}`);
-  // todo
 };
 
 module.exports = {
