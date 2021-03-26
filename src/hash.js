@@ -1,20 +1,42 @@
-const { paramsSetSchema, callParamsSchema } = require('./validators');
+const { solidityKeccak256 } = require('ethers').utils;
+const { strictParamsSetSchema, strictCallParamsSchema } = require('./validators');
 const { sortObjKeys } = require('./format');
 
 const bytes32Regex = /^(0x)([0-9a-f]{2}){32}$/;
 
-const isOracleId = async (oracleId) => typeof oracleId === 'string' && oracleId.match(bytes32Regex);
+const isOracleId = (oracleId) => typeof oracleId === 'string' && bytes32Regex.test(oracleId);
+
+const formatMap = (obj) => {
+  const sortedObj = sortObjKeys(obj);
+  return Object.entries(sortedObj).reduce((acc, curr) => acc.concat([curr]), []);
+};
 
 const computeOracleId = async (paramsSet) => {
-  const vParamsSet = await paramsSetSchema().validate(paramsSet);
-  const sortedParamsSet = sortObjKeys(vParamsSet);
-  return `hash(${JSON.stringify(sortedParamsSet)}`;
+  const {
+    JSONPath,
+    body,
+    dataType,
+    dataset,
+    headers,
+    method,
+    url,
+  } = await strictParamsSetSchema().validate(paramsSet);
+  const formatedHeaders = formatMap(headers);
+  return solidityKeccak256(
+    ['string', 'string', 'string', 'address', 'string[][]', 'string', 'string'],
+    [JSONPath, body, dataType, dataset, formatedHeaders, method, url],
+  );
 };
 
 const computeCallId = async (callParams) => {
-  const vCallParams = await callParamsSchema().validate(callParams);
-  const sortedCallParams = sortObjKeys(vCallParams);
-  return `hash(${JSON.stringify(sortedCallParams)}`;
+  const {
+    body, headers, method, url,
+  } = await strictCallParamsSchema().validate(callParams);
+  const formatedHeaders = formatMap(headers);
+  return solidityKeccak256(
+    ['string', 'string[][]', 'string', 'string'],
+    [body, formatedHeaders, method, url],
+  );
 };
 
 module.exports = {

@@ -2,7 +2,8 @@ const {
   callParamsSchema,
   paramsSetSchema,
   rawParamsSchema,
-  paramsSetJsonSchema,
+  jsonParamsSetSchema,
+  ValidationError,
 } = require('../src/validators');
 
 describe('callParamsSchema', () => {
@@ -59,7 +60,7 @@ describe('callParamsSchema', () => {
       callParamsSchema().strict().validate({
         method: 'POST',
       }),
-    ).rejects.toThrow(Error('url is a required field'));
+    ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
   test('throw when method is missing', async () => {
@@ -67,7 +68,7 @@ describe('callParamsSchema', () => {
       callParamsSchema().strict().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       }),
-    ).rejects.toThrow(Error('method is a required field'));
+    ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
   test('throw in strict mode with extra keys', async () => {
@@ -77,7 +78,7 @@ describe('callParamsSchema', () => {
         method: 'POST',
         foo: 'bar',
       }),
-    ).rejects.toThrow(Error('this field has unspecified keys: foo'));
+    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
   });
 });
 
@@ -151,7 +152,7 @@ describe('rawParamsSchema', () => {
         JSONPath: '$[foo]',
         dataType: 'string',
       }),
-    ).rejects.toThrow(Error('url is a required field'));
+    ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
   test('throw when method is missing', async () => {
@@ -161,7 +162,7 @@ describe('rawParamsSchema', () => {
         JSONPath: '$[foo]',
         dataType: 'string',
       }),
-    ).rejects.toThrow(Error('method is a required field'));
+    ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
   test('throw when JSONPath is missing', async () => {
@@ -171,7 +172,7 @@ describe('rawParamsSchema', () => {
         method: 'POST',
         dataType: 'string',
       }),
-    ).rejects.toThrow(Error('JSONPath is a required field'));
+    ).rejects.toThrow(new ValidationError('JSONPath is a required field'));
   });
 
   test('throw when dataType is missing', async () => {
@@ -181,7 +182,7 @@ describe('rawParamsSchema', () => {
         method: 'POST',
         JSONPath: '$[foo]',
       }),
-    ).rejects.toThrow(Error('dataType is a required field'));
+    ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
 
   test('throw in strict mode with extra keys', async () => {
@@ -193,7 +194,7 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         foo: 'bar',
       }),
-    ).rejects.toThrow(Error('this field has unspecified keys: foo'));
+    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
   });
 });
 
@@ -269,7 +270,7 @@ describe('paramsSetSchema', () => {
         JSONPath: '$[foo]',
         dataType: 'string',
       }),
-    ).rejects.toThrow(Error('url is a required field'));
+    ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
   test('throw when method is missing', async () => {
@@ -279,7 +280,7 @@ describe('paramsSetSchema', () => {
         JSONPath: '$[foo]',
         dataType: 'string',
       }),
-    ).rejects.toThrow(Error('method is a required field'));
+    ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
   test('throw when JSONPath is missing', async () => {
@@ -289,7 +290,7 @@ describe('paramsSetSchema', () => {
         method: 'POST',
         dataType: 'string',
       }),
-    ).rejects.toThrow(Error('JSONPath is a required field'));
+    ).rejects.toThrow(new ValidationError('JSONPath is a required field'));
   });
 
   test('throw when dataType is missing', async () => {
@@ -299,7 +300,7 @@ describe('paramsSetSchema', () => {
         method: 'POST',
         JSONPath: '$[foo]',
       }),
-    ).rejects.toThrow(Error('dataType is a required field'));
+    ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
 
   test('throw in strict mode with extra keys', async () => {
@@ -311,11 +312,11 @@ describe('paramsSetSchema', () => {
         dataType: 'string',
         foo: 'bar',
       }),
-    ).rejects.toThrow(Error('this field has unspecified keys: foo'));
+    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
   });
 });
 
-describe('paramsSetJsonSchema', () => {
+describe('jsonParamsSetSchema', () => {
   test('exact match', async () => {
     const json = JSON.stringify({
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
@@ -329,7 +330,7 @@ describe('paramsSetJsonSchema', () => {
       },
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    const res = await paramsSetJsonSchema().validate(json);
+    const res = await jsonParamsSetSchema().validate(json);
     expect(res).toBe(json);
   });
 
@@ -346,7 +347,7 @@ describe('paramsSetJsonSchema', () => {
       },
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    const res = await paramsSetJsonSchema().validate(json);
+    const res = await jsonParamsSetSchema().validate(json);
     expect(res).toBe(json);
   });
 
@@ -362,8 +363,8 @@ describe('paramsSetJsonSchema', () => {
         authorization: '%API_KEY%',
       },
     });
-    await expect(paramsSetJsonSchema().validate(json)).rejects.toThrow(
-      Error(
+    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+      new ValidationError(
         '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$[foo]","dataType":"string","headers":{"content-type":"application/json","authorization":"%API_KEY%"}} is not a valid paramsSet',
       ),
     );
@@ -381,8 +382,8 @@ describe('paramsSetJsonSchema', () => {
       },
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    await expect(paramsSetJsonSchema().validate(json)).rejects.toThrow(
-      Error(
+    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+      new ValidationError(
         '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$[foo]","dataType":"string","headers":{"content-type":"application/json","authorization":"%API_KEY%"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramsSet',
       ),
     );
@@ -402,8 +403,8 @@ describe('paramsSetJsonSchema', () => {
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       foo: 'bar',
     });
-    await expect(paramsSetJsonSchema().validate(json)).rejects.toThrow(
-      Error(
+    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+      new ValidationError(
         '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$[foo]","dataType":"string","headers":{"content-type":"application/json","authorization":"%API_KEY%"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramsSet',
       ),
     );

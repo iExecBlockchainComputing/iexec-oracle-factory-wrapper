@@ -6,7 +6,7 @@ const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY, API_KEY_PLACEHOLDER } = require('./conf');
 const { WorkflowError } = require('./errors');
 const {
-  paramsSetJsonSchema,
+  jsonParamsSetSchema,
   paramsSetSchema,
   rawParamsSchema,
   throwIfMissing,
@@ -150,7 +150,7 @@ const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY
     });
     const contentText = contentBuffer.toString();
     try {
-      paramsJson = await paramsSetJsonSchema().validate(contentText);
+      paramsJson = await jsonParamsSetSchema().validate(contentText);
       paramsSet = JSON.parse(paramsJson);
       isUploaded = true;
     } catch (e) {
@@ -159,7 +159,7 @@ const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY
   } else {
     try {
       paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
-      paramsJson = await paramsSetJsonSchema().validate(formatParamsJson(paramsSet));
+      paramsJson = await jsonParamsSetSchema().validate(formatParamsJson(paramsSet));
     } catch (e) {
       throw new WorkflowError('Invalid paramsSet', e);
     }
@@ -437,7 +437,10 @@ const createOracle = ({
       }
       if (useApiKey) {
         const callId = await computeCallId({
-          url, method, headers, body,
+          url,
+          method,
+          headers,
+          body,
         });
         await new Promise((resolve, reject) => {
           createApiKeyDataset({
@@ -467,7 +470,7 @@ const createOracle = ({
         dataType,
         dataset,
       });
-      const jsonParams = await paramsSetJsonSchema().validate(formatParamsJson(paramsSet));
+      const jsonParams = await jsonParamsSetSchema().validate(formatParamsJson(paramsSet));
       safeObserver.next({
         message: 'PARAMS_SET_CREATED',
         paramsSet: JSON.parse(jsonParams),

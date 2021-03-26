@@ -64,6 +64,37 @@ const callParamsSchema = () => object({
   body: bodySchema(),
 }).noUnknown(true);
 
+const strictCallParamsSchema = () => object().test('is-call-params', '${originalValue} is not a valid callParams', async (obj) => {
+  try {
+    if (obj && obj.body === '') {
+      await object({
+        url: httpsUrlSchema().required(),
+        method: httpMethodSchema().required(),
+        headers: headersMapSchema().required(),
+        body: bodySchema(),
+      })
+        .required()
+        .strict()
+        .noUnknown(true)
+        .validate(obj);
+    } else {
+      await object({
+        url: httpsUrlSchema().required(),
+        method: httpMethodSchema().required(),
+        headers: headersMapSchema().required(),
+        body: bodySchema().required(),
+      })
+        .required()
+        .strict()
+        .noUnknown(true)
+        .validate(obj);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+});
+
 const rawParamsSchema = () => callParamsSchema()
   .shape({
     JSONPath: jsonPathSchema().required(),
@@ -80,7 +111,44 @@ const paramsSetSchema = () => callParamsSchema()
   })
   .noUnknown(true);
 
-const paramsSetJsonSchema = () => string()
+const strictParamsSetSchema = () => object().test('is-params-set', '${originalValue} is not a valid paramsSet', async (obj) => {
+  try {
+    if (obj && obj.body === '') {
+      await object({
+        url: httpsUrlSchema().required(),
+        method: httpMethodSchema().required(),
+        headers: headersMapSchema().required(),
+        body: bodySchema(),
+        JSONPath: jsonPathSchema().required(),
+        dataType: dataTypeSchema().required(),
+        dataset: datasetAddressSchema().required(),
+      })
+        .required()
+        .strict()
+        .noUnknown(true)
+        .validate(obj);
+    } else {
+      await object({
+        url: httpsUrlSchema().required(),
+        method: httpMethodSchema().required(),
+        headers: headersMapSchema().required(),
+        body: bodySchema().required(),
+        JSONPath: jsonPathSchema().required(),
+        dataType: dataTypeSchema().required(),
+        dataset: datasetAddressSchema().required(),
+      })
+        .required()
+        .strict()
+        .noUnknown(true)
+        .validate(obj);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+});
+
+const jsonParamsSetSchema = () => string()
   .strict()
   .required()
   .test('is-json', '${originalValue} is not a valid JSON', (value) => {
@@ -94,35 +162,7 @@ const paramsSetJsonSchema = () => string()
   .test('is-params-set', '${originalValue} is not a valid paramsSet', async (value) => {
     try {
       const obj = JSON.parse(value);
-      if (obj && obj.body === '') {
-        await object({
-          url: httpsUrlSchema().required(),
-          method: httpMethodSchema().required(),
-          headers: headersMapSchema().required(),
-          body: bodySchema(),
-          JSONPath: jsonPathSchema().required(),
-          dataType: dataTypeSchema().required(),
-          dataset: datasetAddressSchema().required(),
-        })
-          .required()
-          .strict()
-          .noUnknown(true)
-          .validate(obj);
-      } else {
-        await object({
-          url: httpsUrlSchema().required(),
-          method: httpMethodSchema().required(),
-          headers: headersMapSchema().required(),
-          body: bodySchema().required(),
-          JSONPath: jsonPathSchema().required(),
-          dataType: dataTypeSchema().required(),
-          dataset: datasetAddressSchema().required(),
-        })
-          .required()
-          .strict()
-          .noUnknown(true)
-          .validate(obj);
-      }
+      await strictParamsSetSchema().validate(obj);
       return true;
     } catch (e) {
       return false;
@@ -137,6 +177,9 @@ module.exports = {
   callParamsSchema,
   rawParamsSchema,
   paramsSetSchema,
-  paramsSetJsonSchema,
+  strictCallParamsSchema,
+  strictParamsSetSchema,
+  jsonParamsSetSchema,
   throwIfMissing,
+  ValidationError,
 };
