@@ -10,6 +10,7 @@ const {
   paramsSetSchema,
   rawParamsSchema,
   throwIfMissing,
+  ValidationError,
 } = require('./validators');
 const { isOracleId, computeOracleId, computeCallId } = require('./hash');
 
@@ -146,7 +147,7 @@ const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY
   if (ipfs.isCid(paramsSetOrCid)) {
     const cid = new CID(paramsSetOrCid).toString();
     const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
-      throw new WorkflowError('Failed to load paramsSet from CID', e);
+      throw Error(`Failed to load paramsSetSet from CID ${cid}`);
     });
     const contentText = contentBuffer.toString();
     try {
@@ -154,17 +155,12 @@ const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY
       paramsSet = JSON.parse(paramsJson);
       isUploaded = true;
     } catch (e) {
-      throw new WorkflowError('Content associated to CID is not a valid paramsSet', e);
+      throw Error(`Content associated to CID ${cid} is not a valid paramsSet`);
     }
   } else {
-    try {
-      paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
-      paramsJson = await jsonParamsSetSchema().validate(formatParamsJson(paramsSet));
-    } catch (e) {
-      throw new WorkflowError('Invalid paramsSet', e);
-    }
+    paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
+    paramsJson = await jsonParamsSetSchema().validate(formatParamsJson(paramsSet));
   }
-
   return { paramsSet, paramsJson, isUploaded };
 };
 
@@ -186,6 +182,12 @@ const updateOracle = ({
       const { isUploaded, paramsSet, paramsJson } = await getParamsSet({
         paramsSetOrCid,
         ipfsGateway,
+      }).catch((e) => {
+        if (e instanceof ValidationError) {
+          throw e;
+        } else {
+          throw new WorkflowError('Failed to load paramsSet', e);
+        }
       });
       if (isUploaded) {
         cid = paramsSetOrCid;
@@ -397,6 +399,12 @@ const readOracle = async ({
     const { paramsSet } = await getParamsSet({
       paramsSetOrCid: paramsSetOrCidOrOracleId,
       ipfsGateway,
+    }).catch((e) => {
+      if (e instanceof ValidationError) {
+        throw e;
+      } else {
+        throw new WorkflowError('Failed to load paramsSet', e);
+      }
     });
     oracleId = await computeOracleId(paramsSet);
   }
@@ -494,7 +502,7 @@ const createOracle = ({
 
       safeObserver.complete();
     } catch (e) {
-      if (e instanceof WorkflowError) {
+      if (e instanceof WorkflowError || e instanceof ValidationError) {
         safeObserver.error(e);
       } else {
         safeObserver.error(new WorkflowError('Create oracle unexpected error', e));
@@ -509,6 +517,7 @@ const createOracle = ({
 });
 
 module.exports = {
+  getParamsSet,
   createOracle,
   updateOracle,
   readOracle,
