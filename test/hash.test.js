@@ -1,5 +1,4 @@
 const { isOracleId, computeCallId, computeOracleId } = require('../src/hash');
-const { ValidationError } = require('../src/validators');
 
 describe('isOracleId', () => {
   test('true with matching bytes32', () => {
@@ -121,64 +120,6 @@ describe('computeCallId', () => {
     });
     expect(callId).toBe('0xfa349e2c1857b5075ab5bea5ad4da24e9843839e9b5d3ccab903418ac6b53a9f');
   });
-
-  test('throw if missing key', async () => {
-    await expect(
-      computeCallId({
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeCallId({
-        url: 'https://foo.com?query=bar',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeCallId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeCallId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-      }),
-    ).rejects.toThrow(ValidationError);
-  });
-
-  test('throw with extra key', async () => {
-    await expect(
-      computeCallId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        foo: 'bar',
-      }),
-    ).rejects.toThrow(ValidationError);
-  });
 });
 
 describe('computeOracleId', () => {
@@ -191,13 +132,13 @@ describe('computeOracleId', () => {
         'content-type': 'application/json',
         authorization: '%API_KEY%',
       },
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       JSONPath: '$[foo]',
       dataType: 'string',
     });
-    expect(callId1).toBe('0x31db2d9d280cb3415ccaeb836971eb9838a536fd15547ddd4242b97e02ac8fe8');
+    expect(callId1).toBe('0xcd11aa751a19c0b60e277d52db32cd9413392d1d4a53c9d0ef6a21313851a728');
     const callId2 = await computeOracleId({
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       JSONPath: '$[foo]',
       method: 'POST',
       body: 'body',
@@ -222,9 +163,9 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId1).toBe('0x31db2d9d280cb3415ccaeb836971eb9838a536fd15547ddd4242b97e02ac8fe8');
+    expect(callId1).toBe('0xcd11aa751a19c0b60e277d52db32cd9413392d1d4a53c9d0ef6a21313851a728');
     const callId2 = await computeOracleId({
       url: 'https://foo.com',
       method: 'POST',
@@ -235,9 +176,9 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId2).toBe('0x27d8074fed4e5303b2dd5c688097576dfdf9a37cbead038f285ca3d19033e37e');
+    expect(callId2).toBe('0x6558cbb36c961fd079e3ac22b6f70b0bd38ee32b44e6e1daa7bd455c5ce37d22');
     const callId3 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'PUT',
@@ -248,9 +189,9 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId3).toBe('0xde8ab482b8fcaa28bd6a68f0ead4760866c73bb10aebd3a7f5e6fa2207aa372f');
+    expect(callId3).toBe('0x773662cff08a18de65e5978a02b7e17d594b736389cff4d26b6cf39c84db0619');
     const callId4 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
@@ -261,9 +202,9 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId4).toBe('0x1fc2044bf148686f8ca7c2ac79fc9536473cfa9489a001583290d903ebe5c919');
+    expect(callId4).toBe('0xee6bd6adca80fed2cb40d04fda6a426e87294b883149cc9d4e468c956e513b7b');
     const callId5 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
@@ -274,9 +215,9 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId5).toBe('0x100f5cfaa5beae8bae0157650b8a9b6e88302b03ad6ebeb5b60d4c79b7031374');
+    expect(callId5).toBe('0x2c77f1f7d7692b0112fee3c37bb80c7a826d4f31f34edc36e96f371b9c1e760e');
     const callId6 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
@@ -287,23 +228,10 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo][bar]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId6).toBe('0xc4f31af1ea65373134c684312af2f9f928120f3adf9c0d2c1c628b98120fed64');
+    expect(callId6).toBe('0xe39bbba1e3944412e672bfab0d3c52dc462c853fa0ee0297674f248ae2ba2c8e');
     const callId7 = await computeOracleId({
-      url: 'https://foo.com?query=bar',
-      method: 'POST',
-      body: 'body',
-      headers: {
-        'content-type': 'application/json',
-        authorization: '%API_KEY%',
-      },
-      JSONPath: '$[foo]',
-      dataType: 'number',
-      dataset: '0x0000000000000000000000000000000000000000',
-    });
-    expect(callId7).toBe('0x9ce5ea73a8bf02d1d2669e4aadd40727274a0e639a0c9edd36c6a1bbc9028e17');
-    const callId8 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -315,7 +243,20 @@ describe('computeOracleId', () => {
       dataType: 'number',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId8).toBe('0x01f52f57525ca41134edd0990d18fbc2d8456635b82335cf902e51d465c36ac1');
+    expect(callId7).toBe('0x01f52f57525ca41134edd0990d18fbc2d8456635b82335cf902e51d465c36ac1');
+    const callId8 = await computeOracleId({
+      url: 'https://foo.com?query=bar',
+      method: 'POST',
+      body: 'body',
+      headers: {
+        'content-type': 'application/json',
+        authorization: '%API_KEY%',
+      },
+      JSONPath: '$[foo]',
+      dataType: 'number',
+      dataset: '0x4a2c9d892A69EaA4Ef6f1aD8CA04F192D7B87bdE',
+    });
+    expect(callId8).toBe('0xf25ab23ea7d3832b8d94d971a365e03bb53abf5adeb392bf91523e8fdaa1f733');
   });
 
   test('allow empty body', async () => {
@@ -329,136 +270,21 @@ describe('computeOracleId', () => {
       },
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId).toBe('0xdc1911010d92c77d547d785bb0798649a43455596e81b5d6122e6c7f06860d18');
+    expect(callId).toBe('0x1a5dff91ebce058574de3082c69eeba49aeb4447308baadd1b3773841025c5ea');
   });
 
   test('allow empty headers', async () => {
     const callId = await computeOracleId({
-      url: 'https://foo.com?query=bar',
+      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
       headers: {},
       JSONPath: '$[foo]',
       dataType: 'string',
-      dataset: '0x0000000000000000000000000000000000000000',
+      dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId).toBe('0x3f47d19c11d31b07c2a5afb8d2739b256d68745efbafde7a556d78e8103e0a75');
-  });
-
-  test('throw if missing key', async () => {
-    await expect(
-      computeOracleId({
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        JSONPath: '$[foo]',
-        dataType: 'string',
-        dataset: '0x0000000000000000000000000000000000000000',
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        JSONPath: '$[foo]',
-        dataType: 'string',
-        dataset: '0x0000000000000000000000000000000000000000',
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        JSONPath: '$[foo]',
-        dataType: 'string',
-        dataset: '0x0000000000000000000000000000000000000000',
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-        JSONPath: '$[foo]',
-        dataType: 'string',
-        dataset: '0x0000000000000000000000000000000000000000',
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        dataType: 'string',
-        dataset: '0x0000000000000000000000000000000000000000',
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        JSONPath: '$[foo]',
-        dataset: '0x0000000000000000000000000000000000000000',
-      }),
-    ).rejects.toThrow(ValidationError);
-
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        JSONPath: '$[foo]',
-        dataType: 'string',
-      }),
-    ).rejects.toThrow(ValidationError);
-  });
-
-  test('throw with extra key', async () => {
-    await expect(
-      computeOracleId({
-        url: 'https://foo.com?query=bar',
-        method: 'POST',
-        body: 'body',
-        headers: {
-          'content-type': 'application/json',
-          authorization: '%API_KEY%',
-        },
-        JSONPath: '$[foo]',
-        dataType: 'string',
-        dataset: '0x0000000000000000000000000000000000000000',
-        foo: 'bar',
-      }),
-    ).rejects.toThrow(ValidationError);
+    expect(callId).toBe('0x5a117261ac4d62be6b07a140c2eb3814f595933da87a93c3c829a84aa5b31f90');
   });
 });

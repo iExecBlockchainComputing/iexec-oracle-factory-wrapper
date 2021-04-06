@@ -41,7 +41,7 @@ const headerValueSchema = () => string().required();
 
 const headersMapSchema = () => object()
   .default({})
-  .test('values-are-strings', '${path} is not a header list', async (value) => {
+  .test('values-are-strings', '${path} is not a valid header list', async (value) => {
     try {
       await array()
         .transform((_, orig) => Object.values(orig))
@@ -79,36 +79,40 @@ const callParamsSchema = () => object({
   body: bodySchema(),
 }).noUnknown(true);
 
-const strictCallParamsSchema = () => object().test('is-call-params', '${originalValue} is not a valid callParams', async (obj) => {
-  try {
-    if (obj && obj.body === '') {
-      await object({
-        url: httpsUrlSchema().required(),
-        method: httpMethodSchema().required(),
-        headers: headersMapSchema().required(),
-        body: bodySchema(),
-      })
-        .required()
-        .strict()
-        .noUnknown(true)
-        .validate(obj);
-    } else {
-      await object({
-        url: httpsUrlSchema().required(),
-        method: httpMethodSchema().required(),
-        headers: headersMapSchema().required(),
-        body: bodySchema().required(),
-      })
-        .required()
-        .strict()
-        .noUnknown(true)
-        .validate(obj);
+const strictCallParamsSchema = () => object().test(
+  'is-call-params',
+  '${originalValue} is not a valid callParams',
+  async (obj, context) => {
+    try {
+      if (obj && obj.body === '') {
+        await object({
+          url: httpsUrlSchema().required(),
+          method: httpMethodSchema().required(),
+          headers: headersMapSchema().required(),
+          body: bodySchema(),
+        })
+          .required()
+          .strict()
+          .noUnknown(true)
+          .validate(obj);
+      } else {
+        await object({
+          url: httpsUrlSchema().required(),
+          method: httpMethodSchema().required(),
+          headers: headersMapSchema().required(),
+          body: bodySchema().required(),
+        })
+          .required()
+          .strict()
+          .noUnknown(true)
+          .validate(obj);
+      }
+      return true;
+    } catch (e) {
+      return context.createError({ message: e.message });
     }
-    return true;
-  } catch (e) {
-    return false;
-  }
-});
+  },
+);
 
 const rawParamsSchema = () => callParamsSchema()
   .shape({
@@ -152,45 +156,107 @@ const paramsSetSchema = () => callParamsSchema()
     dataType: dataTypeSchema().required(),
     dataset: datasetAddressSchema(),
   })
+  .test(
+    'no-multiple-apikey',
+    `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+    (obj, context) => {
+      const { url, headers } = context.originalValue;
+      return countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
+    },
+  )
+  .test(
+    'dataset-provided-when-needed',
+    `Using ${API_KEY_PLACEHOLDER} placeholder but no dataset provided`,
+    (obj, context) => {
+      const { url, headers, dataset } = context.originalValue;
+      return !(
+        countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
+          && (!dataset || dataset === '0x0000000000000000000000000000000000000000')
+      );
+    },
+  )
+  .test(
+    'no-unused-dataset',
+    `Provided dataset but no ${API_KEY_PLACEHOLDER} placeholder found in url or headers`,
+    (obj, context) => {
+      const { url, headers, dataset } = context.originalValue;
+      return !(
+        dataset
+          && dataset !== '0x0000000000000000000000000000000000000000'
+          && countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
+      );
+    },
+  )
   .noUnknown(true);
 
-const strictParamsSetSchema = () => object().test('is-params-set', '${originalValue} is not a valid paramsSet', async (obj) => {
-  try {
-    if (obj && obj.body === '') {
-      await object({
-        url: httpsUrlSchema().required(),
-        method: httpMethodSchema().required(),
-        headers: headersMapSchema().required(),
-        body: bodySchema(),
-        JSONPath: jsonPathSchema().required(),
-        dataType: dataTypeSchema().required(),
-        dataset: datasetAddressSchema().required(),
-      })
-        .required()
-        .strict()
-        .noUnknown(true)
-        .validate(obj);
-    } else {
-      await object({
-        url: httpsUrlSchema().required(),
-        method: httpMethodSchema().required(),
-        headers: headersMapSchema().required(),
-        body: bodySchema().required(),
-        JSONPath: jsonPathSchema().required(),
-        dataType: dataTypeSchema().required(),
-        dataset: datasetAddressSchema().required(),
-      })
-        .required()
-        .strict()
-        .noUnknown(true)
-        .validate(obj);
+const strictParamsSetSchema = () => object()
+  .test('is-params-set', '${originalValue} is not a valid paramsSet', async (obj, context) => {
+    try {
+      if (obj && obj.body === '') {
+        await object({
+          url: httpsUrlSchema().required(),
+          method: httpMethodSchema().required(),
+          headers: headersMapSchema().required(),
+          body: bodySchema(),
+          JSONPath: jsonPathSchema().required(),
+          dataType: dataTypeSchema().required(),
+          dataset: datasetAddressSchema().required(),
+        })
+          .required()
+          .strict()
+          .noUnknown(true)
+          .validate(obj);
+      } else {
+        await object({
+          url: httpsUrlSchema().required(),
+          method: httpMethodSchema().required(),
+          headers: headersMapSchema().required(),
+          body: bodySchema().required(),
+          JSONPath: jsonPathSchema().required(),
+          dataType: dataTypeSchema().required(),
+          dataset: datasetAddressSchema().required(),
+        })
+          .required()
+          .strict()
+          .noUnknown(true)
+          .validate(obj);
+      }
+      return true;
+    } catch (e) {
+      return context.createError({ message: e.message });
     }
-    return true;
-  } catch (e) {
-    return false;
-  }
-});
-
+  })
+  .test(
+    'no-multiple-apikey',
+    `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+    (obj, context) => {
+      const { url, headers } = context.originalValue;
+      return countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
+    },
+  )
+  .test(
+    'dataset-provided-when-needed',
+    `Using ${API_KEY_PLACEHOLDER} placeholder but no dataset provided`,
+    (obj, context) => {
+      const { url, headers, dataset } = context.originalValue;
+      return !(
+        countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
+          && (!dataset || dataset === '0x0000000000000000000000000000000000000000')
+      );
+    },
+  )
+  .test(
+    'no-unused-dataset',
+    `Provided dataset but no ${API_KEY_PLACEHOLDER} placeholder found in url or headers`,
+    (obj, context) => {
+      const { url, headers, dataset } = context.originalValue;
+      return !(
+        dataset
+          && dataset !== '0x0000000000000000000000000000000000000000'
+          && countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
+      );
+    },
+  );
 const jsonParamsSetSchema = () => string()
   .strict()
   .required()
@@ -202,13 +268,15 @@ const jsonParamsSetSchema = () => string()
       return false;
     }
   })
-  .test('is-params-set', '${originalValue} is not a valid paramsSet', async (value) => {
+  .test('is-params-set', '${originalValue} is not a valid paramsSet', async (value, context) => {
     try {
       const obj = JSON.parse(value);
       await strictParamsSetSchema().validate(obj);
       return true;
     } catch (e) {
-      return false;
+      return context.createError({
+        message: `${context.originalValue} is not a valid paramsSet (${e.message})`,
+      });
     }
   });
 

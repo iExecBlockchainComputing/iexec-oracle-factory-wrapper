@@ -9,12 +9,7 @@ const sortObjKeys = (obj) => Object.keys(obj)
     return acc;
   }, {});
 
-const formatParamsJson = (obj) => {
-  if (typeof obj === 'object') {
-    return JSON.stringify(sortObjKeys(obj));
-  }
-  throw Error('Invalid type, must be object');
-};
+const formatParamsJson = (obj) => JSON.stringify(sortObjKeys(obj));
 
 module.exports = {
   formatParamsJson,
