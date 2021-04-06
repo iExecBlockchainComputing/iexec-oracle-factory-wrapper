@@ -61,5 +61,8 @@
     "debug": "^5.0.0",
     "ethers": "^5.0.32",
     "yup": "^0.32.9"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
