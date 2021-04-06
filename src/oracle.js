@@ -433,16 +433,6 @@ const createOracle = ({
       let dataset;
       // check use api
       const useApiKey = JSON.stringify({ url, headers }).indexOf(API_KEY_PLACEHOLDER) !== -1;
-      if (useApiKey && !apiKey) {
-        throw new WorkflowError(
-          `Using ${API_KEY_PLACEHOLDER} placeholder but no apiKey provided`,
-        );
-      }
-      if (!useApiKey && apiKey) {
-        throw new WorkflowError(
-          `Provided apiKey but no ${API_KEY_PLACEHOLDER} placeholder found in url or headers`,
-        );
-      }
       if (useApiKey) {
         const callId = await computeCallId({
           url,

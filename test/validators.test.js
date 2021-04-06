@@ -85,13 +85,13 @@ describe('callParamsSchema', () => {
 describe('rawParamsSchema', () => {
   test('validate only required keys add default optional keys', async () => {
     const res = await rawParamsSchema().validate({
-      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$[foo]',
       dataType: 'string',
     });
     expect(res).toStrictEqual({
-      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$[foo]',
       dataType: 'string',
@@ -109,12 +109,64 @@ describe('rawParamsSchema', () => {
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
-        authorization: '%API_KEY%',
+        authorization: 'foo',
       },
       apiKey: 'abcdef1234567890',
     });
     expect(res).toStrictEqual({
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      method: 'POST',
+      body: 'body',
+      JSONPath: '$[foo]',
+      dataType: 'string',
+      headers: {
+        'content-type': 'application/json',
+        authorization: 'foo',
+      },
+      apiKey: 'abcdef1234567890',
+    });
+  });
+
+  test('validate apiKey standard usage', async () => {
+    const res = await rawParamsSchema().validate({
+      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      method: 'POST',
+      body: 'body',
+      JSONPath: '$[foo]',
+      dataType: 'string',
+      headers: {
+        'content-type': 'application/json',
+        authorization: 'foo',
+      },
+      apiKey: 'abcdef1234567890',
+    });
+    expect(res).toStrictEqual({
+      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      method: 'POST',
+      body: 'body',
+      JSONPath: '$[foo]',
+      dataType: 'string',
+      headers: {
+        'content-type': 'application/json',
+        authorization: 'foo',
+      },
+      apiKey: 'abcdef1234567890',
+    });
+
+    const res1 = await rawParamsSchema().validate({
+      url: 'https://foo.com?query=bar',
+      method: 'POST',
+      body: 'body',
+      JSONPath: '$[foo]',
+      dataType: 'string',
+      headers: {
+        'content-type': 'application/json',
+        authorization: '%API_KEY%',
+      },
+      apiKey: 'abcdef1234567890',
+    });
+    expect(res1).toStrictEqual({
+      url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
       JSONPath: '$[foo]',
@@ -129,20 +181,92 @@ describe('rawParamsSchema', () => {
 
   test('strip extra keys', async () => {
     const res = await rawParamsSchema().validate({
-      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$[foo]',
       dataType: 'string',
       foo: 'bar',
     });
     expect(res).toStrictEqual({
-      url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+      url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$[foo]',
       dataType: 'string',
       body: '',
       headers: {},
     });
+  });
+
+  test('throw with multiple apiKey placeholder', async () => {
+    await expect(
+      rawParamsSchema().strict().validate({
+        url: 'https://foo.com?apiKey=%API_KEY%API_KEY%&query=bar',
+        method: 'POST',
+        JSONPath: '$[foo]',
+        dataType: 'string',
+        headers: {},
+        apiKey: 'abcdef1234567890',
+      }),
+    ).rejects.toThrow(
+      new ValidationError(
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
+      ),
+    );
+    await expect(
+      rawParamsSchema()
+        .strict()
+        .validate({
+          url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+          method: 'POST',
+          JSONPath: '$[foo]',
+          dataType: 'string',
+          headers: { authorization: '%API_KEY%' },
+          apiKey: 'abcdef1234567890',
+        }),
+    ).rejects.toThrow(
+      new ValidationError(
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
+      ),
+    );
+  });
+
+  test('throw when apiKey is missing while needed', async () => {
+    await expect(
+      rawParamsSchema().strict().validate({
+        url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+        method: 'POST',
+        JSONPath: '$[foo]',
+        dataType: 'string',
+        headers: {},
+      }),
+    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no apiKey provided'));
+
+    await expect(
+      rawParamsSchema()
+        .strict()
+        .validate({
+          url: 'https://foo.com?query=bar',
+          method: 'POST',
+          JSONPath: '$[foo]',
+          dataType: 'string',
+          headers: { authorization: '%API_KEY%' },
+        }),
+    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no apiKey provided'));
+  });
+
+  test('throw with unused apiKey', async () => {
+    await expect(
+      rawParamsSchema().strict().validate({
+        url: 'https://foo.com?query=bar',
+        method: 'POST',
+        JSONPath: '$[foo]',
+        dataType: 'string',
+        headers: {},
+        apiKey: 'abcdef1234567890',
+      }),
+    ).rejects.toThrow(
+      new ValidationError('Provided apiKey but no %API_KEY% placeholder found in url or headers'),
+    );
   });
 
   test('throw when url is missing', async () => {
@@ -158,7 +282,7 @@ describe('rawParamsSchema', () => {
   test('throw when method is missing', async () => {
     await expect(
       rawParamsSchema().strict().validate({
-        url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+        url: 'https://foo.com?query=bar',
         JSONPath: '$[foo]',
         dataType: 'string',
       }),
@@ -168,7 +292,7 @@ describe('rawParamsSchema', () => {
   test('throw when JSONPath is missing', async () => {
     await expect(
       rawParamsSchema().strict().validate({
-        url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+        url: 'https://foo.com?query=bar',
         method: 'POST',
         dataType: 'string',
       }),
@@ -178,7 +302,7 @@ describe('rawParamsSchema', () => {
   test('throw when dataType is missing', async () => {
     await expect(
       rawParamsSchema().strict().validate({
-        url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+        url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$[foo]',
       }),
@@ -188,7 +312,7 @@ describe('rawParamsSchema', () => {
   test('throw in strict mode with extra keys', async () => {
     await expect(
       rawParamsSchema().strict().validate({
-        url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
+        url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$[foo]',
         dataType: 'string',

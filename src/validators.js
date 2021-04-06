@@ -4,6 +4,21 @@ const {
 const { getAddress } = require('ethers').utils;
 const { API_KEY_PLACEHOLDER } = require('./conf');
 
+const countSubstr = (str, substr, overlap = true) => {
+  if (substr.length <= 0) return str.length + 1;
+  let count = 0;
+  let startIndex = 0;
+  const step = overlap === true ? 1 : substr.length;
+  while (startIndex > -1) {
+    startIndex = str.indexOf(substr, startIndex);
+    if (startIndex >= 0) {
+      count += 1;
+      startIndex += step;
+    }
+  }
+  return count;
+};
+
 const httpsUrlSchema = () => string()
   .test('is-url-allow-placeholder', '${path} must be a valid url', async (value) => {
     try {
@@ -101,6 +116,34 @@ const rawParamsSchema = () => callParamsSchema()
     dataType: dataTypeSchema().required(),
     apiKey: apiKeySchema(),
   })
+  .test(
+    'no-multiple-apikey',
+    `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+    (obj, context) => {
+      const { url, headers } = context.originalValue;
+      return countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
+    },
+  )
+  .test(
+    'apikey-provided-when-needed',
+    `Using ${API_KEY_PLACEHOLDER} placeholder but no apiKey provided`,
+    (obj, context) => {
+      const { url, headers, apiKey } = context.originalValue;
+      return !(
+        countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1 && !apiKey
+      );
+    },
+  )
+  .test(
+    'no-unused-apikey',
+    `Provided apiKey but no ${API_KEY_PLACEHOLDER} placeholder found in url or headers`,
+    (obj, context) => {
+      const { url, headers, apiKey } = context.originalValue;
+      return !(
+        apiKey && countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
+      );
+    },
+  )
   .noUnknown(true);
 
 const paramsSetSchema = () => callParamsSchema()
