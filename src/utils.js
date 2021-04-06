@@ -34,7 +34,7 @@ const testRawParams = async (rawParams) => {
     ...(body && { body }),
   }).catch((e) => {
     throw Error(
-      `Failed get a response from the API (${e})\nYou can:\n- check your connection\n- check the API url\n- check the API allows CORS`,
+      `Failed get a response from the API (${e})\nYou can:\n- check your connection\n- check the API url\n- check the HTTP method\n- check the API allows CORS`,
     );
   });
 
