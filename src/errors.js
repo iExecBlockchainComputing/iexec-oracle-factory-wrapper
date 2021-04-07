@@ -1,3 +1,5 @@
+const { ValidationError } = require('yup');
+
 class WorkflowError extends Error {
   constructor(message, originalError) {
     super(message);
@@ -7,5 +9,6 @@ class WorkflowError extends Error {
 }
 
 module.exports = {
+  ValidationError,
   WorkflowError,
 };

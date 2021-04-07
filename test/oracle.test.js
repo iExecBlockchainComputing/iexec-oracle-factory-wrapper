@@ -1,7 +1,7 @@
 const { Wallet } = require('ethers');
 const { IExec, utils } = require('iexec');
 const { createOracle, updateOracle } = require('../src/oracle');
-const { WorkflowError } = require('../src/errors');
+const { ValidationError, WorkflowError } = require('../src/errors');
 const ipfs = require('../src/ipfs-service');
 
 jest.mock('../src/ipfs-service');
@@ -1074,5 +1074,782 @@ describe('updateOracle', () => {
       status: 'REVEALING',
     });
     expect(messages[14]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
+  }, 10000);
+
+  test('error from CID - ipfs content not found', async () => {
+    ipfs.isCid.mockReturnValueOnce(true);
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    ipfs.get.mockRejectedValueOnce(Error('Content not found'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(1);
+    expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to load paramsSet');
+    expect(errors[0].originalError).toStrictEqual(
+      Error('Failed to load paramsSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'),
+    );
+  }, 10000);
+
+  test('error from CID - ipfs content is not valid paramsSet', async () => {
+    ipfs.isCid.mockReturnValueOnce(true);
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    ipfs.get.mockResolvedValueOnce('{"foo":"bar"}');
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(1);
+    expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to load paramsSet');
+    expect(errors[0].originalError).toStrictEqual(
+      Error(
+        'Content associated to CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh is not a valid paramsSet',
+      ),
+    );
+  }, 10000);
+
+  test('error from paramsSet - invalid paramsSet', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {},
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(1);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(ValidationError);
+    expect(errors[0].message).toBeDefined();
+  }, 10000);
+
+  test('error from paramsSet - fail to upload', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(2);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to upload paramSet');
+    expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
+  }, 10000);
+
+  test('error - fail to fetch apporder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.orderbook.fetchAppOrderbook failed'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(4);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to fetch apporder');
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.orderbook.fetchAppOrderbook failed'),
+    );
+  }, 10000);
+
+  test('error - no apporder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({ count: 0, orders: [] });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(4);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('No apporder published');
+    expect(errors[0].originalError).toBeUndefined();
+  }, 10000);
+
+  test('error - fail to fetch datasetorder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.orderbook.fetchDatasetOrderbook fail'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(6);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to fetch datasetorder');
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.orderbook.fetchDatasetOrderbook fail'),
+    );
+  }, 10000);
+
+  test('error - no datasetorder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [] });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(6);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('No datasetorder published');
+    expect(errors[0].originalError).toBeUndefined();
+  }, 10000);
+
+  test('error - fail to fetch workerppolorder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.orderbook.fetchWorkerpoolOrderbook fail'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(8);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to fetch workerpoolorder');
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.orderbook.fetchWorkerpoolOrderbook fail'),
+    );
+  }, 10000);
+
+  test('error - no workerpoolorder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [] });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(8);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('No workerpoolorder published');
+    expect(errors[0].originalError).toBeUndefined();
+  }, 10000);
+
+  test('error - fail to create requestorder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
+    iexec.order.createRequestorder = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.order.createRequestorder failed'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(9);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to create requestorder');
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.createRequestorder failed'));
+  }, 10000);
+
+  test('error - fail to sign requestorder', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
+    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.order.signRequestorder failed'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(10);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to sign requestorder');
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.signRequestorder failed'));
+  }, 10000);
+
+  test('error - fail to match orders', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
+    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.matchOrders = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.order.matchOrders failed'));
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(12);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to match orders');
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.matchOrders failed'));
+  }, 10000);
+
+  test('error - task observer error', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
+    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
+      txHash: 'txHash',
+      dealid: 'dealid',
+    });
+    iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
+    iexec.task.obsTask = jest.fn().mockReturnValueOnce({
+      subscribe: ({ next, error, complete }) => {
+        error(Error('iexec.task.obsTask error'));
+      },
+    });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(13);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to monitor oracle update task');
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.task.obsTask error'));
+  }, 10000);
+
+  test('error - update task timedout', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
+    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+    iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
+      txHash: 'txHash',
+      dealid: 'dealid',
+    });
+    iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
+    iexec.task.obsTask = jest.fn().mockReturnValueOnce({
+      subscribe: ({ next, error, complete }) => {
+        next({ message: 'TASK_TIMEDOUT', task: { statusName: 'TIMEOUT' } });
+        complete();
+      },
+    });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(13);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Oracle update task timed out, update failed');
+    expect(errors[0].originalError).toStrictEqual(Error('Task taskid from deal dealid timed out'));
+  }, 10000);
+
+  test('error - unexpected error', async () => {
+    ipfs.isCid.mockReturnValueOnce(false);
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(2);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Update oracle unexpected error');
+    expect(errors[0].originalError).toStrictEqual(
+      TypeError("Cannot read property 'catch' of undefined"),
+    );
   }, 10000);
 });

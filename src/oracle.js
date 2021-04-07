@@ -4,13 +4,12 @@ const ipfs = require('./ipfs-service');
 const { formatParamsJson } = require('./format');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY, API_KEY_PLACEHOLDER } = require('./conf');
-const { WorkflowError } = require('./errors');
+const { WorkflowError, ValidationError } = require('./errors');
 const {
   jsonParamsSetSchema,
   paramsSetSchema,
   rawParamsSchema,
   throwIfMissing,
-  ValidationError,
 } = require('./validators');
 const { isOracleId, computeOracleId, computeCallId } = require('./hash');
 
@@ -196,7 +195,7 @@ const updateOracle = ({
           message: 'ENSURE_PARAMS_UPLOAD',
         });
         cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e) => {
-          throw new WorkflowError('Failed to upload params', e);
+          throw new WorkflowError('Failed to upload paramSet', e);
         });
       }
       safeObserver.next({
@@ -305,7 +304,7 @@ const updateOracle = ({
       const requestorder = await iexec.order
         .signRequestorder(requestorderToSign, { checkRequest: false })
         .catch((e) => {
-          throw new WorkflowError('Failed to sign oracle update requestorder', e);
+          throw new WorkflowError('Failed to sign requestorder', e);
         });
       safeObserver.next({
         message: 'REQUEST_ORDER_SIGNATURE_SUCCESS',
@@ -346,7 +345,12 @@ const updateOracle = ({
           next: (value) => {
             const { message } = value;
             if (message === 'TASK_TIMEDOUT') {
-              reject(new WorkflowError('Oracle update task timed out, update failed'));
+              reject(
+                new WorkflowError(
+                  'Oracle update task timed out, update failed',
+                  Error(`Task ${taskid} from deal ${dealid} timed out`),
+                ),
+              );
             }
             if (message === 'TASK_COMPLETED') {
               resolve();
@@ -371,10 +375,10 @@ const updateOracle = ({
       });
       safeObserver.complete();
     } catch (e) {
-      if (e instanceof WorkflowError) {
+      if (e instanceof WorkflowError || e instanceof ValidationError) {
         safeObserver.error(e);
       } else {
-        safeObserver.error(new WorkflowError('Oracle update unexpected error', e));
+        safeObserver.error(new WorkflowError('Update oracle unexpected error', e));
       }
     }
   };

@@ -5,8 +5,8 @@ const {
   strictParamsSetSchema,
   rawParamsSchema,
   jsonParamsSetSchema,
-  ValidationError,
 } = require('../src/validators');
+const { ValidationError } = require('../src/errors');
 
 describe('callParamsSchema', () => {
   test('validate only required keys add default optional keys', async () => {

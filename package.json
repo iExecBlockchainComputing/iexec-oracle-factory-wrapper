@@ -4,7 +4,7 @@
   "description": "A wrapper for creating API based oracles for ethereum on the top of iExec",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "build": "./node_modules/.bin/babel src --out-dir dist --copy-files"
   },
   "repository": {
