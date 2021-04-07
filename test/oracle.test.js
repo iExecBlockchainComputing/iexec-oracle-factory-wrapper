@@ -1,6 +1,7 @@
 const { Wallet } = require('ethers');
 const { IExec, utils } = require('iexec');
 const { createOracle, updateOracle } = require('../src/oracle');
+const { WorkflowError } = require('../src/errors');
 const ipfs = require('../src/ipfs-service');
 
 jest.mock('../src/ipfs-service');
@@ -10,7 +11,7 @@ afterEach(() => {
 });
 
 describe('createOracle', () => {
-  test('without apiKey', async () => {
+  test('standard - without apiKey', async () => {
     ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -62,7 +63,7 @@ describe('createOracle', () => {
     });
   }, 10000);
 
-  test('with apiKey', async () => {
+  test('standard - with apiKey', async () => {
     ipfs.add
       .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S')
       .mockResolvedValueOnce('QmekKuZECYc3k6mAp2MnLpDaaZgopMzi2t9YSHTNLebJAv');
@@ -336,10 +337,499 @@ describe('createOracle', () => {
       multiaddr: '/ipfs/QmekKuZECYc3k6mAp2MnLpDaaZgopMzi2t9YSHTNLebJAv',
     });
   }, 10000);
+
+  test('error - failed to upload paramsSet', async () => {
+    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          dataType: 'string',
+          JSONPath: '$.data',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(2);
+    expect(errors.length).toBe(1);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to upload paramsSet');
+    expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
+  }, 10000);
+
+  test('error - unexpected error', async () => {
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          dataType: 'string',
+          JSONPath: '$.data',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(2);
+    expect(errors.length).toBe(1);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Create oracle unexpected error');
+    expect(errors[0].originalError).toStrictEqual(
+      TypeError("Cannot read property 'catch' of undefined"),
+    );
+  }, 10000);
+
+  test('error with apiKey - failed to encrypt apiKey', async () => {
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.encrypt = jest.fn().mockRejectedValueOnce(Error('iexec.dataset.encrypt failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(1);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to encrypt API key');
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.encrypt failed'));
+  }, 10000);
+
+  test('error with apiKey - failed to get encrypted apiKey checksum', async () => {
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.computeEncryptedFileChecksum = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.dataset.computeEncryptedFileChecksum failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(1);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to compute encrypted API key checksum');
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.dataset.computeEncryptedFileChecksum failed'),
+    );
+  }, 10000);
+
+  test('error with apiKey - failed to upload encrypted apiKey', async () => {
+    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(2);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to upload encrypted API key');
+    expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
+  }, 10000);
+
+  test('error with apiKey - failed to deploy dataset', async () => {
+    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.deployDataset = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.dataset.deployDataset failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(4);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('Failed to deploy API key dataset');
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.deployDataset failed'));
+  }, 10000);
+
+  test('error with apiKey - failed to push encryption key', async () => {
+    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
+      address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+    });
+    iexec.dataset.pushDatasetSecret = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.dataset.pushDatasetSecret failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(6);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe("Failed to push API key dataset's encryption key");
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.pushDatasetSecret failed'));
+  }, 10000);
+
+  test('error with apiKey - failed to create datasetorder', async () => {
+    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
+      address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+    });
+    iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
+    iexec.order.createDatasetorder = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.order.createDatasetorder failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(7);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe("Failed to create API key datasetorder's");
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.createDatasetorder failed'));
+  }, 10000);
+
+  test('error with apiKey - failed to sign datasetorder', async () => {
+    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
+      address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+    });
+    iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
+    iexec.order.createDatasetorder = jest.fn().mockResolvedValueOnce('datasetorderToSign');
+    iexec.order.signDatasetorder = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.order.signDatasetorder failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(8);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe("Failed to sign API key datasetorder's");
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.signDatasetorder failed'));
+  }, 10000);
+
+  test('error with apiKey - failed to sign datasetorder', async () => {
+    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
+      address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+    });
+    iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
+    iexec.order.createDatasetorder = jest.fn().mockResolvedValueOnce('datasetorderToSign');
+    iexec.order.signDatasetorder = jest.fn().mockResolvedValueOnce('datasetorder');
+    iexec.order.publishDatasetorder = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.order.publishDatasetorder failed'));
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(10);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe("Failed to publish API key datasetorder's");
+    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.publishDatasetorder failed'));
+  }, 10000);
+
+  test('error with apiKey - unexpected error while creating apiKey dataset', async () => {
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.dataset.generateEncryptionKey = jest.fn().mockImplementationOnce(() => {
+      throw Error('something bad happened');
+    });
+    const messages = [];
+    const errors = [];
+    await new Promise((resolve, reject) => {
+      createOracle({
+        iexec,
+        rawParams: {
+          url: 'https://foo.io',
+          method: 'GET',
+          headers: {
+            authorization: '%API_KEY%',
+          },
+          dataType: 'string',
+          JSONPath: '$.data',
+          apiKey: 'foo',
+        },
+      }).subscribe({
+        complete: () => reject(Error('should not call complete')),
+        error: (e) => {
+          // console.log(e, e.originalError);
+          errors.push(e);
+          resolve();
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(0);
+    expect(errors.length).toBe(1);
+    expect(errors[0]).toBeInstanceOf(WorkflowError);
+    expect(errors[0].message).toBe('API key dataset creation unexpected error');
+    expect(errors[0].originalError).toStrictEqual(Error('something bad happened'));
+  }, 10000);
 });
 
 describe('updateOracle', () => {
-  test('from paramsSet', async () => {
+  test('standard - from paramsSet', async () => {
     ipfs.isCid.mockReturnValueOnce(false);
     ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
@@ -462,7 +952,7 @@ describe('updateOracle', () => {
     expect(messages[15]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
   }, 10000);
 
-  test('from CID', async () => {
+  test('standard - from CID', async () => {
     ipfs.isCid.mockReturnValueOnce(true);
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
