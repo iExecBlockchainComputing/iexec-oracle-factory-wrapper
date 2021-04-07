@@ -8,7 +8,7 @@ const isOracleId = (oracleId) => typeof oracleId === 'string' && bytes32Regex.te
 
 const formatMap = (obj) => {
   const sortedObj = sortObjKeys(obj);
-  return Object.entries(sortedObj).reduce((acc, curr) => acc.concat([curr]), []);
+  return Object.entries(sortedObj);
 };
 
 const computeOracleId = async (paramsSet) => {
