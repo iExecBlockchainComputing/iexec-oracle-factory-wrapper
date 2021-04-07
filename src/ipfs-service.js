@@ -34,13 +34,6 @@ const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   return cid.toString();
 };
 
-const getCid = async (content) => {
-  const ipfs = await Ipfs.create();
-  const { cid } = await ipfs.add(content, { onlyHash: true });
-  await ipfs.stop(); // not working: https://github.com/libp2p/js-libp2p/issues/779
-  return cid.toString();
-};
-
 const isCid = (value) => {
   try {
     const cid = new CID(value);
@@ -53,6 +46,5 @@ const isCid = (value) => {
 module.exports = {
   add,
   get,
-  getCid,
   isCid,
 };
