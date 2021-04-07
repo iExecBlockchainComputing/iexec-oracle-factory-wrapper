@@ -146,7 +146,7 @@ const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY
   let isUploaded = false;
   if (ipfs.isCid(paramsSetOrCid)) {
     const cid = new CID(paramsSetOrCid).toString();
-    const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch((e) => {
+    const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch(() => {
       throw Error(`Failed to load paramsSetSet from CID ${cid}`);
     });
     const contentText = contentBuffer.toString();
@@ -220,7 +220,7 @@ const updateOracle = ({
         .catch((e) => {
           throw new WorkflowError('Failed to fetch apporder', e);
         });
-      const apporder = apporderbook && apporderbook.appOrders[0] && apporderbook.appOrders[0].order;
+      const apporder = apporderbook && apporderbook.orders[0] && apporderbook.orders[0].order;
       if (!apporder) {
         throw new WorkflowError('No apporder published');
       }
@@ -245,9 +245,7 @@ const updateOracle = ({
           .catch((e) => {
             throw new WorkflowError('Failed to fetch datasetorder', e);
           });
-        datasetorder = datasetorderbook
-            && datasetorderbook.datasetOrders[0]
-            && datasetorderbook.datasetOrders[0].order;
+        datasetorder = datasetorderbook && datasetorderbook.orders[0] && datasetorderbook.orders[0].order;
         if (!datasetorder) {
           throw new WorkflowError('No datasetorder published');
         }
@@ -272,8 +270,8 @@ const updateOracle = ({
           throw new WorkflowError('Failed to fetch workerpoolorder', e);
         });
       const workerpoolorder = workerpoolorderbook
-          && workerpoolorderbook.workerpoolOrders[0]
-          && workerpoolorderbook.workerpoolOrders[0].order;
+          && workerpoolorderbook.orders[0]
+          && workerpoolorderbook.orders[0].order;
       if (!workerpoolorder) {
         throw new WorkflowError('No workerpoolorder published');
       }
@@ -363,6 +361,7 @@ const updateOracle = ({
             }
           },
           error: (e) => reject(new WorkflowError('Failed to monitor oracle update task', e)),
+          complete: () => {},
         });
       });
       await watchExecution();
