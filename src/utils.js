@@ -4,7 +4,7 @@ const hashComputeOracleId = require('./hash').computeOracleId;
 const callTesterTestRawParams = require('./callTester').testRawParams;
 
 const computeOracleId = async (paramsSetOrCid) => {
-  const { paramsSet } = await getParamsSet(paramsSetOrCid);
+  const { paramsSet } = await getParamsSet({ paramsSetOrCid });
   const oracleId = await hashComputeOracleId(paramsSet);
   return oracleId;
 };
