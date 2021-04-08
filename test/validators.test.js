@@ -156,13 +156,13 @@ describe('rawParamsSchema', () => {
     const res = await rawParamsSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
     });
     expect(res).toStrictEqual({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       body: '',
       headers: {},
@@ -174,7 +174,7 @@ describe('rawParamsSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -186,7 +186,7 @@ describe('rawParamsSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -201,7 +201,7 @@ describe('rawParamsSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -213,7 +213,7 @@ describe('rawParamsSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -226,7 +226,7 @@ describe('rawParamsSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -238,7 +238,7 @@ describe('rawParamsSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -252,14 +252,14 @@ describe('rawParamsSchema', () => {
     const res = await rawParamsSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       foo: 'bar',
     });
     expect(res).toStrictEqual({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       body: '',
       headers: {},
@@ -271,7 +271,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().validate({
         url: 'https://foo.com?apiKey=%API_KEY%API_KEY%&query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
         apiKey: 'abcdef1234567890',
@@ -285,7 +285,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
         apiKey: 'abcdef1234567890',
@@ -302,7 +302,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
       }),
@@ -312,7 +312,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
       }),
@@ -324,7 +324,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
         apiKey: 'abcdef1234567890',
@@ -338,7 +338,7 @@ describe('rawParamsSchema', () => {
     await expect(
       rawParamsSchema().validate({
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
       }),
     ).rejects.toThrow(new ValidationError('url is a required field'));
@@ -348,7 +348,7 @@ describe('rawParamsSchema', () => {
     await expect(
       rawParamsSchema().validate({
         url: 'https://foo.com?query=bar',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
       }),
     ).rejects.toThrow(new ValidationError('method is a required field'));
@@ -369,7 +369,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
       }),
     ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
@@ -379,7 +379,7 @@ describe('rawParamsSchema', () => {
       rawParamsSchema().strict().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         foo: 'bar',
       }),
@@ -392,13 +392,13 @@ describe('paramsSetSchema', () => {
     const res = await paramsSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
     });
     expect(res).toStrictEqual({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       body: '',
       headers: {},
@@ -411,7 +411,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -423,7 +423,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -438,7 +438,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -450,7 +450,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -463,7 +463,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -475,7 +475,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -488,7 +488,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -499,7 +499,7 @@ describe('paramsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -512,14 +512,14 @@ describe('paramsSetSchema', () => {
     const res = await paramsSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       foo: 'bar',
     });
     expect(res).toStrictEqual({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       body: '',
       headers: {},
@@ -532,7 +532,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().validate({
         url: 'https://foo.com?apiKey=%API_KEY%API_KEY%&query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
@@ -546,7 +546,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
@@ -563,7 +563,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
       }),
@@ -573,7 +573,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
       }),
@@ -585,7 +585,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
@@ -599,7 +599,7 @@ describe('paramsSetSchema', () => {
     await expect(
       paramsSetSchema().validate({
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
       }),
     ).rejects.toThrow(new ValidationError('url is a required field'));
@@ -609,7 +609,7 @@ describe('paramsSetSchema', () => {
     await expect(
       paramsSetSchema().validate({
         url: 'https://foo.com?query=bar',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
       }),
     ).rejects.toThrow(new ValidationError('method is a required field'));
@@ -630,7 +630,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
       }),
     ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
@@ -640,7 +640,7 @@ describe('paramsSetSchema', () => {
       paramsSetSchema().strict().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         foo: 'bar',
       }),
@@ -653,7 +653,7 @@ describe('strictParamsSetSchema', () => {
     const res = await strictParamsSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       body: '',
       headers: {},
@@ -662,7 +662,7 @@ describe('strictParamsSetSchema', () => {
     expect(res).toStrictEqual({
       url: 'https://foo.com?query=bar',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       body: '',
       headers: {},
@@ -675,7 +675,7 @@ describe('strictParamsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -687,7 +687,7 @@ describe('strictParamsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -700,7 +700,7 @@ describe('strictParamsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -712,7 +712,7 @@ describe('strictParamsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -725,7 +725,7 @@ describe('strictParamsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -736,7 +736,7 @@ describe('strictParamsSetSchema', () => {
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -750,7 +750,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?apiKey=%API_KEY%API_KEY%&query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
@@ -764,7 +764,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
@@ -781,7 +781,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
       }),
@@ -791,7 +791,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
       }),
@@ -803,7 +803,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
@@ -818,7 +818,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         method: 'POST',
         body: 'body',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {
           'content-type': 'application/json',
@@ -833,7 +833,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         body: 'body',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {
           'content-type': 'application/json',
@@ -848,7 +848,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {
           'content-type': 'application/json',
@@ -879,7 +879,7 @@ describe('strictParamsSetSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         headers: {
           'content-type': 'application/json',
         },
@@ -894,7 +894,7 @@ describe('strictParamsSetSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         dataset: '0x0000000000000000000000000000000000000000',
       }),
@@ -907,7 +907,7 @@ describe('strictParamsSetSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         headers: {
           'content-type': 'application/json',
@@ -921,7 +921,7 @@ describe('strictParamsSetSchema', () => {
       strictParamsSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
-        JSONPath: '$[foo]',
+        JSONPath: '$.foo',
         dataType: 'string',
         foo: 'bar',
       }),
@@ -942,7 +942,7 @@ describe('jsonParamsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -959,7 +959,7 @@ describe('jsonParamsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: '',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -976,7 +976,7 @@ describe('jsonParamsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -985,7 +985,7 @@ describe('jsonParamsSetSchema', () => {
     });
     await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$[foo]","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"}} is not a valid paramsSet (Using %API_KEY% placeholder but no dataset provided)',
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"}} is not a valid paramsSet (Using %API_KEY% placeholder but no dataset provided)',
       ),
     );
   });
@@ -994,7 +994,7 @@ describe('jsonParamsSetSchema', () => {
     const json = JSON.stringify({
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -1004,7 +1004,7 @@ describe('jsonParamsSetSchema', () => {
     });
     await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$[foo]","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramsSet (body is a required field)',
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramsSet (body is a required field)',
       ),
     );
   });
@@ -1014,7 +1014,7 @@ describe('jsonParamsSetSchema', () => {
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
-      JSONPath: '$[foo]',
+      JSONPath: '$.foo',
       dataType: 'string',
       headers: {
         'content-type': 'application/json',
@@ -1025,7 +1025,7 @@ describe('jsonParamsSetSchema', () => {
     });
     await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$[foo]","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramsSet (this field has unspecified keys: foo)',
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramsSet (this field has unspecified keys: foo)',
       ),
     );
   });
@@ -1038,7 +1038,7 @@ describe('internal schema', () => {
         paramsSetSchema().validate({
           url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
           method: 'POST',
-          JSONPath: '$[foo]',
+          JSONPath: '$.foo',
           dataType: 'string',
           dataset: 'foo',
         }),
@@ -1057,6 +1057,19 @@ describe('internal schema', () => {
           },
         }),
       ).rejects.toThrow(new ValidationError('headers is not a valid header list'));
+    });
+  });
+
+  describe('jsonPathSchema', () => {
+    test('invalid JSONPath', async () => {
+      await expect(
+        paramsSetSchema().validate({
+          url: 'https://foo.com?query=bar&',
+          method: 'POST',
+          JSONPath: '$[foo]',
+          dataType: 'string',
+        }),
+      ).rejects.toThrow(new ValidationError('$[foo] is not a valid JSONPath'));
     });
   });
 });

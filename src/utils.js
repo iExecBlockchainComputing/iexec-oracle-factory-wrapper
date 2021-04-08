@@ -1,5 +1,5 @@
 const fetch = require('cross-fetch');
-const jsonPath = require('jsonpath-plus').JSONPath;
+const jp = require('jsonpath');
 const { getSignerFromPrivateKey } = require('iexec').utils;
 const { getParamsSet } = require('./oracle');
 const hashComputeOracleId = require('./hash').computeOracleId;
@@ -42,7 +42,7 @@ const testRawParams = async (rawParams) => {
     throw Error('The API response is not supported, it must be a JSON');
   });
 
-  const jsonPathResult = jsonPath({ path: JSONPath, json });
+  const jsonPathResult = jp.query(json, JSONPath);
 
   if (jsonPathResult.length === 0) {
     throw Error(

@@ -2,6 +2,7 @@ const {
   string, object, array, ValidationError,
 } = require('yup');
 const { getAddress } = require('ethers').utils;
+const jp = require('jsonpath');
 const { API_KEY_PLACEHOLDER } = require('./conf');
 
 const countSubstr = (str, substr, overlap = true) => {
@@ -68,7 +69,16 @@ const datasetAddressSchema = () => string()
     }
   });
 
-const jsonPathSchema = () => string();
+const jsonPathSchema = () => string().test('is-jsonpath', '${originalValue} is not a valid JSONPath', (str) => {
+  if (str) {
+    try {
+      jp.parse(str);
+    } catch (e) {
+      return false;
+    }
+  }
+  return true;
+});
 
 const dataTypeSchema = () => string().oneOf(['number', 'string']);
 
