@@ -124,7 +124,7 @@ describe('computeCallId', () => {
 
 describe('computeOracleId', () => {
   test('keys order does not matter', async () => {
-    const callId1 = await computeOracleId({
+    const oracleId1 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -136,8 +136,8 @@ describe('computeOracleId', () => {
       JSONPath: '$.foo',
       dataType: 'string',
     });
-    expect(callId1).toBe('0xf240bfa4125f0c0fba0cd9dc9d93d30a97e8e98bf93c549bbb3df83a34dbebb8');
-    const callId2 = await computeOracleId({
+    expect(oracleId1).toBe('0xf240bfa4125f0c0fba0cd9dc9d93d30a97e8e98bf93c549bbb3df83a34dbebb8');
+    const oracleId2 = await computeOracleId({
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       JSONPath: '$.foo',
       method: 'POST',
@@ -149,11 +149,11 @@ describe('computeOracleId', () => {
       },
       url: 'https://foo.com?query=bar',
     });
-    expect(callId2).toBe(callId1);
+    expect(oracleId2).toBe(oracleId1);
   });
 
   test('each value matters', async () => {
-    const callId1 = await computeOracleId({
+    const oracleId1 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -165,8 +165,8 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId1).toBe('0xf240bfa4125f0c0fba0cd9dc9d93d30a97e8e98bf93c549bbb3df83a34dbebb8');
-    const callId2 = await computeOracleId({
+    expect(oracleId1).toBe('0xf240bfa4125f0c0fba0cd9dc9d93d30a97e8e98bf93c549bbb3df83a34dbebb8');
+    const oracleId2 = await computeOracleId({
       url: 'https://foo.com',
       method: 'POST',
       body: 'body',
@@ -178,8 +178,8 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId2).toBe('0xdbb3474f716988b8cb5009f1ae79d3f04d284a3b466530abcffff3ad9f29791b');
-    const callId3 = await computeOracleId({
+    expect(oracleId2).toBe('0xdbb3474f716988b8cb5009f1ae79d3f04d284a3b466530abcffff3ad9f29791b');
+    const oracleId3 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'PUT',
       body: 'body',
@@ -191,8 +191,8 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId3).toBe('0x494c0d59d2621c8b75ee62925981ac4a1faa3b66210919c245a3b89d82445f20');
-    const callId4 = await computeOracleId({
+    expect(oracleId3).toBe('0x494c0d59d2621c8b75ee62925981ac4a1faa3b66210919c245a3b89d82445f20');
+    const oracleId4 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'test',
@@ -204,8 +204,8 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId4).toBe('0x05634a4cac714074d205942f1f7734d67af92dd8a9f59aeeb8ff40986281dc3a');
-    const callId5 = await computeOracleId({
+    expect(oracleId4).toBe('0x05634a4cac714074d205942f1f7734d67af92dd8a9f59aeeb8ff40986281dc3a');
+    const oracleId5 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -217,8 +217,8 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId5).toBe('0x56650b11dbc25c50aca84bafae0eb1bb6e4aabe46dd91ee148e20657097b0db4');
-    const callId6 = await computeOracleId({
+    expect(oracleId5).toBe('0x56650b11dbc25c50aca84bafae0eb1bb6e4aabe46dd91ee148e20657097b0db4');
+    const oracleId6 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -230,8 +230,8 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId6).toBe('0xc0ee31467bf6c701f4624224939344614f7d15a7e78f9192c09558d7ab8f408a');
-    const callId7 = await computeOracleId({
+    expect(oracleId6).toBe('0xc0ee31467bf6c701f4624224939344614f7d15a7e78f9192c09558d7ab8f408a');
+    const oracleId7 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -243,8 +243,8 @@ describe('computeOracleId', () => {
       dataType: 'number',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId7).toBe('0x811c88b501c581201af6b25f709427d033e5fa4bf77a84ee6506b6d13fcdc60b');
-    const callId8 = await computeOracleId({
+    expect(oracleId7).toBe('0x811c88b501c581201af6b25f709427d033e5fa4bf77a84ee6506b6d13fcdc60b');
+    const oracleId8 = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -256,11 +256,11 @@ describe('computeOracleId', () => {
       dataType: 'number',
       dataset: '0x4a2c9d892A69EaA4Ef6f1aD8CA04F192D7B87bdE',
     });
-    expect(callId8).toBe('0xa1ed4550631a41e2c873c315d1a4f537d5cd714ed5b3c7ceb427393958d99b6c');
+    expect(oracleId8).toBe('0xa1ed4550631a41e2c873c315d1a4f537d5cd714ed5b3c7ceb427393958d99b6c');
   });
 
   test('allow empty body', async () => {
-    const callId = await computeOracleId({
+    const oracleId = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: '',
@@ -272,11 +272,11 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId).toBe('0xe1c8835a6dfbe34523d35b115cc6dae9d4d4a8c59fb73d2f9f347a87cb0d48c5');
+    expect(oracleId).toBe('0xe1c8835a6dfbe34523d35b115cc6dae9d4d4a8c59fb73d2f9f347a87cb0d48c5');
   });
 
   test('allow empty headers', async () => {
-    const callId = await computeOracleId({
+    const oracleId = await computeOracleId({
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
@@ -285,6 +285,6 @@ describe('computeOracleId', () => {
       dataType: 'string',
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    expect(callId).toBe('0xb15b6d789f25c2b4d602d90d2a5a8b7b42b92e279c4beb77fd6839159490d022');
+    expect(oracleId).toBe('0xb15b6d789f25c2b4d602d90d2a5a8b7b42b92e279c4beb77fd6839159490d022');
   });
 });
