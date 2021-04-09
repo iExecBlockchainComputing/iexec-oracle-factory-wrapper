@@ -413,7 +413,7 @@ describe('createOracle', () => {
     );
   }, 10000);
 
-  test('error with apiKey - failed to encrypt apiKey', async () => {
+  test('error - with apiKey failed to encrypt apiKey', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -454,7 +454,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.encrypt failed'));
   }, 10000);
 
-  test('error with apiKey - failed to get encrypted apiKey checksum', async () => {
+  test('error - with apiKey failed to get encrypted apiKey checksum', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -499,7 +499,7 @@ describe('createOracle', () => {
     );
   }, 10000);
 
-  test('error with apiKey - failed to upload encrypted apiKey', async () => {
+  test('error - with apiKey failed to upload encrypted apiKey', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -540,7 +540,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
-  test('error with apiKey - failed to deploy dataset', async () => {
+  test('error - with apiKey failed to deploy dataset', async () => {
     jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -584,7 +584,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.deployDataset failed'));
   }, 10000);
 
-  test('error with apiKey - failed to push encryption key', async () => {
+  test('error - with apiKey failed to push encryption key', async () => {
     jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -632,7 +632,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.pushDatasetSecret failed'));
   }, 10000);
 
-  test('error with apiKey - failed to create datasetorder', async () => {
+  test('error - with apiKey failed to create datasetorder', async () => {
     jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -681,7 +681,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('iexec.order.createDatasetorder failed'));
   }, 10000);
 
-  test('error with apiKey - failed to sign datasetorder', async () => {
+  test('error - with apiKey failed to sign datasetorder', async () => {
     jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -731,7 +731,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('iexec.order.signDatasetorder failed'));
   }, 10000);
 
-  test('error with apiKey - failed to sign datasetorder', async () => {
+  test('error - with apiKey failed to sign datasetorder', async () => {
     jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -782,7 +782,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('iexec.order.publishDatasetorder failed'));
   }, 10000);
 
-  test('error with apiKey - unexpected error while creating apiKey dataset', async () => {
+  test('error - with apiKey unexpected error while creating apiKey dataset', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1072,7 +1072,7 @@ describe('updateOracle', () => {
     expect(messages[14]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
   }, 10000);
 
-  test('error from CID - ipfs content not found', async () => {
+  test('error - from CID ipfs content not found', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1108,7 +1108,7 @@ describe('updateOracle', () => {
     );
   }, 10000);
 
-  test('error from CID - ipfs content is not valid paramsSet', async () => {
+  test('error - from CID ipfs content is not valid paramsSet', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1146,7 +1146,7 @@ describe('updateOracle', () => {
     );
   }, 10000);
 
-  test('error from paramsSet - invalid paramsSet', async () => {
+  test('error - from paramsSet invalid paramsSet', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1177,7 +1177,7 @@ describe('updateOracle', () => {
     expect(errors[0].message).toBeDefined();
   }, 10000);
 
-  test('error from paramsSet - fail to upload', async () => {
+  test('error - from paramsSet fail to upload', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),

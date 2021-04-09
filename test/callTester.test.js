@@ -8,7 +8,7 @@ afterEach(() => {
 });
 
 describe('testRawParams', () => {
-  test('standard perfom fetch with %API_KEY% placeholder replacement in url and headers', async () => {
+  test('standard - perfom fetch with %API_KEY% placeholder replacement in url and headers', async () => {
     fetch.mockImplementation(async () => ({
       json: () => Promise.resolve({ foo: false, bar: true }),
     }));
@@ -50,7 +50,7 @@ describe('testRawParams', () => {
     });
   });
 
-  test('standard dataType boolean', async () => {
+  test('standard - dataType boolean', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.resolve({ foo: false, bar: true }),
     }));
@@ -63,7 +63,7 @@ describe('testRawParams', () => {
     expect(res).toBe(true);
   });
 
-  test('standard dataType number', async () => {
+  test('standard - dataType number', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.resolve({ foo: -10, bar: 1.23456789 }),
     }));
@@ -76,7 +76,7 @@ describe('testRawParams', () => {
     expect(res).toBe(1.23456789);
   });
 
-  test('standard dataType string', async () => {
+  test('standard - dataType string', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.resolve({ foo: '-10', bar: '1.23456789' }),
     }));
@@ -89,7 +89,7 @@ describe('testRawParams', () => {
     expect(res).toBe('1.23456789');
   });
 
-  test('throw when fetch throws', async () => {
+  test('error - throw when fetch throws', async () => {
     fetch.mockRejectedValueOnce(Error('fetch error'));
     await expect(
       testRawParams({
@@ -105,7 +105,7 @@ describe('testRawParams', () => {
     );
   });
 
-  test('throw when response is not a JSON', async () => {
+  test('error - throw when response is not a JSON', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.reject(Error('json parse error')),
     }));
@@ -119,7 +119,7 @@ describe('testRawParams', () => {
     ).rejects.toThrow(Error('The API response format is not supported, it must be a JSON'));
   });
 
-  test('throw when selected result is empty', async () => {
+  test('error - throw when selected result is empty', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.resolve({ foo: 'bar' }),
     }));
@@ -135,7 +135,7 @@ describe('testRawParams', () => {
     );
   });
 
-  test('throw when selected result is not unique', async () => {
+  test('error - throw when selected result is not unique', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.resolve({ foo: { target: 'foo' }, bar: { target: 'bar' } }),
     }));
@@ -153,7 +153,7 @@ describe('testRawParams', () => {
     );
   });
 
-  test('throw when selected result is an object', async () => {
+  test('error - throw when selected result is an object', async () => {
     fetch.mockImplementationOnce(async () => ({
       json: () => Promise.resolve({ foo: [] }),
     }));
@@ -171,7 +171,7 @@ describe('testRawParams', () => {
     );
   });
 
-  test('throw when dataType mismatch retruned value', async () => {
+  test('error - throw when dataType mismatch retruned value', async () => {
     fetch.mockImplementation(async () => ({
       json: () => Promise.resolve({ foo: true, bar: 1.23456789, baz: 'foo' }),
     }));
