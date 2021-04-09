@@ -4,15 +4,13 @@ const { createOracle, updateOracle } = require('../src/oracle');
 const { ValidationError, WorkflowError } = require('../src/errors');
 const ipfs = require('../src/ipfs-service');
 
-jest.mock('../src/ipfs-service');
-
 afterEach(() => {
   jest.resetAllMocks();
 });
 
 describe('createOracle', () => {
   test('standard - without apiKey', async () => {
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -339,7 +337,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - failed to upload paramsSet', async () => {
-    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
+    jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -502,7 +500,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error with apiKey - failed to upload encrypted apiKey', async () => {
-    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
+    jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -543,7 +541,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error with apiKey - failed to deploy dataset', async () => {
-    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -587,7 +585,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error with apiKey - failed to push encryption key', async () => {
-    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -635,7 +633,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error with apiKey - failed to create datasetorder', async () => {
-    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -684,7 +682,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error with apiKey - failed to sign datasetorder', async () => {
-    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -734,7 +732,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error with apiKey - failed to sign datasetorder', async () => {
-    ipfs.add.mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -830,8 +828,7 @@ describe('createOracle', () => {
 
 describe('updateOracle', () => {
   test('standard - from paramsSet', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -953,12 +950,11 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('standard - from CID', async () => {
-    ipfs.isCid.mockReturnValueOnce(true);
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
     });
-    ipfs.get.mockResolvedValueOnce(
+    jest.spyOn(ipfs, 'get').mockResolvedValueOnce(
       JSON.stringify({
         JSONPath: '$.data',
         body: '',
@@ -1077,12 +1073,11 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error from CID - ipfs content not found', async () => {
-    ipfs.isCid.mockReturnValueOnce(true);
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
     });
-    ipfs.get.mockRejectedValueOnce(Error('Content not found'));
+    jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('Content not found'));
 
     const messages = [];
     const errors = [];
@@ -1114,12 +1109,11 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error from CID - ipfs content is not valid paramsSet', async () => {
-    ipfs.isCid.mockReturnValueOnce(true);
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
     });
-    ipfs.get.mockResolvedValueOnce('{"foo":"bar"}');
+    jest.spyOn(ipfs, 'get').mockResolvedValueOnce('{"foo":"bar"}');
 
     const messages = [];
     const errors = [];
@@ -1153,7 +1147,6 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error from paramsSet - invalid paramsSet', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1185,8 +1178,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error from paramsSet - fail to upload', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
+    jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1227,8 +1219,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch apporder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1274,8 +1265,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no apporder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1317,8 +1307,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch datasetorder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1367,8 +1356,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no datasetorder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1415,8 +1403,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch workerppolorder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1468,8 +1455,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no workerpoolorder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1519,8 +1505,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to create requestorder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1573,8 +1558,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to sign requestorder', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1628,8 +1612,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to match orders', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1684,8 +1667,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - task observer error', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1747,8 +1729,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - update task timedout', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
-    ipfs.add.mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1811,7 +1792,6 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - unexpected error', async () => {
-    ipfs.isCid.mockReturnValueOnce(false);
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
