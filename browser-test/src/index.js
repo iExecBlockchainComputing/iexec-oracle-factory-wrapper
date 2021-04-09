@@ -158,6 +158,64 @@ const init = async () => {
         });
     });
 
+    document.getElementById('read-oracle-from-params-button').addEventListener('click', () => {
+      const out = document.getElementById('read-oracle-from-params-out');
+      out.value = '';
+      out.classList.remove('error');
+      factory
+        .readOracle({
+          apiKey: document.getElementById('read-oracle-from-params-apikey-input').value,
+          url: document.getElementById('read-oracle-from-params-url-input').value,
+          method: document.getElementById('read-oracle-from-params-method-input').value,
+          body: document.getElementById('read-oracle-from-params-body-input').value,
+          JSONPath: document.getElementById('read-oracle-from-params-jsonpath-input').value,
+          dataType: document.getElementById('read-oracle-from-params-datatype-input').value,
+          headers:
+            (document.getElementById('read-oracle-from-params-headers-input').value
+              && JSON.parse(document.getElementById('read-oracle-from-params-headers-input').value))
+            || {},
+        })
+        .then((res) => {
+          out.value += res;
+        })
+        .catch((e) => {
+          out.classList.add('error');
+          out.value += e.toString();
+        });
+    });
+
+    document.getElementById('read-oracle-from-cid-button').addEventListener('click', () => {
+      const out = document.getElementById('read-oracle-from-cid-out');
+      out.value = '';
+      out.classList.remove('error');
+      factory
+        .readOracle(document.getElementById('read-oracle-from-cid-cid-input').value)
+        .then((res) => {
+          out.value += res;
+        })
+        .catch((e) => {
+          out.classList.add('error');
+          out.value += e.toString();
+        });
+    });
+
+    document.getElementById('read-oracle-from-oracleid-button').addEventListener('click', () => {
+      const out = document.getElementById('read-oracle-from-oracleid-out');
+      out.value = '';
+      out.classList.remove('error');
+      factory
+        .readOracle(document.getElementById('read-oracle-from-oracleid-oracleid-input').value, {
+          dataType: document.getElementById('read-oracle-from-oracleid-datatype-input').value,
+        })
+        .then((res) => {
+          out.value += res;
+        })
+        .catch((e) => {
+          out.classList.add('error');
+          out.value += e.toString();
+        });
+    });
+
     console.log('initialized');
   } catch (e) {
     console.log('failed to init', e);

@@ -22,7 +22,7 @@
       </div>
       <div>
         <label for="test-params-body-input">body:</label>
-        <textarea id="test-params-body-input">{"foo": "bar"}</textarea>
+        <textarea id="test-params-body-input"></textarea>
       </div>
       <div>
         <label for="test-params-headers-input">headers:</label>
@@ -30,7 +30,7 @@
       </div>
       <div>
         <label for="test-params-apikey-input">apiKey:</label>
-        <input id="test-params-apikey-input" type="text" value="foo" />
+        <input id="test-params-apikey-input" type="text" value="" />
       </div>
       <div>
         <label for="test-params-jsonpath-input">JSONPath:</label>
@@ -65,7 +65,7 @@
       </div>
       <div>
         <label for="create-oracle-body-input">body:</label>
-        <textarea id="create-oracle-body-input">{"foo": "bar"}</textarea>
+        <textarea id="create-oracle-body-input"></textarea>
       </div>
       <div>
         <label for="create-oracle-headers-input">headers:</label>
@@ -73,7 +73,7 @@
       </div>
       <div>
         <label for="create-oracle-apikey-input">apiKey:</label>
-        <input id="create-oracle-apikey-input" type="text" value="foo" />
+        <input id="create-oracle-apikey-input" type="text" value="" />
       </div>
       <div>
         <label for="create-oracle-jsonpath-input">JSONPath:</label>
@@ -153,11 +153,104 @@
       </div>
       <div>
         <button id="update-oracle-from-cid-button" type="button" name="button">
-          UPDATE ORACLE USING PARAMS SET CID
+          UPDATE ORACLE USING PARAMS SET'S CID
         </button>
       </div>
       <div>
         <textarea id="update-oracle-from-cid-out" class="out" disabled></textarea>
+      </div>
+    </div>
+    <hr />
+
+    <div>
+      <h3>Read oracle (using paramSet)</h3>
+      <div>
+        <label for="read-oracle-from-params-url-input">url:</label>
+        <input
+          id="read-oracle-from-params-url-input"
+          type="text"
+          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur"
+        />
+      </div>
+      <div>
+        <label for="read-oracle-from-params-method-input">method:</label>
+        <input id="read-oracle-from-params-method-input" type="text" value="GET" />
+      </div>
+      <div>
+        <label for="read-oracle-from-params-body-input">body:</label>
+        <textarea id="read-oracle-from-params-body-input"></textarea>
+      </div>
+      <div>
+        <label for="read-oracle-from-params-headers-input">headers:</label>
+        <textarea id="read-oracle-from-params-headers-input">
+{"content-type": "application/json"}</textarea
+        >
+      </div>
+      <div>
+        <label for="read-oracle-from-params-apikey-input">apiKey:</label>
+        <input id="read-oracle-from-params-apikey-input" type="text" value="" />
+      </div>
+      <div>
+        <label for="read-oracle-from-params-jsonpath-input">JSONPath:</label>
+        <input id="read-oracle-from-params-jsonpath-input" type="text" value="$.ethereum.eur" />
+      </div>
+      <div>
+        <label for="read-oracle-from-params-datatype-input">dataType:</label>
+        <input id="read-oracle-from-params-datatype-input" type="text" value="number" />
+      </div>
+      <div>
+        <button id="read-oracle-from-params-button" type="button" name="button">
+          READ ORACLE FROM PARAMS SET
+        </button>
+      </div>
+      <div>
+        <textarea id="read-oracle-from-params-out" class="out" disabled></textarea>
+      </div>
+    </div>
+    <hr />
+
+    <div>
+      <h3>Read oracle (using CID)</h3>
+      <div>
+        <label for="read-oracle-from-cid-cid-input">cid:</label>
+        <input
+          id="read-oracle-from-cid-cid-input"
+          type="text"
+          value="QmYjc6ADddbfzPzqPX2tkAxtTbd74Pyr11QTMf2x53kbWC"
+        />
+      </div>
+      <div>
+        <button id="read-oracle-from-cid-button" type="button" name="button">
+          READ ORACLE USING PARAMS SET'S CID
+        </button>
+      </div>
+      <div>
+        <textarea id="read-oracle-from-cid-out" class="out" disabled></textarea>
+      </div>
+    </div>
+    <hr />
+
+    <div>
+      <h3>Read oracle (using oracleId)</h3>
+      <div>
+        <label for="read-oracle-from-oracleid-oracleid-input">oracleId:</label>
+        <input
+          id="read-oracle-from-oracleid-oracleid-input"
+          type="text"
+          value="0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6"
+        />
+      </div>
+      <div>
+        <label for="read-oracle-from-oracleid-datatype-input">dataType:</label>
+        <input id="read-oracle-from-oracleid-datatype-input" type="text" value="raw" />
+      </div>
+      <div>
+        <button id="read-oracle-from-oracleid-button" type="button" name="button">
+          READ ORACLE USING ORACLEID
+        </button>
+      </div>
+      <div>
+        <textarea id="read-oracle-from-oracleid-out" class="out" disabled></textarea>
       </div>
     </div>
 
