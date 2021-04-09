@@ -5,16 +5,15 @@ const { getAddress } = require('ethers').utils;
 const jp = require('jsonpath');
 const { API_KEY_PLACEHOLDER } = require('./conf');
 
-const countSubstr = (str, substr, overlap = true) => {
+const countSubstrAllowOverlap = (str, substr) => {
   if (substr.length <= 0) return str.length + 1;
   let count = 0;
   let startIndex = 0;
-  const step = overlap === true ? 1 : substr.length;
   while (startIndex > -1) {
     startIndex = str.indexOf(substr, startIndex);
     if (startIndex >= 0) {
       count += 1;
-      startIndex += step;
+      startIndex += 1;
     }
   }
   return count;
@@ -135,7 +134,7 @@ const rawParamsSchema = () => callParamsSchema()
     `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
     (obj, context) => {
       const { url, headers } = context.originalValue;
-      return countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
+      return countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
     },
   )
   .test(
@@ -144,7 +143,8 @@ const rawParamsSchema = () => callParamsSchema()
     (obj, context) => {
       const { url, headers, apiKey } = context.originalValue;
       return !(
-        countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1 && !apiKey
+        countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
+          && !apiKey
       );
     },
   )
@@ -154,7 +154,8 @@ const rawParamsSchema = () => callParamsSchema()
     (obj, context) => {
       const { url, headers, apiKey } = context.originalValue;
       return !(
-        apiKey && countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
+        apiKey
+          && countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
       );
     },
   )
@@ -171,7 +172,7 @@ const paramsSetSchema = () => callParamsSchema()
     `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
     (obj, context) => {
       const { url, headers } = context.originalValue;
-      return countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
+      return countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
     },
   )
   .test(
@@ -180,7 +181,7 @@ const paramsSetSchema = () => callParamsSchema()
     (obj, context) => {
       const { url, headers, dataset } = context.originalValue;
       return !(
-        countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
+        countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
           && (!dataset || dataset === '0x0000000000000000000000000000000000000000')
       );
     },
@@ -193,7 +194,7 @@ const paramsSetSchema = () => callParamsSchema()
       return !(
         dataset
           && dataset !== '0x0000000000000000000000000000000000000000'
-          && countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
+          && countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
       );
     },
   )
@@ -241,7 +242,7 @@ const strictParamsSetSchema = () => object()
     `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
     (obj, context) => {
       const { url, headers } = context.originalValue;
-      return countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
+      return countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) <= 1;
     },
   )
   .test(
@@ -250,7 +251,7 @@ const strictParamsSetSchema = () => object()
     (obj, context) => {
       const { url, headers, dataset } = context.originalValue;
       return !(
-        countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
+        countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) >= 1
           && (!dataset || dataset === '0x0000000000000000000000000000000000000000')
       );
     },
@@ -263,7 +264,7 @@ const strictParamsSetSchema = () => object()
       return !(
         dataset
           && dataset !== '0x0000000000000000000000000000000000000000'
-          && countSubstr(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
+          && countSubstrAllowOverlap(JSON.stringify({ url, headers }), API_KEY_PLACEHOLDER) === 0
       );
     },
   );
