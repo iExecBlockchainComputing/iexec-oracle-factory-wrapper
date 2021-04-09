@@ -69,3 +69,18 @@ npm start
 ```
 
 browse http://localhost:1234
+
+## Development
+
+### Run Tests
+
+```
+npm i
+npm test
+```
+
+### TODO
+
+- Add ORACLE_CONTRACT_ADDRESS when available
+- Add ORACLE_APP_ADDRESS when available
+- Add ipfs-service tests (add non-jest test script to test ipfs.js)
