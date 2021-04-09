@@ -5,6 +5,7 @@ const {
   strictParamsSetSchema,
   rawParamsSchema,
   jsonParamsSetSchema,
+  throwIfMissing,
 } = require('../src/validators');
 const { ValidationError } = require('../src/errors');
 
@@ -1071,5 +1072,16 @@ describe('internal schema', () => {
         }),
       ).rejects.toThrow(new ValidationError('$[foo] is not a valid JSONPath'));
     });
+  });
+});
+
+describe('throwIfMissing', () => {
+  test('throw', () => {
+    const foo = (bar = throwIfMissing()) => true;
+    expect(foo(null)).toBe(true);
+    expect(foo('')).toBe(true);
+    expect(foo(0)).toBe(true);
+    expect(() => foo(undefined)).toThrow(Error('Missing parameter'));
+    expect(() => foo()).toThrow(Error('Missing parameter'));
   });
 });
