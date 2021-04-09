@@ -195,7 +195,7 @@ const updateOracle = ({
           message: 'ENSURE_PARAMS_UPLOAD',
         });
         cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e) => {
-          throw new WorkflowError('Failed to upload paramSet', e);
+          throw new WorkflowError('Failed to upload paramsSet', e);
         });
       }
       safeObserver.next({

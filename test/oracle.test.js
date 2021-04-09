@@ -1222,7 +1222,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(2);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to upload paramSet');
+    expect(errors[0].message).toBe('Failed to upload paramsSet');
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
