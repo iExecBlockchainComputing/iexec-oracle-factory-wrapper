@@ -1,6 +1,6 @@
 const { Wallet } = require('ethers');
 const { IExec, utils } = require('iexec');
-const { createOracle, updateOracle } = require('../src/oracle');
+const { createOracle, updateOracle, readOracle } = require('../src/oracle');
 const { ValidationError, WorkflowError } = require('../src/errors');
 const ipfs = require('../src/ipfs-service');
 
@@ -1832,4 +1832,157 @@ describe('updateOracle', () => {
       TypeError("Cannot read property 'catch' of undefined"),
     );
   }, 10000);
+});
+
+describe('readOracle', () => {
+  test('standard - from paramsSet dataType: "boolean"', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const res = await readOracle({
+      ethersProvider: signer.provider,
+      chainId: '5',
+      paramsSetOrCidOrOracleId: {
+        JSONPath: '$.data',
+        body: '',
+        dataType: 'boolean',
+        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+        headers: { authorization: '%API_KEY%' },
+        method: 'GET',
+        url: 'https://foo.io',
+      },
+    });
+    expect(typeof res).toBe('boolean');
+  });
+
+  test('standard - from paramsSet dataType: "number"', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const res = await readOracle({
+      ethersProvider: signer.provider,
+      chainId: '5',
+      paramsSetOrCidOrOracleId: {
+        JSONPath: '$.data',
+        body: '',
+        dataType: 'number',
+        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+        headers: { authorization: '%API_KEY%' },
+        method: 'GET',
+        url: 'https://foo.io',
+      },
+    });
+    expect(typeof res).toBe('number');
+  });
+
+  test('standard - from paramsSet dataType: "string"', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const res = await readOracle({
+      ethersProvider: signer.provider,
+      chainId: '5',
+      paramsSetOrCidOrOracleId: {
+        JSONPath: '$.data',
+        body: '',
+        dataType: 'string',
+        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+        headers: { authorization: '%API_KEY%' },
+        method: 'GET',
+        url: 'https://foo.io',
+      },
+    });
+    expect(typeof res).toBe('string');
+  });
+
+  test('standard - from CID', async () => {
+    jest.spyOn(ipfs, 'get').mockResolvedValueOnce(
+      JSON.stringify({
+        JSONPath: '$.data',
+        body: '',
+        dataType: 'string',
+        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+        headers: { authorization: '%API_KEY%' },
+        method: 'GET',
+        url: 'https://foo.io',
+      }),
+    );
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const res = await readOracle({
+      ethersProvider: signer.provider,
+      chainId: '5',
+      paramsSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    });
+    expect(typeof res).toBe('string');
+  });
+
+  test('standard - from oracleId (default dataType)', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const res = await readOracle({
+      ethersProvider: signer.provider,
+      chainId: '5',
+      paramsSetOrCidOrOracleId:
+        '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
+    });
+    expect(typeof res).toBe('string');
+  });
+
+  test('standard - from oracleId (dataType boolean)', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const res = await readOracle({
+      ethersProvider: signer.provider,
+      chainId: '5',
+      paramsSetOrCidOrOracleId:
+        '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
+      dataType: 'boolean',
+    });
+    expect(typeof res).toBe('boolean');
+  });
+
+  test('error - dataType is not allowed for non oracleId inputs', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    await expect(
+      readOracle({
+        ethersProvider: signer.provider,
+        chainId: '5',
+        paramsSetOrCidOrOracleId: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+        dataType: 'boolean',
+      }),
+    ).rejects.toThrow(Error('dataType option is only allowed when reading oracle from oracleId'));
+  });
+
+  test('error - invalid paramsSet', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    await expect(
+      readOracle({
+        ethersProvider: signer.provider,
+        chainId: '5',
+        paramsSetOrCidOrOracleId: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'get',
+          url: 'https://foo.io',
+        },
+      }),
+    ).rejects.toThrow(
+      new ValidationError('method must be one of the following values: GET, POST, PUT, DELETE'),
+    );
+  });
+
+  test('error - failed to load paramsSet', async () => {
+    jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('ipfs.get failed'));
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    await expect(
+      readOracle({
+        ethersProvider: signer.provider,
+        chainId: '5',
+        paramsSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      }),
+    ).rejects.toThrow(new WorkflowError('Failed to load paramsSet', Error('ipfs.get failed')));
+  });
 });

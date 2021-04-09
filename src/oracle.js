@@ -486,14 +486,14 @@ const readOracle = async ({
 
   let readDataType;
   let oracleId;
-  if (await isOracleId(paramsSetOrCidOrOracleId)) {
+  if (isOracleId(paramsSetOrCidOrOracleId)) {
     oracleId = paramsSetOrCidOrOracleId;
     readDataType = await readDataTypeSchema().validate(
       dataType === undefined || dataType === '' ? 'raw' : dataType,
     );
   } else {
     if (dataType) {
-      throw Error('dataType option is only allowed when reading oracle oracleId');
+      throw Error('dataType option is only allowed when reading oracle from oracleId');
     }
     const { paramsSet } = await getParamsSet({
       paramsSetOrCid: paramsSetOrCidOrOracleId,
