@@ -1,3 +1,5 @@
+const Big = require('big.js');
+
 const sortObjKeys = (obj) => Object.keys(obj)
   .sort()
   .reduce((acc, curr) => {
@@ -11,7 +13,19 @@ const sortObjKeys = (obj) => Object.keys(obj)
 
 const formatParamsJson = (obj) => JSON.stringify(sortObjKeys(obj));
 
+const formatOracleGetInt = (resultBn) => {
+  const resultBig = new Big(resultBn.toString()).times(new Big('1e-18'));
+  try {
+    resultBig.constructor.strict = true;
+    const resultNumber = resultBig.toNumber();
+    return resultNumber;
+  } catch (e) {
+    throw Error(`Converting ${resultBig.toString()} to number will result in loosing precision`);
+  }
+};
+
 module.exports = {
-  formatParamsJson,
   sortObjKeys,
+  formatParamsJson,
+  formatOracleGetInt,
 };

@@ -1,9 +1,8 @@
 const { Buffer } = require('buffer');
 const CID = require('cids');
 const { Contract } = require('ethers');
-const Big = require('big.js');
 const ipfs = require('./ipfs-service');
-const { formatParamsJson } = require('./format');
+const { formatParamsJson, formatOracleGetInt } = require('./format');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY, API_KEY_PLACEHOLDER } = require('./conf');
 const { WorkflowError, ValidationError } = require('./errors');
@@ -518,16 +517,8 @@ const readOracle = async ({
     }
     case 'number': {
       const resultBn = await oracleContract.getInt(oracleId);
-      const resultBig = new Big(resultBn.toString()).times(new Big('1e-18'));
-      try {
-        resultBig.constructor.strict = true;
-        const resultNumber = resultBig.toNumber();
-        return resultNumber;
-      } catch (e) {
-        throw Error(
-          `Converting ${resultBig.toString()} to number will result in loosing precision`,
-        );
-      }
+      const resultNumber = formatOracleGetInt(resultBn);
+      return resultNumber;
     }
     case 'string': {
       const resultString = await oracleContract.getString(oracleId);
