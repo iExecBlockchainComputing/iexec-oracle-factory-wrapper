@@ -14,9 +14,11 @@ class IExecOracleFactory {
       ipfsGateway,
       workerpool,
     });
-    this.readOracle = (paramsSetOrCidOrOracleId) => readOracle({
+    this.readOracle = (paramsSetOrCidOrOracleId, { dataType } = {}) => readOracle({
       paramsSetOrCidOrOracleId,
+      dataType,
       ethersProvider,
+      chainId: iexec.network.id,
       ipfsGateway,
     });
 

@@ -1,5 +1,7 @@
 const { Buffer } = require('buffer');
 const CID = require('cids');
+const { Contract } = require('ethers');
+const Big = require('big.js');
 const ipfs = require('./ipfs-service');
 const { formatParamsJson } = require('./format');
 const { Observable, SafeObserver } = require('./reactive');
@@ -9,6 +11,7 @@ const {
   jsonParamsSetSchema,
   paramsSetSchema,
   rawParamsSchema,
+  readDataTypeSchema,
   throwIfMissing,
 } = require('./validators');
 const { isOracleId, computeOracleId, computeCallId } = require('./hash');
@@ -389,16 +392,109 @@ const updateOracle = ({
   return safeObserver.unsubscribe.bind(safeObserver);
 });
 
+const READ_ABI = [
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_callID',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getBool',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'boolValue',
+        type: 'bool',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_callID',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getInt',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'intValue',
+        type: 'int256',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_callID',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getRaw',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: 'bytesValue',
+        type: 'bytes',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_callID',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getString',
+    outputs: [
+      {
+        internalType: 'string',
+        name: 'stringValue',
+        type: 'string',
+      },
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
+
 const readOracle = async ({
   paramsSetOrCidOrOracleId = throwIfMissing(),
+  dataType,
   ethersProvider = throwIfMissing(),
+  chainId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
 } = {}) => {
-  let oracleId;
+  const { ORACLE_CONTRACT_ADDRESS } = getDefaults(chainId);
 
+  let readDataType;
+  let oracleId;
   if (await isOracleId(paramsSetOrCidOrOracleId)) {
     oracleId = paramsSetOrCidOrOracleId;
+    readDataType = await readDataTypeSchema().validate(
+      dataType === undefined || dataType === '' ? 'raw' : dataType,
+    );
   } else {
+    if (dataType) {
+      throw Error('dataType option is only allowed when reading oracle oracleId');
+    }
     const { paramsSet } = await getParamsSet({
       paramsSetOrCid: paramsSetOrCidOrOracleId,
       ipfsGateway,
@@ -409,10 +505,39 @@ const readOracle = async ({
         throw new WorkflowError('Failed to load paramsSet', e);
       }
     });
+    readDataType = paramsSet.dataType;
     oracleId = await computeOracleId(paramsSet);
   }
 
-  throw Error(`TODO ${oracleId}`);
+  const oracleContract = new Contract(ORACLE_CONTRACT_ADDRESS, READ_ABI, ethersProvider);
+
+  switch (readDataType) {
+    case 'boolean': {
+      const result = await oracleContract.getBool(oracleId);
+      return result;
+    }
+    case 'number': {
+      const resultBn = await oracleContract.getInt(oracleId);
+      const resultBig = new Big(resultBn.toString()).times(new Big('1e-18'));
+      try {
+        resultBig.constructor.strict = true;
+        const resultNumber = resultBig.toNumber();
+        return resultNumber;
+      } catch (e) {
+        throw Error(
+          `Converting ${resultBig.toString()} to number will result in loosing precision`,
+        );
+      }
+    }
+    case 'string': {
+      const resultString = await oracleContract.getString(oracleId);
+      return resultString;
+    }
+    default: {
+      const resultBytes = await oracleContract.getRaw(oracleId);
+      return resultBytes;
+    }
+  }
 };
 
 const createOracle = ({

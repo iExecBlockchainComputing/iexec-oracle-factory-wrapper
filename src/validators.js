@@ -290,6 +290,13 @@ const jsonParamsSetSchema = () => string()
     }
   });
 
+const readDataTypeSchema = () => string()
+  .oneOf(
+    ['boolean', 'number', 'string', 'raw'],
+    'dataType read option must be one of the following values: ${values}',
+  )
+  .required();
+
 const throwIfMissing = () => {
   throw new ValidationError('Missing parameter');
 };
@@ -301,5 +308,6 @@ module.exports = {
   strictCallParamsSchema,
   strictParamsSetSchema,
   jsonParamsSetSchema,
+  readDataTypeSchema,
   throwIfMissing,
 };
