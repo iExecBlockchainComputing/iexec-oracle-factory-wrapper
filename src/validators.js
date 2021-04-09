@@ -80,7 +80,7 @@ const jsonPathSchema = () => string().test('is-jsonpath', '${originalValue} is n
   return true;
 });
 
-const dataTypeSchema = () => string().oneOf(['number', 'string', 'boolean']);
+const dataTypeSchema = () => string().oneOf(['boolean', 'number', 'string']);
 
 const callParamsSchema = () => object({
   url: httpsUrlSchema().required(),
