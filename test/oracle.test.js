@@ -7,7 +7,7 @@ const ipfs = require('../src/ipfs-service');
 jest.mock('../src/ipfs-service');
 
 afterEach(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
 });
 
 describe('createOracle', () => {

@@ -4,7 +4,7 @@ const { testRawParams } = require('../src/callTester');
 jest.mock('cross-fetch');
 
 afterEach(() => {
-  jest.clearAllMocks();
+  jest.resetAllMocks();
 });
 
 describe('testRawParams', () => {
