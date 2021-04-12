@@ -22,6 +22,22 @@
     "url": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper/issues"
   },
   "homepage": "https://github.com/iExecBlockchainComputing/iexec-oracle-factory-wrapper#readme",
+  "files": [
+    "dist/",
+    "src/"
+  ],
+  "dependencies": {
+    "big.js": "^6.0.3",
+    "buffer": "^6.0.3",
+    "cids": "^1.1.6",
+    "cross-fetch": "^3.1.0",
+    "debug": "^4.3.1",
+    "ethers": "^5.0.32",
+    "iexec": "^6.0.0-alpha.0",
+    "ipfs": "^0.54.4",
+    "jsonpath": "^1.1.1",
+    "yup": "^0.32.9"
+  },
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
@@ -48,20 +64,6 @@
         }
       ]
     ]
-  },
-  "dependencies": {
-    "big.js": "^6.0.3",
-    "cids": "^1.1.6",
-    "cross-fetch": "^3.1.0",
-    "iexec": "^6.0.0-alpha.0",
-    "ipfs": "^0.54.4",
-    "jsonpath": "^1.1.1"
-  },
-  "peerDependencies": {
-    "buffer": "^6.0.3",
-    "debug": "^5.0.0",
-    "ethers": "^5.0.32",
-    "yup": "^0.32.9"
   },
   "jest": {
     "testEnvironment": "node"
