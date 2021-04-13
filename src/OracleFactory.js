@@ -15,14 +15,14 @@ class IExecOracleFactory {
     const ethersProvider = ethProvider.provider || new Web3Provider(ethProvider);
 
     this.createOracle = (rawParams) => createOracle({ rawParams, iexec, ipfsGateway });
-    this.updateOracle = (paramsSetOrCid, { workerpool } = {}) => updateOracle({
-      paramsSetOrCid,
+    this.updateOracle = (paramSetOrCid, { workerpool } = {}) => updateOracle({
+      paramSetOrCid,
       iexec,
       ipfsGateway,
       workerpool,
     });
-    this.readOracle = (paramsSetOrCidOrOracleId, { dataType } = {}) => readOracle({
-      paramsSetOrCidOrOracleId,
+    this.readOracle = (paramSetOrCidOrOracleId, { dataType } = {}) => readOracle({
+      paramSetOrCidOrOracleId,
       dataType,
       ethersProvider,
       chainId: iexec.network.id,

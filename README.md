@@ -21,19 +21,19 @@ messages :
 - \[optional - API key only\] DATASET_ORDER_SIGNATURE_SUCCESS (order: Object)
 - \[optional - API key only\] DATASET_ORDER_PUBLISH_SIGN_REQUEST (order: Object)
 - \[optional - API key only\] DATASET_ORDER_PUBLISH_SUCCESS (orderHash: String)
-- PARAMS_SET_CREATED (paramsSet: String)
+- PARAMS_SET_CREATED (paramSet: String)
 - ORACLE_ID_COMPUTED (oracleId: String)
 - PARAMS_SET_UPLOADED (cid: String)
 - COMPLETED
 
-#### factory.readOracle(paramsSet|ipfsCid|oracleId [, { dataType }]) => Promise\<value: String\>
+#### factory.readOracle(paramSet|ipfsCid|oracleId [, { dataType }]) => Promise\<value: String\>
 
-#### factory.updateOracle(paramsSet|ipfsCid [, { workerpool }]) => Observable
+#### factory.updateOracle(paramSet|ipfsCid [, { workerpool }]) => Observable
 
 messages :
 
 - ENSURE_PARAMS
-- ENSURE_PARAMS_SUCCESS (paramsSet: Object, cid: String)
+- ENSURE_PARAMS_SUCCESS (paramSet: Object, cid: String)
 - FETCH_APP_ORDER
 - FETCH_APP_ORDER_SUCCESS (order: Object)
 - FETCH_DATASET_ORDER
@@ -49,7 +49,7 @@ messages :
 
 ### utils
 
-#### utils.computeOracleKey(paramsSet|ipfsCid) => Promise\<oracleKey: String\>
+#### utils.computeOracleKey(paramSet|ipfsCid) => Promise\<oracleKey: String\>
 
 #### utils.testRawParams(rawParams) => Promise\<value: String\>
 

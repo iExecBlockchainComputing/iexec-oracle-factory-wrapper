@@ -1,7 +1,7 @@
 const { computeOracleId } = require('../src/utils');
 
 describe('computeOracleId', () => {
-  test('computeOracleId form paramsSet', async () => {
+  test('computeOracleId form paramSet', async () => {
     const oracleId = await computeOracleId({
       url: 'https://foo.com?query=bar',
       method: 'POST',

@@ -26,10 +26,10 @@ test('standard - instanciation', async () => {
   const iexec = factory.getIExec();
   factory.createOracle('rawParams');
   factory2.createOracle('rawParams');
-  factory.updateOracle('paramsSetOrCid');
-  factory.updateOracle('paramsSetOrCid', { workerpool: 'workerpool' });
-  await factory.readOracle('paramsSetOrCidOrOracleId');
-  await factory.readOracle('paramsSetOrCidOrOracleId', { dataType: 'dataType' });
+  factory.updateOracle('paramSetOrCid');
+  factory.updateOracle('paramSetOrCid', { workerpool: 'workerpool' });
+  await factory.readOracle('paramSetOrCidOrOracleId');
+  await factory.readOracle('paramSetOrCidOrOracleId', { dataType: 'dataType' });
 
   expect(iexec).toBeInstanceOf(IExec);
   expect(createOracleSpy).toHaveBeenCalledTimes(2);
@@ -43,27 +43,27 @@ test('standard - instanciation', async () => {
   expect(updateOracleSpy).toHaveBeenNthCalledWith(1, {
     iexec,
     ipfsGateway: 'ipfsGateway',
-    paramsSetOrCid: 'paramsSetOrCid',
+    paramSetOrCid: 'paramSetOrCid',
     workerpool: undefined,
   });
   expect(updateOracleSpy).toHaveBeenNthCalledWith(2, {
     iexec,
     ipfsGateway: 'ipfsGateway',
-    paramsSetOrCid: 'paramsSetOrCid',
+    paramSetOrCid: 'paramSetOrCid',
     workerpool: 'workerpool',
   });
   expect(readOracleSpy).toHaveBeenNthCalledWith(1, {
     ethersProvider: ethProvider.provider,
     chainId: '5',
     ipfsGateway: 'ipfsGateway',
-    paramsSetOrCidOrOracleId: 'paramsSetOrCidOrOracleId',
+    paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
     dataType: undefined,
   });
   expect(readOracleSpy).toHaveBeenNthCalledWith(2, {
     ethersProvider: ethProvider.provider,
     chainId: '5',
     ipfsGateway: 'ipfsGateway',
-    paramsSetOrCidOrOracleId: 'paramsSetOrCidOrOracleId',
+    paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
     dataType: 'dataType',
   });
 });

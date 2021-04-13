@@ -7,8 +7,8 @@ const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY, API_KEY_PLACEHOLDER } = require('./conf');
 const { WorkflowError, ValidationError } = require('./errors');
 const {
-  jsonParamsSetSchema,
-  paramsSetSchema,
+  jsonParamSetSchema,
+  paramSetSchema,
   rawParamsSchema,
   readDataTypeSchema,
   throwIfMissing,
@@ -141,32 +141,32 @@ const createApiKeyDataset = ({
   return safeObserver.unsubscribe.bind(safeObserver);
 });
 
-const getParamsSet = async ({ paramsSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
-  let paramsSet;
+const getParamSet = async ({ paramSetOrCid, ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
+  let paramSet;
   let paramsJson;
   let isUploaded = false;
-  if (ipfs.isCid(paramsSetOrCid)) {
-    const cid = new CID(paramsSetOrCid).toString();
+  if (ipfs.isCid(paramSetOrCid)) {
+    const cid = new CID(paramSetOrCid).toString();
     const contentBuffer = await ipfs.get(cid, { ipfsGateway }).catch(() => {
-      throw Error(`Failed to load paramsSetSet from CID ${cid}`);
+      throw Error(`Failed to load paramSetSet from CID ${cid}`);
     });
     const contentText = contentBuffer.toString();
     try {
-      paramsJson = await jsonParamsSetSchema().validate(contentText);
-      paramsSet = JSON.parse(paramsJson);
+      paramsJson = await jsonParamSetSchema().validate(contentText);
+      paramSet = JSON.parse(paramsJson);
       isUploaded = true;
     } catch (e) {
-      throw Error(`Content associated to CID ${cid} is not a valid paramsSet`);
+      throw Error(`Content associated to CID ${cid} is not a valid paramSet`);
     }
   } else {
-    paramsSet = await paramsSetSchema().validate(paramsSetOrCid);
-    paramsJson = await jsonParamsSetSchema().validate(formatParamsJson(paramsSet));
+    paramSet = await paramSetSchema().validate(paramSetOrCid);
+    paramsJson = await jsonParamSetSchema().validate(formatParamsJson(paramSet));
   }
-  return { paramsSet, paramsJson, isUploaded };
+  return { paramSet, paramsJson, isUploaded };
 };
 
 const updateOracle = ({
-  paramsSetOrCid = throwIfMissing(),
+  paramSetOrCid = throwIfMissing(),
   iexec = throwIfMissing(),
   workerpool,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
@@ -180,36 +180,36 @@ const updateOracle = ({
       safeObserver.next({
         message: 'ENSURE_PARAMS',
       });
-      const { isUploaded, paramsSet, paramsJson } = await getParamsSet({
-        paramsSetOrCid,
+      const { isUploaded, paramSet, paramsJson } = await getParamSet({
+        paramSetOrCid,
         ipfsGateway,
       }).catch((e) => {
         if (e instanceof ValidationError) {
           throw e;
         } else {
-          throw new WorkflowError('Failed to load paramsSet', e);
+          throw new WorkflowError('Failed to load paramSet', e);
         }
       });
       if (isUploaded) {
-        cid = paramsSetOrCid;
+        cid = paramSetOrCid;
       } else {
         safeObserver.next({
           message: 'ENSURE_PARAMS_UPLOAD',
         });
         cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e) => {
-          throw new WorkflowError('Failed to upload paramsSet', e);
+          throw new WorkflowError('Failed to upload paramSet', e);
         });
       }
       safeObserver.next({
         message: 'ENSURE_PARAMS_SUCCESS',
-        paramsSet,
+        paramSet,
         cid,
       });
 
       safeObserver.next({
         message: 'FETCH_APP_ORDER',
       });
-      const datasetAddress = paramsSet.dataset;
+      const datasetAddress = paramSet.dataset;
       const apporderbook = await iexec.orderbook
         .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
           minTag: ['tee'],
@@ -475,7 +475,7 @@ const READ_ABI = [
 ];
 
 const readOracle = async ({
-  paramsSetOrCidOrOracleId = throwIfMissing(),
+  paramSetOrCidOrOracleId = throwIfMissing(),
   dataType,
   ethersProvider = throwIfMissing(),
   chainId = throwIfMissing(),
@@ -485,8 +485,8 @@ const readOracle = async ({
 
   let readDataType;
   let oracleId;
-  if (isOracleId(paramsSetOrCidOrOracleId)) {
-    oracleId = paramsSetOrCidOrOracleId;
+  if (isOracleId(paramSetOrCidOrOracleId)) {
+    oracleId = paramSetOrCidOrOracleId;
     readDataType = await readDataTypeSchema().validate(
       dataType === undefined || dataType === '' ? 'raw' : dataType,
     );
@@ -494,18 +494,18 @@ const readOracle = async ({
     if (dataType) {
       throw Error('dataType option is only allowed when reading oracle from oracleId');
     }
-    const { paramsSet } = await getParamsSet({
-      paramsSetOrCid: paramsSetOrCidOrOracleId,
+    const { paramSet } = await getParamSet({
+      paramSetOrCid: paramSetOrCidOrOracleId,
       ipfsGateway,
     }).catch((e) => {
       if (e instanceof ValidationError) {
         throw e;
       } else {
-        throw new WorkflowError('Failed to load paramsSet', e);
+        throw new WorkflowError('Failed to load paramSet', e);
       }
     });
-    readDataType = paramsSet.dataType;
-    oracleId = await computeOracleId(paramsSet);
+    readDataType = paramSet.dataType;
+    oracleId = await computeOracleId(paramSet);
   }
 
   const oracleContract = new Contract(ORACLE_CONTRACT_ADDRESS, READ_ABI, ethersProvider);
@@ -592,7 +592,7 @@ const createOracle = ({
         });
       }
 
-      const paramsSet = await paramsSetSchema().validate({
+      const paramSet = await paramSetSchema().validate({
         JSONPath,
         url,
         method,
@@ -601,20 +601,20 @@ const createOracle = ({
         dataType,
         dataset,
       });
-      const jsonParams = await jsonParamsSetSchema().validate(formatParamsJson(paramsSet));
+      const jsonParams = await jsonParamSetSchema().validate(formatParamsJson(paramSet));
       safeObserver.next({
         message: 'PARAMS_SET_CREATED',
-        paramsSet: JSON.parse(jsonParams),
+        paramSet: JSON.parse(jsonParams),
       });
 
-      const oracleId = await computeOracleId(paramsSet);
+      const oracleId = await computeOracleId(paramSet);
       safeObserver.next({
         message: 'ORACLE_ID_COMPUTED',
         oracleId,
       });
 
       const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
-        throw new WorkflowError('Failed to upload paramsSet', e);
+        throw new WorkflowError('Failed to upload paramSet', e);
       });
       const multiaddr = `/ipfs/${cid}`;
       safeObserver.next({
@@ -640,7 +640,7 @@ const createOracle = ({
 });
 
 module.exports = {
-  getParamsSet,
+  getParamSet,
   createOracle,
   updateOracle,
   readOracle,

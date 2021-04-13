@@ -40,7 +40,7 @@ describe('createOracle', () => {
     expect(messages.length).toBe(3);
     expect(messages[0]).toStrictEqual({
       message: 'PARAMS_SET_CREATED',
-      paramsSet: {
+      paramSet: {
         JSONPath: '$.data',
         body: '',
         dataType: 'string',
@@ -315,7 +315,7 @@ describe('createOracle', () => {
     });
     expect(messages[11]).toStrictEqual({
       message: 'PARAMS_SET_CREATED',
-      paramsSet: {
+      paramSet: {
         JSONPath: '$.data',
         body: '',
         dataType: 'string',
@@ -336,7 +336,7 @@ describe('createOracle', () => {
     });
   }, 10000);
 
-  test('error - failed to upload paramsSet', async () => {
+  test('error - failed to upload paramSet', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -370,7 +370,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to upload paramsSet');
+    expect(errors[0].message).toBe('Failed to upload paramSet');
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
@@ -827,7 +827,7 @@ describe('createOracle', () => {
 });
 
 describe('updateOracle', () => {
-  test('standard - from paramsSet', async () => {
+  test('standard - from paramSet', async () => {
     jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -862,7 +862,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -888,7 +888,7 @@ describe('updateOracle', () => {
     expect(messages[1]).toStrictEqual({ message: 'ENSURE_PARAMS_UPLOAD' });
     expect(messages[2]).toStrictEqual({
       message: 'ENSURE_PARAMS_SUCCESS',
-      paramsSet: {
+      paramSet: {
         JSONPath: '$.data',
         body: '',
         dataType: 'string',
@@ -994,7 +994,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       }).subscribe({
         complete: resolve,
         error: (e) => {
@@ -1011,7 +1011,7 @@ describe('updateOracle', () => {
     expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
     expect(messages[1]).toStrictEqual({
       message: 'ENSURE_PARAMS_SUCCESS',
-      paramsSet: {
+      paramSet: {
         JSONPath: '$.data',
         body: '',
         dataType: 'string',
@@ -1107,7 +1107,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1133,7 +1133,7 @@ describe('updateOracle', () => {
     expect(messages[1]).toStrictEqual({ message: 'ENSURE_PARAMS_UPLOAD' });
     expect(messages[2]).toStrictEqual({
       message: 'ENSURE_PARAMS_SUCCESS',
-      paramsSet: {
+      paramSet: {
         JSONPath: '$.data',
         body: '',
         dataType: 'string',
@@ -1201,7 +1201,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       }).subscribe({
         complete: () => reject(Error('should not call complete')),
         error: (e) => {
@@ -1219,13 +1219,13 @@ describe('updateOracle', () => {
     expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to load paramsSet');
+    expect(errors[0].message).toBe('Failed to load paramSet');
     expect(errors[0].originalError).toStrictEqual(
-      Error('Failed to load paramsSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'),
+      Error('Failed to load paramSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'),
     );
   }, 10000);
 
-  test('error - from CID ipfs content is not valid paramsSet', async () => {
+  test('error - from CID ipfs content is not valid paramSet', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1237,7 +1237,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       }).subscribe({
         complete: () => reject(Error('should not call complete')),
         error: (e) => {
@@ -1255,15 +1255,15 @@ describe('updateOracle', () => {
     expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to load paramsSet');
+    expect(errors[0].message).toBe('Failed to load paramSet');
     expect(errors[0].originalError).toStrictEqual(
       Error(
-        'Content associated to CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh is not a valid paramsSet',
+        'Content associated to CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh is not a valid paramSet',
       ),
     );
   }, 10000);
 
-  test('error - from paramsSet invalid paramsSet', async () => {
+  test('error - from paramSet invalid paramSet', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
       chainId: '5',
@@ -1274,7 +1274,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {},
+        paramSetOrCid: {},
       }).subscribe({
         complete: () => reject(Error('should not call complete')),
         error: (e) => {
@@ -1294,7 +1294,7 @@ describe('updateOracle', () => {
     expect(errors[0].message).toBeDefined();
   }, 10000);
 
-  test('error - from paramsSet fail to upload', async () => {
+  test('error - from paramSet fail to upload', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
@@ -1306,7 +1306,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1331,7 +1331,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(2);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to upload paramsSet');
+    expect(errors[0].message).toBe('Failed to upload paramSet');
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
@@ -1350,7 +1350,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1394,7 +1394,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1441,7 +1441,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1490,7 +1490,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1540,7 +1540,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1592,7 +1592,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1645,7 +1645,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1699,7 +1699,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1754,7 +1754,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1816,7 +1816,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1879,7 +1879,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1919,7 +1919,7 @@ describe('updateOracle', () => {
     await new Promise((resolve, reject) => {
       updateOracle({
         iexec,
-        paramsSetOrCid: {
+        paramSetOrCid: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -1952,12 +1952,12 @@ describe('updateOracle', () => {
 });
 
 describe('readOracle', () => {
-  test('standard - from paramsSet dataType: "boolean"', async () => {
+  test('standard - from paramSet dataType: "boolean"', async () => {
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     const res = await readOracle({
       ethersProvider: signer.provider,
       chainId: '5',
-      paramsSetOrCidOrOracleId: {
+      paramSetOrCidOrOracleId: {
         JSONPath: '$.data',
         body: '',
         dataType: 'boolean',
@@ -1970,12 +1970,12 @@ describe('readOracle', () => {
     expect(typeof res).toBe('boolean');
   });
 
-  test('standard - from paramsSet dataType: "number"', async () => {
+  test('standard - from paramSet dataType: "number"', async () => {
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     const res = await readOracle({
       ethersProvider: signer.provider,
       chainId: '5',
-      paramsSetOrCidOrOracleId: {
+      paramSetOrCidOrOracleId: {
         JSONPath: '$.data',
         body: '',
         dataType: 'number',
@@ -1988,12 +1988,12 @@ describe('readOracle', () => {
     expect(typeof res).toBe('number');
   });
 
-  test('standard - from paramsSet dataType: "string"', async () => {
+  test('standard - from paramSet dataType: "string"', async () => {
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     const res = await readOracle({
       ethersProvider: signer.provider,
       chainId: '5',
-      paramsSetOrCidOrOracleId: {
+      paramSetOrCidOrOracleId: {
         JSONPath: '$.data',
         body: '',
         dataType: 'string',
@@ -2022,7 +2022,7 @@ describe('readOracle', () => {
     const res = await readOracle({
       ethersProvider: signer.provider,
       chainId: '5',
-      paramsSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      paramSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
     });
     expect(typeof res).toBe('string');
   });
@@ -2032,8 +2032,7 @@ describe('readOracle', () => {
     const res = await readOracle({
       ethersProvider: signer.provider,
       chainId: '5',
-      paramsSetOrCidOrOracleId:
-        '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
+      paramSetOrCidOrOracleId: '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
     });
     expect(typeof res).toBe('string');
   });
@@ -2043,8 +2042,7 @@ describe('readOracle', () => {
     const res = await readOracle({
       ethersProvider: signer.provider,
       chainId: '5',
-      paramsSetOrCidOrOracleId:
-        '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
+      paramSetOrCidOrOracleId: '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
       dataType: 'boolean',
     });
     expect(typeof res).toBe('boolean');
@@ -2056,7 +2054,7 @@ describe('readOracle', () => {
       readOracle({
         ethersProvider: signer.provider,
         chainId: '5',
-        paramsSetOrCidOrOracleId: {
+        paramSetOrCidOrOracleId: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -2070,13 +2068,13 @@ describe('readOracle', () => {
     ).rejects.toThrow(Error('dataType option is only allowed when reading oracle from oracleId'));
   });
 
-  test('error - invalid paramsSet', async () => {
+  test('error - invalid paramSet', async () => {
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     await expect(
       readOracle({
         ethersProvider: signer.provider,
         chainId: '5',
-        paramsSetOrCidOrOracleId: {
+        paramSetOrCidOrOracleId: {
           JSONPath: '$.data',
           body: '',
           dataType: 'string',
@@ -2091,15 +2089,15 @@ describe('readOracle', () => {
     );
   });
 
-  test('error - failed to load paramsSet', async () => {
+  test('error - failed to load paramSet', async () => {
     jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('ipfs.get failed'));
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     await expect(
       readOracle({
         ethersProvider: signer.provider,
         chainId: '5',
-        paramsSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        paramSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       }),
-    ).rejects.toThrow(new WorkflowError('Failed to load paramsSet', Error('ipfs.get failed')));
+    ).rejects.toThrow(new WorkflowError('Failed to load paramSet', Error('ipfs.get failed')));
   });
 });

@@ -161,7 +161,7 @@ const rawParamsSchema = () => callParamsSchema()
   )
   .noUnknown(true);
 
-const paramsSetSchema = () => callParamsSchema()
+const paramSetSchema = () => callParamsSchema()
   .shape({
     JSONPath: jsonPathSchema().required(),
     dataType: dataTypeSchema().required(),
@@ -200,8 +200,8 @@ const paramsSetSchema = () => callParamsSchema()
   )
   .noUnknown(true);
 
-const strictParamsSetSchema = () => object()
-  .test('is-params-set', '${originalValue} is not a valid paramsSet', async (obj, context) => {
+const strictParamSetSchema = () => object()
+  .test('is-params-set', '${originalValue} is not a valid paramSet', async (obj, context) => {
     try {
       if (obj && obj.body === '') {
         await object({
@@ -268,7 +268,7 @@ const strictParamsSetSchema = () => object()
       );
     },
   );
-const jsonParamsSetSchema = () => string()
+const jsonParamSetSchema = () => string()
   .strict()
   .required()
   .test('is-json', '${originalValue} is not a valid JSON', (value) => {
@@ -279,14 +279,14 @@ const jsonParamsSetSchema = () => string()
       return false;
     }
   })
-  .test('is-params-set', '${originalValue} is not a valid paramsSet', async (value, context) => {
+  .test('is-params-set', '${originalValue} is not a valid paramSet', async (value, context) => {
     try {
       const obj = JSON.parse(value);
-      await strictParamsSetSchema().validate(obj);
+      await strictParamSetSchema().validate(obj);
       return true;
     } catch (e) {
       return context.createError({
-        message: `${context.originalValue} is not a valid paramsSet (${e.message})`,
+        message: `${context.originalValue} is not a valid paramSet (${e.message})`,
       });
     }
   });
@@ -305,10 +305,10 @@ const throwIfMissing = () => {
 module.exports = {
   callParamsSchema,
   rawParamsSchema,
-  paramsSetSchema,
+  paramSetSchema,
   strictCallParamsSchema,
-  strictParamsSetSchema,
-  jsonParamsSetSchema,
+  strictParamSetSchema,
+  jsonParamSetSchema,
   readDataTypeSchema,
   throwIfMissing,
 };

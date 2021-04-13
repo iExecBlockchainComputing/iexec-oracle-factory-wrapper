@@ -1,10 +1,10 @@
 const {
   callParamsSchema,
   strictCallParamsSchema,
-  paramsSetSchema,
-  strictParamsSetSchema,
+  paramSetSchema,
+  strictParamSetSchema,
   rawParamsSchema,
-  jsonParamsSetSchema,
+  jsonParamSetSchema,
   throwIfMissing,
 } = require('../src/validators');
 const { ValidationError } = require('../src/errors');
@@ -388,9 +388,9 @@ describe('rawParamsSchema', () => {
   });
 });
 
-describe('paramsSetSchema', () => {
+describe('paramSetSchema', () => {
   test('validate only required keys add default optional keys', async () => {
-    const res = await paramsSetSchema().validate({
+    const res = await paramSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$.foo',
@@ -408,7 +408,7 @@ describe('paramsSetSchema', () => {
   });
 
   test('validate with optional keys', async () => {
-    const res = await paramsSetSchema().validate({
+    const res = await paramSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -435,7 +435,7 @@ describe('paramsSetSchema', () => {
   });
 
   test('validate apiKey dataset standard usage', async () => {
-    const res = await paramsSetSchema().validate({
+    const res = await paramSetSchema().validate({
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
@@ -460,7 +460,7 @@ describe('paramsSetSchema', () => {
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
 
-    const res1 = await paramsSetSchema().validate({
+    const res1 = await paramSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -485,7 +485,7 @@ describe('paramsSetSchema', () => {
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
 
-    const res2 = await paramsSetSchema().validate({
+    const res2 = await paramSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -510,7 +510,7 @@ describe('paramsSetSchema', () => {
   });
 
   test('strip extra keys', async () => {
-    const res = await paramsSetSchema().validate({
+    const res = await paramSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$.foo',
@@ -530,7 +530,7 @@ describe('paramsSetSchema', () => {
 
   test('throw with multiple apiKey placeholder', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?apiKey=%API_KEY%API_KEY%&query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -544,7 +544,7 @@ describe('paramsSetSchema', () => {
       ),
     );
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         JSONPath: '$.foo',
@@ -561,7 +561,7 @@ describe('paramsSetSchema', () => {
 
   test('throw when dataset is missing while needed', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         JSONPath: '$.foo',
@@ -571,7 +571,7 @@ describe('paramsSetSchema', () => {
     ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no dataset provided'));
 
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -583,7 +583,7 @@ describe('paramsSetSchema', () => {
 
   test('throw with unused dataset', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -598,7 +598,7 @@ describe('paramsSetSchema', () => {
 
   test('throw when url is missing', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         method: 'POST',
         JSONPath: '$.foo',
         dataType: 'string',
@@ -608,7 +608,7 @@ describe('paramsSetSchema', () => {
 
   test('throw when method is missing', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar',
         JSONPath: '$.foo',
         dataType: 'string',
@@ -618,7 +618,7 @@ describe('paramsSetSchema', () => {
 
   test('throw when JSONPath is missing', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         dataType: 'string',
@@ -628,7 +628,7 @@ describe('paramsSetSchema', () => {
 
   test('throw when dataType is missing', async () => {
     await expect(
-      paramsSetSchema().validate({
+      paramSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -638,7 +638,7 @@ describe('paramsSetSchema', () => {
 
   test('throw in strict mode with extra keys', async () => {
     await expect(
-      paramsSetSchema().strict().validate({
+      paramSetSchema().strict().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -649,9 +649,9 @@ describe('paramsSetSchema', () => {
   });
 });
 
-describe('strictParamsSetSchema', () => {
+describe('strictParamSetSchema', () => {
   test('validate exact match', async () => {
-    const res = await strictParamsSetSchema().validate({
+    const res = await strictParamSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       JSONPath: '$.foo',
@@ -672,7 +672,7 @@ describe('strictParamsSetSchema', () => {
   });
 
   test('validate apiKey dataset standard usage', async () => {
-    const res = await strictParamsSetSchema().validate({
+    const res = await strictParamSetSchema().validate({
       url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
       method: 'POST',
       body: 'body',
@@ -697,7 +697,7 @@ describe('strictParamsSetSchema', () => {
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
 
-    const res1 = await strictParamsSetSchema().validate({
+    const res1 = await strictParamSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -722,7 +722,7 @@ describe('strictParamsSetSchema', () => {
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
 
-    const res2 = await strictParamsSetSchema().validate({
+    const res2 = await strictParamSetSchema().validate({
       url: 'https://foo.com?query=bar',
       method: 'POST',
       body: 'body',
@@ -748,7 +748,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw with multiple apiKey placeholder', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?apiKey=%API_KEY%API_KEY%&query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -762,7 +762,7 @@ describe('strictParamsSetSchema', () => {
       ),
     );
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         JSONPath: '$.foo',
@@ -779,7 +779,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when dataset is missing while needed', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         JSONPath: '$.foo',
@@ -789,7 +789,7 @@ describe('strictParamsSetSchema', () => {
     ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no dataset provided'));
 
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -801,7 +801,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw with unused dataset', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -816,7 +816,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when url is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         method: 'POST',
         body: 'body',
         JSONPath: '$.foo',
@@ -831,7 +831,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when method is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         body: 'body',
         JSONPath: '$.foo',
@@ -846,7 +846,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when body is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -861,7 +861,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when JSONPath is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
@@ -876,7 +876,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when dataType is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
@@ -891,7 +891,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when headers is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
@@ -904,7 +904,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw when dataset is missing', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         body: 'body',
@@ -919,7 +919,7 @@ describe('strictParamsSetSchema', () => {
 
   test('throw with extra keys', async () => {
     await expect(
-      strictParamsSetSchema().validate({
+      strictParamSetSchema().validate({
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
@@ -930,10 +930,10 @@ describe('strictParamsSetSchema', () => {
   });
 });
 
-describe('jsonParamsSetSchema', () => {
+describe('jsonParamSetSchema', () => {
   test('throw on invalid JSON', async () => {
     const json = 'foo';
-    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+    await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError('foo is not a valid JSON'),
     );
   });
@@ -951,7 +951,7 @@ describe('jsonParamsSetSchema', () => {
       },
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    const res = await jsonParamsSetSchema().validate(json);
+    const res = await jsonParamSetSchema().validate(json);
     expect(res).toBe(json);
   });
 
@@ -968,7 +968,7 @@ describe('jsonParamsSetSchema', () => {
       },
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    const res = await jsonParamsSetSchema().validate(json);
+    const res = await jsonParamSetSchema().validate(json);
     expect(res).toBe(json);
   });
 
@@ -984,9 +984,9 @@ describe('jsonParamsSetSchema', () => {
         authorization: 'foo',
       },
     });
-    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+    await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"}} is not a valid paramsSet (Using %API_KEY% placeholder but no dataset provided)',
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"}} is not a valid paramSet (Using %API_KEY% placeholder but no dataset provided)',
       ),
     );
   });
@@ -1003,9 +1003,9 @@ describe('jsonParamsSetSchema', () => {
       },
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
     });
-    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+    await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramsSet (body is a required field)',
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramSet (body is a required field)',
       ),
     );
   });
@@ -1024,9 +1024,9 @@ describe('jsonParamsSetSchema', () => {
       dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       foo: 'bar',
     });
-    await expect(jsonParamsSetSchema().validate(json)).rejects.toThrow(
+    await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramsSet (this field has unspecified keys: foo)',
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramSet (this field has unspecified keys: foo)',
       ),
     );
   });
@@ -1036,7 +1036,7 @@ describe('internal schema', () => {
   describe('addressSchema', () => {
     test('invalid address', async () => {
       await expect(
-        paramsSetSchema().validate({
+        paramSetSchema().validate({
           url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
           method: 'POST',
           JSONPath: '$.foo',
@@ -1064,7 +1064,7 @@ describe('internal schema', () => {
   describe('jsonPathSchema', () => {
     test('invalid JSONPath', async () => {
       await expect(
-        paramsSetSchema().validate({
+        paramSetSchema().validate({
           url: 'https://foo.com?query=bar&',
           method: 'POST',
           JSONPath: '$[foo]',
