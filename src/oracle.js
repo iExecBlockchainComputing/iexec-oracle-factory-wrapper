@@ -512,20 +512,34 @@ const readOracle = async ({
 
   switch (readDataType) {
     case 'boolean': {
-      const result = await oracleContract.getBool(oracleId);
+      const result = await oracleContract.getBool(oracleId).catch(() => {
+        throw Error(
+          `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not boolean dataType`,
+        );
+      });
       return result;
     }
     case 'number': {
-      const resultBn = await oracleContract.getInt(oracleId);
+      const resultBn = await oracleContract.getInt(oracleId).catch(() => {
+        throw Error(
+          `Failed to read number from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not number dataType`,
+        );
+      });
       const resultNumber = formatOracleGetInt(resultBn);
       return resultNumber;
     }
     case 'string': {
-      const resultString = await oracleContract.getString(oracleId);
+      const resultString = await oracleContract.getString(oracleId).catch(() => {
+        throw Error(
+          `Failed to read string from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not string dataType`,
+        );
+      });
       return resultString;
     }
     default: {
-      const resultBytes = await oracleContract.getRaw(oracleId);
+      const resultBytes = await oracleContract.getRaw(oracleId).catch(() => {
+        throw Error(`Failed to read raw value from oracle with oracleId ${oracleId}`);
+      });
       return resultBytes;
     }
   }
