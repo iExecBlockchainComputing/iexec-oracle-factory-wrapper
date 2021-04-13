@@ -15,6 +15,9 @@ const {
 } = require('./validators');
 const { isOracleId, computeOracleId, computeCallId } = require('./hash');
 
+// const TAG = ['tee'];
+const TAG = [];
+
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
   apiKey = throwIfMissing(),
@@ -94,7 +97,7 @@ const createApiKeyDataset = ({
       const orderToSign = await iexec.order
         .createDatasetorder({
           dataset: address,
-          tag: ['tee'],
+          tag: TAG,
           apprestrict: ORACLE_APP_ADDRESS,
           volume: Number.MAX_SAFE_INTEGER - 1,
         })
@@ -212,8 +215,8 @@ const updateOracle = ({
       const datasetAddress = paramsSet.dataset;
       const apporderbook = await iexec.orderbook
         .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
-          minTag: ['tee'],
-          maxTag: ['tee'],
+          minTag: TAG,
+          maxTag: TAG,
           requester: await iexec.wallet.getAddress(),
           workerpool,
           dataset: datasetAddress,
@@ -237,8 +240,8 @@ const updateOracle = ({
         });
         const datasetorderbook = await iexec.orderbook
           .fetchDatasetOrderbook(datasetAddress, {
-            minTag: ['tee'],
-            maxTag: ['tee'],
+            minTag: TAG,
+            maxTag: TAG,
             requester: await iexec.wallet.getAddress(),
             workerpool,
             app: ORACLE_APP_ADDRESS,
@@ -261,7 +264,7 @@ const updateOracle = ({
       });
       const workerpoolorderbook = await iexec.orderbook
         .fetchWorkerpoolOrderbook({
-          minTag: ['tee'],
+          minTag: TAG,
           requester: await iexec.wallet.getAddress(),
           workerpool,
           app: ORACLE_APP_ADDRESS,
@@ -291,7 +294,7 @@ const updateOracle = ({
           appmaxprice: apporder.appprice,
           datasetmaxprice: datasetorder && datasetorder.datasetprice,
           workerpoolmaxprice: workerpoolorder.workerpoolprice,
-          tag: ['tee'],
+          tag: TAG,
           params: {
             iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
           },
