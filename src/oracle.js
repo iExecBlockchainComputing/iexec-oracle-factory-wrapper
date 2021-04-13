@@ -231,7 +231,7 @@ const updateOracle = ({
       });
 
       let datasetorder;
-      if (datasetAddress) {
+      if (datasetAddress && datasetAddress !== '0x0000000000000000000000000000000000000000') {
         safeObserver.next({
           message: 'FETCH_DATASET_ORDER',
         });

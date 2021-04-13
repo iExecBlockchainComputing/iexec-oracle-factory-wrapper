@@ -1072,6 +1072,123 @@ describe('updateOracle', () => {
     expect(messages[14]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
   }, 10000);
 
+  test('standard - no dataset', async () => {
+    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    const iexec = new IExec({
+      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      chainId: '5',
+    });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedApporder' }] });
+    iexec.orderbook.fetchDatasetOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedDatasetorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedWorkerpoolorder' }] });
+    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorderToSign');
+    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('signedRequestorder');
+    iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
+      txHash: 'txHash',
+      dealid: 'dealid',
+    });
+    iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
+    iexec.task.obsTask = jest.fn().mockReturnValueOnce({
+      subscribe: ({ next, error, complete }) => {
+        next({ message: 'TASK_UPDATED', task: { statusName: 'ACTIVE' } });
+        next({ message: 'TASK_UPDATED', task: { statusName: 'REVEALING' } });
+        next({ message: 'TASK_COMPLETED', task: { statusName: 'COMPLETED' } });
+        complete();
+      },
+    });
+
+    const messages = [];
+    await new Promise((resolve, reject) => {
+      updateOracle({
+        iexec,
+        paramsSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: undefined,
+          headers: { authorization: 'foo' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }).subscribe({
+        complete: resolve,
+        error: (e) => {
+          // console.log(e, e.originalError);
+          reject(e);
+        },
+        next: (value) => {
+          // console.log(JSON.stringify(value));
+          messages.push(value);
+        },
+      });
+    });
+    expect(messages.length).toBe(14);
+    expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
+    expect(messages[1]).toStrictEqual({ message: 'ENSURE_PARAMS_UPLOAD' });
+    expect(messages[2]).toStrictEqual({
+      message: 'ENSURE_PARAMS_SUCCESS',
+      paramsSet: {
+        JSONPath: '$.data',
+        body: '',
+        dataType: 'string',
+        dataset: '0x0000000000000000000000000000000000000000',
+        headers: { authorization: 'foo' },
+        method: 'GET',
+        url: 'https://foo.io',
+      },
+      cid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    });
+    expect(messages[3]).toStrictEqual({ message: 'FETCH_APP_ORDER' });
+    expect(messages[4]).toStrictEqual({
+      message: 'FETCH_APP_ORDER_SUCCESS',
+      order: 'signedApporder',
+    });
+    expect(messages[5]).toStrictEqual({ message: 'FETCH_WORKERPOOL_ORDER' });
+    expect(messages[6]).toStrictEqual({
+      message: 'FETCH_WORKERPOOL_ORDER_SUCCESS',
+      order: 'signedWorkerpoolorder',
+    });
+    expect(messages[7]).toStrictEqual({
+      message: 'REQUEST_ORDER_SIGNATURE_SIGN_REQUEST',
+      order: 'requestorderToSign',
+    });
+    expect(messages[8]).toStrictEqual({
+      message: 'REQUEST_ORDER_SIGNATURE_SUCCESS',
+      order: 'requestorderToSign',
+    });
+    expect(messages[9]).toStrictEqual({
+      message: 'MATCH_ORDERS_SIGN_TX_REQUEST',
+      apporder: 'signedApporder',
+      datasetorder: undefined,
+      workerpoolorder: 'signedWorkerpoolorder',
+      requestorder: 'signedRequestorder',
+    });
+    expect(messages[10]).toStrictEqual({
+      message: 'MATCH_ORDERS_SUCCESS',
+      dealid: 'dealid',
+      txHash: 'txHash',
+    });
+    expect(messages[11]).toStrictEqual({
+      message: 'TASK_UPDATED',
+      dealid: 'dealid',
+      taskid: 'taskid',
+      status: 'ACTIVE',
+    });
+    expect(messages[12]).toStrictEqual({
+      message: 'TASK_UPDATED',
+      dealid: 'dealid',
+      taskid: 'taskid',
+      status: 'REVEALING',
+    });
+    expect(messages[13]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
+  }, 10000);
+
   test('error - from CID ipfs content not found', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
