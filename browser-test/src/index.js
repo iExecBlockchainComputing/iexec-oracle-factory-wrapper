@@ -164,7 +164,7 @@ const init = async () => {
       out.classList.remove('error');
       factory
         .readOracle({
-          apiKey: document.getElementById('read-oracle-from-params-apikey-input').value,
+          dataset: document.getElementById('read-oracle-from-params-dataset-input').value,
           url: document.getElementById('read-oracle-from-params-url-input').value,
           method: document.getElementById('read-oracle-from-params-method-input').value,
           body: document.getElementById('read-oracle-from-params-body-input').value,
