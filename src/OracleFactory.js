@@ -8,14 +8,20 @@ class IExecOracleFactory {
     checkSupportedChain(chainId);
     let iexec;
     try {
-      iexec = new IExec({ ethProvider, chainId }, { confirms: 3 });
+      iexec = new IExec(
+        { ethProvider, chainId },
+        { confirms: 3, smsURL: 'https://v6.sms.goerli.iex.ec' },
+      );
     } catch (e) {
       throw Error('Unsupported ethProvider');
     }
     const ethersProvider = ethProvider.provider || new Web3Provider(ethProvider);
 
     this.createOracle = (rawParams) => createOracle({ rawParams, iexec, ipfsGateway });
-    this.updateOracle = (paramSetOrCid, { workerpool } = {}) => updateOracle({
+    this.updateOracle = (
+      paramSetOrCid,
+      { workerpool = '0xdDe15Bb67c89a1E427E458667e461c4Ee2B50282' } = {},
+    ) => updateOracle({
       paramSetOrCid,
       iexec,
       ipfsGateway,
