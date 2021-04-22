@@ -4,7 +4,7 @@ A wrapper to build web2.0 API based oracles for Ethereum on the top of iExec
 
 ## API
 
-### \[Constructor\] IExecOracleFactory({ ethProvider: Web3|Signer, chainId: "1"|"5" }, { ipfsGateway: String }) => oracleFactory:Object
+### \[Constructor\] IExecOracleFactory(ethProvider: Web3|Signer, { ipfsGateway: String }) => oracleFactory:Object
 
 #### factory.createOracle(rawParams) => Observable
 

@@ -24,7 +24,8 @@ const createApiKeyDataset = ({
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
-      const { ORACLE_APP_ADDRESS } = getDefaults(iexec.network.id);
+      const { chainId } = await iexec.network.getNetwork();
+      const { ORACLE_APP_ADDRESS } = getDefaults(chainId);
 
       const key = iexec.dataset.generateEncryptionKey();
       safeObserver.next({
@@ -174,7 +175,8 @@ const updateOracle = ({
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
-      const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } = getDefaults(iexec.network.id);
+      const { chainId } = await iexec.network.getNetwork();
+      const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } = getDefaults(chainId);
 
       let cid;
       safeObserver.next({
@@ -343,31 +345,33 @@ const updateOracle = ({
       const taskid = await iexec.deal.computeTaskId(dealid, 0);
 
       const watchExecution = () => new Promise((resolve, reject) => {
-        iexec.task.obsTask(taskid, { dealid }).subscribe({
-          next: (value) => {
-            const { message } = value;
-            if (message === 'TASK_TIMEDOUT') {
-              reject(
-                new WorkflowError(
-                  'Oracle update task timed out, update failed',
-                  Error(`Task ${taskid} from deal ${dealid} timed out`),
-                ),
-              );
-            }
-            if (message === 'TASK_COMPLETED') {
-              resolve();
-            }
-            if (message === 'TASK_UPDATED') {
-              safeObserver.next({
-                message: 'TASK_UPDATED',
-                dealid,
-                taskid,
-                status: value.task && value.task.statusName,
-              });
-            }
-          },
-          error: (e) => reject(new WorkflowError('Failed to monitor oracle update task', e)),
-          complete: () => {},
+        iexec.task.obsTask(taskid, { dealid }).then((obs) => {
+          obs.subscribe({
+            next: (value) => {
+              const { message } = value;
+              if (message === 'TASK_TIMEDOUT') {
+                reject(
+                  new WorkflowError(
+                    'Oracle update task timed out, update failed',
+                    Error(`Task ${taskid} from deal ${dealid} timed out`),
+                  ),
+                );
+              }
+              if (message === 'TASK_COMPLETED') {
+                resolve();
+              }
+              if (message === 'TASK_UPDATED') {
+                safeObserver.next({
+                  message: 'TASK_UPDATED',
+                  dealid,
+                  taskid,
+                  status: value.task && value.task.statusName,
+                });
+              }
+            },
+            error: (e) => reject(new WorkflowError('Failed to monitor oracle update task', e)),
+            complete: () => {},
+          });
         });
       });
       await watchExecution();
@@ -478,9 +482,9 @@ const readOracle = async ({
   paramSetOrCidOrOracleId = throwIfMissing(),
   dataType,
   ethersProvider = throwIfMissing(),
-  chainId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
 } = {}) => {
+  const chainId = await ethersProvider.getNetwork().then((res) => `${res.chainId}`);
   const { ORACLE_CONTRACT_ADDRESS } = getDefaults(chainId);
 
   let readDataType;
