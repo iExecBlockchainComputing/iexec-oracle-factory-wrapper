@@ -13,19 +13,8 @@ const init = async () => {
     }
 
     await ethProvider.enable();
-    const { result } = await new Promise((resolve, reject) => ethProvider.sendAsync(
-      {
-        jsonrpc: '2.0',
-        method: 'net_version',
-        params: [],
-      },
-      (err, res) => {
-        if (!err) resolve(res);
-        reject(Error(`Failed to get network version from provider: ${err}`));
-      },
-    ));
 
-    const factory = new IExecOracleFactory(ethProvider, result);
+    const factory = new IExecOracleFactory(ethProvider);
 
     document.getElementById('test-params-button').addEventListener('click', () => {
       const out = document.getElementById('test-params-out');

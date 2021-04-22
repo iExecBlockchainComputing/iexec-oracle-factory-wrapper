@@ -15,11 +15,11 @@ test('standard - instanciation', async () => {
   const readOracleSpy = jest.spyOn(oracle, 'readOracle').mockReturnValue();
 
   const ethProvider = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
-  const factory = new OracleFactory(ethProvider, '5', { ipfsGateway: 'ipfsGateway' });
+  const factory = new OracleFactory(ethProvider, { ipfsGateway: 'ipfsGateway' });
   expect(factory).toBeInstanceOf(OracleFactory);
   expect(Object.keys(factory).length).toBe(4);
 
-  const factory2 = new OracleFactory(ethProvider, '5');
+  const factory2 = new OracleFactory(ethProvider);
   oracle.createOracle = jest.fn();
   oracle.updateOracle = jest.fn().mockReturnValueOnce();
   oracle.readOracle = jest.fn().mockResolvedValueOnce();
@@ -54,26 +54,19 @@ test('standard - instanciation', async () => {
   });
   expect(readOracleSpy).toHaveBeenNthCalledWith(1, {
     ethersProvider: ethProvider.provider,
-    chainId: '5',
     ipfsGateway: 'ipfsGateway',
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
     dataType: undefined,
   });
   expect(readOracleSpy).toHaveBeenNthCalledWith(2, {
     ethersProvider: ethProvider.provider,
-    chainId: '5',
     ipfsGateway: 'ipfsGateway',
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
     dataType: 'dataType',
   });
 });
 
-test('error - unsupported chain', () => {
-  const ethProvider = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
-  expect(() => new OracleFactory(ethProvider, '4')).toThrow(Error('Unsupported chain 4'));
-});
-
 test('error - invalid provider', () => {
   const ethProvider = {};
-  expect(() => new OracleFactory(ethProvider, '5')).toThrow(Error('Unsupported ethProvider'));
+  expect(() => new OracleFactory(ethProvider)).toThrow(Error('Unsupported ethProvider'));
 });

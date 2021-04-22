@@ -15,13 +15,8 @@ const getDefaults = (chainId) => {
   return conf;
 };
 
-const checkSupportedChain = (chainId) => {
-  getDefaults(chainId);
-};
-
 module.exports = {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
   getDefaults,
-  checkSupportedChain,
 };
