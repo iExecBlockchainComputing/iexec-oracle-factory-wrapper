@@ -4,56 +4,208 @@ A wrapper to build web2.0 API based oracles for Ethereum on the top of iExec
 
 ## API
 
-### \[Constructor\] IExecOracleFactory(ethProvider: Web3|Signer, { ipfsGateway: String }) => oracleFactory:Object
+### IExecOracleFactory Constructor
 
-#### factory.createOracle(rawParams) => Observable
+**new IExecOracleFactory(ethProvider: Web3|Signer \[, { ipfsGateway: String }\]) => IExecOracleFactory**
 
-messages :
+_Browser Example:_
 
-- \[optional - API key only\] ENCRYPTION_KEY_CREATED (key: String)
-- \[optional - API key only\] FILE_ENCRYPTED (encryptedFile: Buffer, checksum: String)
-- \[optional - API key only\] ENCRYPTED_FILE_UPLOADED (cid: String, multiaddr: String)
-- \[optional - API key only\] DATASET_DEPLOYMENT_SIGN_TX_REQUEST
-- \[optional - API key only\] DATASET_DEPLOYMENT_SUCCESS (address: String, txHash: String)
-- \[optional - API key only\] PUSH_SECRET_TO_SMS_SIGN_REQUEST
-- \[optional - API key only\] PUSH_SECRET_TO_SMS_SUCCESS
-- \[optional - API key only\] DATASET_ORDER_SIGNATURE_SIGN_REQUEST (order: Object)
-- \[optional - API key only\] DATASET_ORDER_SIGNATURE_SUCCESS (order: Object)
-- \[optional - API key only\] DATASET_ORDER_PUBLISH_SIGN_REQUEST (order: Object)
-- \[optional - API key only\] DATASET_ORDER_PUBLISH_SUCCESS (orderHash: String)
-- PARAMS_SET_CREATED (paramSet: String)
-- ORACLE_ID_COMPUTED (oracleId: String)
-- PARAMS_SET_UPLOADED (cid: String)
-- COMPLETED
+```js
+import { IExecOracleFactory } from '@iexec/iexec-oracle-factory-wrapper';
 
-#### factory.readOracle(paramSet|ipfsCid|oracleId [, { dataType }]) => Promise\<value: String\>
+const getOracleFactory = async () => {
+  if (!window.ethereum) {
+    throw Error('Need to install MetaMask');
+  }
+  try {
+    await window.ethereum.enable();
+  } catch (error) {
+    throw Error('User denied access', error);
+  }
+  return new IExecOracleFactory(window.ethereum);
+};
+```
 
-#### factory.updateOracle(paramSet|ipfsCid [, { workerpool }]) => Observable
+_NodeJS Exemple:_
 
-messages :
+```js
+const { IExecOracleFactory, utils } = require('@iexec/iexec-oracle-factory-wrapper');
 
-- ENSURE_PARAMS
-- ENSURE_PARAMS_SUCCESS (paramSet: Object, cid: String)
-- FETCH_APP_ORDER
-- FETCH_APP_ORDER_SUCCESS (order: Object)
-- FETCH_DATASET_ORDER
-- FETCH_DATASET_ORDER_SUCCESS (order: Object)
-- FETCH_WORKERPOOL_ORDER
-- FETCH_WORKERPOOL_ORDER_SUCCESS (order: Object)
-- REQUEST_ORDER_SIGNATURE_SIGN_REQUEST (order: Object)
-- REQUEST_ORDER_SIGNATURE_SUCCESS (order: Object)
-- MATCH_ORDERS_SIGN_TX_REQUEST (apporder: Object, datasetorder: Object, workerpoolorder: Object, requestorder: Object)
-- MATCH_ORDERS_SUCCESS (dealid: String, txHash: String)
-- TASK_UPDATED (dealid: String, taskid: String, status: String)
-- TASK_COMPLETED
+const signer = utils.getSignerFromPrivateKey('goerli', process.env.PRIVATE_KEY);
+const factory = new IExecOracleFactory(signer);
+```
+
+#### Create Oracle
+
+> Create an oracle from an API using `rawParams`.
+
+```ts
+rawParams: {
+  url:String;
+  method:'GET'|'POST'|'PUT'|'DELETE';
+  headers:Map<String,String>;
+  body:?String;
+  apiKey:?String;
+  JSONPath:String;
+  dataType:'boolean'|'number'|'string';
+}
+```
+
+> _NB:_ Use `%API_KEY%` placeholder in `url` or `headers` to inject `apiKey` (the apiKey will be secured in an encrypted iExec Dataset).
+> _NB:_ You may want to call `utils.testRawParams(rawParams)` to test the `rawParams` returned value before creating an oracle.
+
+factory.**createOracle(rawParams)** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) }** >
+
+| message                              | sent                 | additional entries                          |
+| ------------------------------------ | -------------------- | ------------------------------------------- |
+| ENCRYPTION_KEY_CREATED               | once if using apiKey | key: String                                 |
+| FILE_ENCRYPTED                       | once if using apiKey | encryptedFile: Buffer<br/> checksum: String |
+| ENCRYPTED_FILE_UPLOADED              | once if using apiKey | cid: String<br/> multiaddr: String          |
+| DATASET_DEPLOYMENT_SIGN_TX_REQUEST   | once if using apiKey |                                             |
+| DATASET_DEPLOYMENT_SUCCESS           | once if using apiKey | address: String<br/> txHash: String         |
+| PUSH_SECRET_TO_SMS_SIGN_REQUEST      | once if using apiKey |                                             |
+| PUSH_SECRET_TO_SMS_SUCCESS           | once if using apiKey |                                             |
+| DATASET_ORDER_SIGNATURE_SIGN_REQUEST | once if using apiKey | order: Object                               |
+| DATASET_ORDER_SIGNATURE_SUCCESS      | once if using apiKey | order: Object                               |
+| DATASET_ORDER_PUBLISH_SIGN_REQUEST   | once if using apiKey | order: Object                               |
+| DATASET_ORDER_PUBLISH_SUCCESS        | once if using apiKey | orderHash: String                           |
+| PARAMS_SET_CREATED                   | once                 | paramSet: String                            |
+| ORACLE_ID_COMPUTED                   | once                 | oracleId: String                            |
+| PARAMS_SET_UPLOADED                  | once                 | cid: String                                 |
+| COMPLETED                            | once                 |                                             |
+
+_Exemple:_
+
+```js
+let paramSet;
+let cid;
+
+factory
+  .createOracle({
+    url: 'https://foo.io',
+    method: 'GET',
+    headers: {
+      authorization: '%API_KEY%',
+    },
+    dataType: 'string',
+    JSONPath: '$.data',
+    apiKey: 'foo',
+  })
+  .subscribe({
+    error: (e) => console.error(e),
+    next: (value) => {
+      const { message, ...additionalEntries } = value;
+      if (message === 'PARAMS_SET_CREATED') {
+        paramSet = additionalEntries.paramSet;
+      }
+      if (message === 'PARAMS_SET_UPLOADED') {
+        cid = additionalEntries.cid;
+      }
+      console.log(message);
+      console.info(JSON.stringify(additionalEntries));
+    },
+    complete: () => {
+      console.log(`Oracle created, paramSet CID is ${cid}!`);
+      console.log(`paramSet: "${paramSet}"`);
+    },
+  });
+```
+
+#### Read Oracle
+
+> Read the oracle smart contract current value
+
+factory.**readOracle(paramSet|ipfsCid|oracleId [, { dataType:String }])** => Promise < **value: String|Number|Boolean** >
+
+_Options:_
+
+- dataType: use only when reading oracle from oracleId `string`, `number`, `boolean` or `raw` to specify (default `raw` returns hex string)
+
+#### Update Oracle
+
+> Update an oracle
+
+factory.**updateOracle(paramSet|ipfsCid [, { workerpool }])** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) }** >
+
+| message                              | sent                  | additional entries                                                                                |
+| ------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------- |
+| ENSURE_PARAMS                        | once                  |                                                                                                   |
+| ENSURE_PARAMS_SUCCESS                | once                  | paramSet: Object<br/> cid: String                                                                 |
+| FETCH_APP_ORDER                      | once                  |                                                                                                   |
+| FETCH_APP_ORDER_SUCCESS              | once                  | order: Object                                                                                     |
+| FETCH_DATASET_ORDER                  | once if using dataset |                                                                                                   |
+| FETCH_DATASET_ORDER_SUCCESS          | once if using dataset | order: Object                                                                                     |
+| FETCH_WORKERPOOL_ORDER               | once                  |                                                                                                   |
+| FETCH_WORKERPOOL_ORDER_SUCCESS       | once                  | order: Object                                                                                     |
+| REQUEST_ORDER_SIGNATURE_SIGN_REQUEST | once                  | order: Object                                                                                     |
+| REQUEST_ORDER_SIGNATURE_SUCCESS      | once                  | order: Object                                                                                     |
+| MATCH_ORDERS_SIGN_TX_REQUEST         | once                  | apporder: Object<br/> datasetorder: Object<br/> workerpoolorder: Object<br/> requestorder: Object |
+| MATCH_ORDERS_SUCCESS                 | once                  | dealid: String<br/> txHash: String                                                                |
+| TASK_UPDATED                         | once per task update  | dealid: String<br/> taskid: String<br/> status: String                                            |
+| TASK_COMPLETED                       | once                  | dealid: String<br/> taskid: String<br/> status: String                                            |
+
+_Exemple:_
+
+```js
+factory
+  .updateOracle({
+    url: 'https://foo.io',
+    method: 'GET',
+    headers: {
+      authorization: '%API_KEY%',
+    },
+    dataType: 'string',
+    JSONPath: '$.data',
+    dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+  })
+  .subscribe({
+    error: (e) => console.error(e),
+    next: (value) => {
+      const { message, ...additionalEntries } = value;
+      console.log(message);
+      console.info(JSON.stringify(additionalEntries));
+    },
+    complete: () => {
+      console.log('Update task completed!');
+    },
+  });
+```
 
 ### utils
 
-#### utils.computeOracleKey(paramSet|ipfsCid) => Promise\<oracleKey: String\>
+#### testRawParams
 
-#### utils.testRawParams(rawParams) => Promise\<value: String\>
+> Use this method to test the value returned by `rawParams` before creating an oracle with `factory.createOracle(rawParams)`
 
-#### utils.getSignerFromPrivateKey(host, privateKey) => signer:Signer
+utils.**testRawParams(rawParams)** => Promise <**result: String|Number|Boolean**>
+
+```js
+const result = utils.testRawParams({
+  url: 'https://foo.io',
+  method: 'GET',
+  headers: {
+    authorization: '%API_KEY%',
+  },
+  dataType: 'string',
+  JSONPath: '$.data',
+  apiKey: 'foo',
+});
+console.log(`call test returned: ${result} (${typeof result})`);
+```
+
+#### computeOracleKey
+
+> Get the oracleId to use in smart contracts to consume the oracle
+
+utils.**computeOracleKey(paramSet|ipfsCid)** => Promise < **oracleId: String** >
+
+#### getSignerFromPrivateKey
+
+> Create a Signer suitable for `new IExecOracleFactory(signer)` from a `privateKey` for server-side usage
+
+utils.**getSignerFromPrivateKey(host: String, privateKey: String)** => signer:Signer
+
+> _NB:_ set `host` with an RPC node url or a network name.
 
 ## Test in the browser:
 
