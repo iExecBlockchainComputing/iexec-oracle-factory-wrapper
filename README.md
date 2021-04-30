@@ -69,9 +69,9 @@ factory.**createOracle(rawParams)** => Observable < **{ subscribe: Function({ ne
 | DATASET_ORDER_SIGNATURE_SUCCESS      | once if using apiKey | order: Object                               |
 | DATASET_ORDER_PUBLISH_SIGN_REQUEST   | once if using apiKey | order: Object                               |
 | DATASET_ORDER_PUBLISH_SUCCESS        | once if using apiKey | orderHash: String                           |
-| PARAMS_SET_CREATED                   | once                 | paramSet: String                            |
+| PARAM_SET_CREATED                    | once                 | paramSet: String                            |
 | ORACLE_ID_COMPUTED                   | once                 | oracleId: String                            |
-| PARAMS_SET_UPLOADED                  | once                 | cid: String                                 |
+| PARAM_SET_UPLOADED                   | once                 | cid: String                                 |
 | COMPLETED                            | once                 |                                             |
 
 _Exemple:_
@@ -95,10 +95,10 @@ factory
     error: (e) => console.error(e),
     next: (value) => {
       const { message, ...additionalEntries } = value;
-      if (message === 'PARAMS_SET_CREATED') {
+      if (message === 'PARAM_SET_CREATED') {
         paramSet = additionalEntries.paramSet;
       }
-      if (message === 'PARAMS_SET_UPLOADED') {
+      if (message === 'PARAM_SET_UPLOADED') {
         cid = additionalEntries.cid;
       }
       console.log(message);

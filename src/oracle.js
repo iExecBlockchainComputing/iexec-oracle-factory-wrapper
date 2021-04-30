@@ -607,7 +607,7 @@ const createOracle = ({
       });
       const jsonParams = await jsonParamSetSchema().validate(formatParamsJson(paramSet));
       safeObserver.next({
-        message: 'PARAMS_SET_CREATED',
+        message: 'PARAM_SET_CREATED',
         paramSet: JSON.parse(jsonParams),
       });
 
@@ -622,7 +622,7 @@ const createOracle = ({
       });
       const multiaddr = `/ipfs/${cid}`;
       safeObserver.next({
-        message: 'PARAMS_SET_UPLOADED',
+        message: 'PARAM_SET_UPLOADED',
         cid,
         multiaddr,
       });

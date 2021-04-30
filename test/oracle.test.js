@@ -38,7 +38,7 @@ describe('createOracle', () => {
     });
     expect(messages.length).toBe(3);
     expect(messages[0]).toStrictEqual({
-      message: 'PARAMS_SET_CREATED',
+      message: 'PARAM_SET_CREATED',
       paramSet: {
         JSONPath: '$.data',
         body: '',
@@ -54,7 +54,7 @@ describe('createOracle', () => {
       oracleId: '0xd042b577b7ede3dd5827614727ac841a1c1ee3aa6387765f64875171478c00e1',
     });
     expect(messages[2]).toStrictEqual({
-      message: 'PARAMS_SET_UPLOADED',
+      message: 'PARAM_SET_UPLOADED',
       cid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       multiaddr: '/ipfs/QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
     });
@@ -312,7 +312,7 @@ describe('createOracle', () => {
       orderHash: '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
     });
     expect(messages[11]).toStrictEqual({
-      message: 'PARAMS_SET_CREATED',
+      message: 'PARAM_SET_CREATED',
       paramSet: {
         JSONPath: '$.data',
         body: '',
@@ -328,7 +328,7 @@ describe('createOracle', () => {
       oracleId: '0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d',
     });
     expect(messages[13]).toStrictEqual({
-      message: 'PARAMS_SET_UPLOADED',
+      message: 'PARAM_SET_UPLOADED',
       cid: 'QmekKuZECYc3k6mAp2MnLpDaaZgopMzi2t9YSHTNLebJAv',
       multiaddr: '/ipfs/QmekKuZECYc3k6mAp2MnLpDaaZgopMzi2t9YSHTNLebJAv',
     });
