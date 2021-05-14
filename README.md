@@ -115,11 +115,15 @@ factory
 
 > Read the oracle smart contract current value
 
-factory.**readOracle(paramSet|ipfsCid|oracleId [, { dataType:String }])** => Promise < **value: String|Number|Boolean** >
+factory.**readOracle(paramSet|ipfsCid|oracleId [, { dataType:String }])** => Promise < **{ value: String|Number|Boolean, date: Number }** >
 
 _Options:_
 
 - dataType: use only when reading oracle from oracleId `string`, `number`, `boolean` or `raw` to specify (default `raw` returns hex string)
+
+_NB:_
+
+- this method throws a `NoValueError` if the oracle is not yet updated.
 
 #### Update Oracle
 

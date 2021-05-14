@@ -397,22 +397,80 @@ const updateOracle = ({
 
 const READ_ABI = [
   {
-    inputs: [
+    inputs: [],
+    name: 'm_authorizedApp',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'm_authorizedDataset',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'm_authorizedWorkerpool',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'm_requiredtag',
+    outputs: [
       {
         internalType: 'bytes32',
-        name: '_callID',
+        name: '',
         type: 'bytes32',
       },
     ],
-    name: 'getBool',
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'm_requiredtrust',
     outputs: [
       {
-        internalType: 'bool',
-        name: 'boolValue',
-        type: 'bool',
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
-    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -420,47 +478,7 @@ const READ_ABI = [
     inputs: [
       {
         internalType: 'bytes32',
-        name: '_callID',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getInt',
-    outputs: [
-      {
-        internalType: 'int256',
-        name: 'intValue',
-        type: 'int256',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: '_callID',
-        type: 'bytes32',
-      },
-    ],
-    name: 'getRaw',
-    outputs: [
-      {
-        internalType: 'bytes',
-        name: 'bytesValue',
-        type: 'bytes',
-      },
-    ],
-    payable: false,
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'bytes32',
-        name: '_callID',
+        name: '_oracleId',
         type: 'bytes32',
       },
     ],
@@ -471,8 +489,84 @@ const READ_ABI = [
         name: 'stringValue',
         type: 'string',
       },
+      {
+        internalType: 'uint256',
+        name: 'date',
+        type: 'uint256',
+      },
     ],
-    payable: false,
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_oracleId',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getRaw',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: 'bytesValue',
+        type: 'bytes',
+      },
+      {
+        internalType: 'uint256',
+        name: 'date',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_oracleId',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getInt',
+    outputs: [
+      {
+        internalType: 'int256',
+        name: 'intValue',
+        type: 'int256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'date',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'bytes32',
+        name: '_oracleId',
+        type: 'bytes32',
+      },
+    ],
+    name: 'getBool',
+    outputs: [
+      {
+        internalType: 'bool',
+        name: 'boolValue',
+        type: 'bool',
+      },
+      {
+        internalType: 'uint256',
+        name: 'date',
+        type: 'uint256',
+      },
+    ],
     stateMutability: 'view',
     type: 'function',
   },
@@ -514,37 +608,41 @@ const readOracle = async ({
 
   const oracleContract = new Contract(ORACLE_CONTRACT_ADDRESS, READ_ABI, ethersProvider);
 
+  const [rawValue, rawDateBn] = await oracleContract.getRaw(oracleId).catch(() => {
+    throw Error(`Failed to read value from oracle with oracleId ${oracleId}`);
+  });
+  if (rawDateBn.isZero()) {
+    throw Error(`No value stored for oracleId ${oracleId}`);
+  }
+
   switch (readDataType) {
     case 'boolean': {
-      const result = await oracleContract.getBool(oracleId).catch(() => {
+      const [result, dateBn] = await oracleContract.getBool(oracleId).catch(() => {
         throw Error(
           `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not boolean dataType`,
         );
       });
-      return result;
+      return { value: result, date: dateBn.toNumber() };
     }
     case 'number': {
-      const resultBn = await oracleContract.getInt(oracleId).catch(() => {
+      const [resultBn, dateBn] = await oracleContract.getInt(oracleId).catch(() => {
         throw Error(
           `Failed to read number from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not number dataType`,
         );
       });
       const resultNumber = formatOracleGetInt(resultBn);
-      return resultNumber;
+      return { value: resultNumber, date: dateBn.toNumber() };
     }
     case 'string': {
-      const resultString = await oracleContract.getString(oracleId).catch(() => {
+      const [resultString, dateBn] = await oracleContract.getString(oracleId).catch(() => {
         throw Error(
           `Failed to read string from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not string dataType`,
         );
       });
-      return resultString;
+      return { value: resultString, date: dateBn.toNumber() };
     }
     default: {
-      const resultBytes = await oracleContract.getRaw(oracleId).catch(() => {
-        throw Error(`Failed to read raw value from oracle with oracleId ${oracleId}`);
-      });
-      return resultBytes;
+      return { value: rawValue, date: rawDateBn.toNumber() };
     }
   }
 };

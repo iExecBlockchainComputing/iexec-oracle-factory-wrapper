@@ -1934,7 +1934,9 @@ describe('readOracle', () => {
         url: 'https://foo.io',
       },
     });
-    expect(typeof res).toBe('boolean');
+    const { value, date } = res;
+    expect(typeof value).toBe('boolean');
+    expect(typeof date).toBe('number');
   });
 
   test('standard - from paramSet dataType: "number"', async () => {
@@ -1951,7 +1953,9 @@ describe('readOracle', () => {
         url: 'https://foo.io',
       },
     });
-    expect(typeof res).toBe('number');
+    const { value, date } = res;
+    expect(typeof value).toBe('number');
+    expect(typeof date).toBe('number');
   });
 
   test('standard - from paramSet dataType: "string"', async () => {
@@ -1968,7 +1972,9 @@ describe('readOracle', () => {
         url: 'https://foo.io',
       },
     });
-    expect(typeof res).toBe('string');
+    const { value, date } = res;
+    expect(typeof value).toBe('string');
+    expect(typeof date).toBe('number');
   });
 
   test('standard - from CID', async () => {
@@ -1988,7 +1994,9 @@ describe('readOracle', () => {
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
     });
-    expect(typeof res).toBe('string');
+    const { value, date } = res;
+    expect(typeof value).toBe('boolean');
+    expect(typeof date).toBe('number');
   });
 
   test('standard - from oracleId (default dataType)', async () => {
@@ -1997,7 +2005,9 @@ describe('readOracle', () => {
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
     });
-    expect(typeof res).toBe('string');
+    const { value, date } = res;
+    expect(typeof value).toBe('string');
+    expect(typeof date).toBe('number');
   });
 
   test('standard - from oracleId (dataType boolean)', async () => {
@@ -2007,7 +2017,31 @@ describe('readOracle', () => {
       paramSetOrCidOrOracleId: '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
       dataType: 'boolean',
     });
-    expect(typeof res).toBe('boolean');
+    const { value, date } = res;
+    expect(typeof value).toBe('boolean');
+    expect(typeof date).toBe('number');
+  });
+
+  test('error - no value stored for oracleId', async () => {
+    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    await expect(
+      readOracle({
+        ethersProvider: signer.provider,
+        paramSetOrCidOrOracleId: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
+          headers: { authorization: '%API_KEY%' },
+          method: 'GET',
+          url: 'https://foo.io',
+        },
+      }),
+    ).rejects.toThrow(
+      Error(
+        'No value stored for oracleId 0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d',
+      ),
+    );
   });
 
   test('error - dataType is not allowed for non oracleId inputs', async () => {
