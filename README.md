@@ -177,6 +177,12 @@ factory
 
 ### utils
 
+```js
+import { utils } from '@iexec/iexec-oracle-factory-wrapper';
+// OR
+const { utils } = require('@iexec/iexec-oracle-factory-wrapper');
+```
+
 #### testRawParams
 
 > Use this method to test the value returned by `rawParams` before creating an oracle with `factory.createOracle(rawParams)`
@@ -210,6 +216,26 @@ utils.**computeOracleKey(paramSet|ipfsCid)** => Promise < **oracleId: String** >
 utils.**getSignerFromPrivateKey(host: String, privateKey: String)** => signer:Signer
 
 > _NB:_ set `host` with an RPC node url or a network name.
+
+### errors
+
+```js
+import { errors } from '@iexec/iexec-oracle-factory-wrapper';
+// OR
+const { errors } = require('@iexec/iexec-oracle-factory-wrapper');
+```
+
+#### ValidationError
+
+> A `ValidationError` is thrown when an input is not correct
+
+#### WorkflowError
+
+> A `WorkflowError` is thrown when an observable process fails, the original error is accessible via the `originalError` key
+
+#### NoValeError
+
+> A `NoValeError` is thrown when attempting to read an oracle with no stored value (ie: never updated)
 
 ## Test in the browser:
 

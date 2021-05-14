@@ -8,7 +8,10 @@ class WorkflowError extends Error {
   }
 }
 
+class NoValueError extends Error {}
+
 module.exports = {
   ValidationError,
   WorkflowError,
+  NoValueError,
 };

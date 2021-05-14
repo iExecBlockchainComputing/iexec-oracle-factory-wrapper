@@ -1,7 +1,7 @@
 const { Wallet } = require('ethers');
 const { IExec, utils } = require('iexec');
 const { createOracle, updateOracle, readOracle } = require('../src/oracle');
-const { ValidationError, WorkflowError } = require('../src/errors');
+const { ValidationError, WorkflowError, NoValueError } = require('../src/errors');
 const ipfs = require('../src/ipfs-service');
 
 afterEach(() => {
@@ -2038,7 +2038,7 @@ describe('readOracle', () => {
         },
       }),
     ).rejects.toThrow(
-      Error(
+      new NoValueError(
         'No value stored for oracleId 0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d',
       ),
     );

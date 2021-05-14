@@ -5,7 +5,7 @@ const ipfs = require('./ipfs-service');
 const { formatParamsJson, formatOracleGetInt } = require('./format');
 const { Observable, SafeObserver } = require('./reactive');
 const { getDefaults, DEFAULT_IPFS_GATEWAY, API_KEY_PLACEHOLDER } = require('./conf');
-const { WorkflowError, ValidationError } = require('./errors');
+const { WorkflowError, ValidationError, NoValueError } = require('./errors');
 const {
   jsonParamSetSchema,
   paramSetSchema,
@@ -612,7 +612,7 @@ const readOracle = async ({
     throw Error(`Failed to read value from oracle with oracleId ${oracleId}`);
   });
   if (rawDateBn.isZero()) {
-    throw Error(`No value stored for oracleId ${oracleId}`);
+    throw new NoValueError(`No value stored for oracleId ${oracleId}`);
   }
 
   switch (readDataType) {
