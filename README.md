@@ -233,9 +233,9 @@ const { errors } = require('@iexec/iexec-oracle-factory-wrapper');
 
 > A `WorkflowError` is thrown when an observable process fails, the original error is accessible via the `originalError` key
 
-#### NoValeError
+#### NoValueError
 
-> A `NoValeError` is thrown when attempting to read an oracle with no stored value (ie: never updated)
+> A `NoValueError` is thrown when attempting to read an oracle with no stored value (ie: never updated)
 
 ## Test in the browser:
 
