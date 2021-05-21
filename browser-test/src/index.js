@@ -85,20 +85,23 @@ const init = async () => {
       out.value = '';
       out.classList.remove('error');
       factory
-        .updateOracle({
-          dataset: document.getElementById('update-oracle-from-params-dataset-input').value,
-          url: document.getElementById('update-oracle-from-params-url-input').value,
-          method: document.getElementById('update-oracle-from-params-method-input').value,
-          body: document.getElementById('update-oracle-from-params-body-input').value,
-          JSONPath: document.getElementById('update-oracle-from-params-jsonpath-input').value,
-          dataType: document.getElementById('update-oracle-from-params-datatype-input').value,
-          headers:
-            (document.getElementById('update-oracle-from-params-headers-input').value
-              && JSON.parse(
-                document.getElementById('update-oracle-from-params-headers-input').value,
-              ))
-            || {},
-        })
+        .updateOracle(
+          {
+            dataset: document.getElementById('update-oracle-from-params-dataset-input').value,
+            url: document.getElementById('update-oracle-from-params-url-input').value,
+            method: document.getElementById('update-oracle-from-params-method-input').value,
+            body: document.getElementById('update-oracle-from-params-body-input').value,
+            JSONPath: document.getElementById('update-oracle-from-params-jsonpath-input').value,
+            dataType: document.getElementById('update-oracle-from-params-datatype-input').value,
+            headers:
+              (document.getElementById('update-oracle-from-params-headers-input').value
+                && JSON.parse(
+                  document.getElementById('update-oracle-from-params-headers-input').value,
+                ))
+              || {},
+          },
+          { workerpool: '0xdDe15Bb67c89a1E427E458667e461c4Ee2B50282' },
+        )
         .subscribe({
           error: (e) => {
             out.classList.add('error');
@@ -165,7 +168,7 @@ const init = async () => {
             || {},
         })
         .then((res) => {
-          out.value += res;
+          out.value += JSON.stringify(res);
         })
         .catch((e) => {
           out.classList.add('error');
@@ -180,7 +183,7 @@ const init = async () => {
       factory
         .readOracle(document.getElementById('read-oracle-from-cid-cid-input').value)
         .then((res) => {
-          out.value += res;
+          out.value += JSON.stringify(res);
         })
         .catch((e) => {
           out.classList.add('error');
@@ -197,7 +200,7 @@ const init = async () => {
           dataType: document.getElementById('read-oracle-from-oracleid-datatype-input').value,
         })
         .then((res) => {
-          out.value += res;
+          out.value += JSON.stringify(res);
         })
         .catch((e) => {
           out.classList.add('error');
