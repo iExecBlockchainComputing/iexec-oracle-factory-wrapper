@@ -1,6 +1,6 @@
 {
   "name": "@iexec/iexec-oracle-factory-wrapper",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "A wrapper for creating API based oracles for ethereum on the top of iExec",
   "main": "dist/index.js",
   "scripts": {
