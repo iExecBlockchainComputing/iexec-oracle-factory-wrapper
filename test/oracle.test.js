@@ -72,118 +72,12 @@ describe('createOracle', () => {
       .fn()
       .mockReturnValueOnce('oqff1ywBZyTK6g+qFYz8nnHt09hqB0zPfQrpX8OPHKo=');
     const encryptedFile = Buffer.from([
-      200,
-      234,
-      120,
-      231,
-      107,
-      81,
-      169,
-      4,
-      246,
-      109,
-      203,
-      206,
-      89,
-      138,
-      160,
-      209,
-      80,
-      179,
-      218,
-      68,
-      186,
-      150,
-      1,
-      47,
-      70,
-      8,
-      65,
-      101,
-      16,
-      112,
-      180,
-      162,
-      148,
-      60,
-      235,
-      131,
-      27,
-      42,
-      0,
-      29,
-      122,
-      51,
-      39,
-      55,
-      70,
-      82,
-      239,
-      191,
-      90,
-      212,
-      237,
-      119,
-      166,
-      7,
-      12,
-      136,
-      149,
-      185,
-      233,
-      204,
-      117,
-      53,
-      228,
-      133,
-      38,
-      4,
-      15,
-      195,
-      250,
-      59,
-      71,
-      225,
-      105,
-      97,
-      226,
-      202,
-      20,
-      76,
-      178,
-      174,
-      61,
-      126,
-      66,
-      241,
-      10,
-      227,
-      15,
-      248,
-      129,
-      26,
-      62,
-      84,
-      195,
-      166,
-      4,
-      121,
-      26,
-      145,
-      129,
-      46,
-      152,
-      54,
-      65,
-      65,
-      75,
-      250,
-      187,
-      172,
-      68,
-      6,
-      112,
-      78,
+      200, 234, 120, 231, 107, 81, 169, 4, 246, 109, 203, 206, 89, 138, 160, 209, 80, 179, 218, 68,
+      186, 150, 1, 47, 70, 8, 65, 101, 16, 112, 180, 162, 148, 60, 235, 131, 27, 42, 0, 29, 122, 51,
+      39, 55, 70, 82, 239, 191, 90, 212, 237, 119, 166, 7, 12, 136, 149, 185, 233, 204, 117, 53,
+      228, 133, 38, 4, 15, 195, 250, 59, 71, 225, 105, 97, 226, 202, 20, 76, 178, 174, 61, 126, 66,
+      241, 10, 227, 15, 248, 129, 26, 62, 84, 195, 166, 4, 121, 26, 145, 129, 46, 152, 54, 65, 65,
+      75, 250, 187, 172, 68, 6, 112, 78,
     ]);
     iexec.dataset.encrypt = jest.fn().mockResolvedValueOnce(encryptedFile);
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
@@ -209,8 +103,7 @@ describe('createOracle', () => {
       workerpoolrestrict: '0x0000000000000000000000000000000000000000',
       requesterrestrict: '0x0000000000000000000000000000000000000000',
       salt: '0xb2562351966e09d5831888fc9673b5607d1282ce157dbca4b60d1cd26a8c4529',
-      sign:
-        '0xf291c5ecb8552fa46180d35163f81e282322488a047b17ed47d4872c0ed9fe184ed89def7f1a5d75e7ce93f152638645b05a91f305c820539aec91b6c48858541b',
+      sign: '0xf291c5ecb8552fa46180d35163f81e282322488a047b17ed47d4872c0ed9fe184ed89def7f1a5d75e7ce93f152638645b05a91f305c820539aec91b6c48858541b',
     });
     iexec.order.publishDatasetorder = jest
       .fn()
@@ -288,8 +181,7 @@ describe('createOracle', () => {
         workerpoolrestrict: '0x0000000000000000000000000000000000000000',
         requesterrestrict: '0x0000000000000000000000000000000000000000',
         salt: '0xb2562351966e09d5831888fc9673b5607d1282ce157dbca4b60d1cd26a8c4529',
-        sign:
-          '0xf291c5ecb8552fa46180d35163f81e282322488a047b17ed47d4872c0ed9fe184ed89def7f1a5d75e7ce93f152638645b05a91f305c820539aec91b6c48858541b',
+        sign: '0xf291c5ecb8552fa46180d35163f81e282322488a047b17ed47d4872c0ed9fe184ed89def7f1a5d75e7ce93f152638645b05a91f305c820539aec91b6c48858541b',
       },
     });
     expect(messages[9]).toStrictEqual({
@@ -303,8 +195,7 @@ describe('createOracle', () => {
         workerpoolrestrict: '0x0000000000000000000000000000000000000000',
         requesterrestrict: '0x0000000000000000000000000000000000000000',
         salt: '0xb2562351966e09d5831888fc9673b5607d1282ce157dbca4b60d1cd26a8c4529',
-        sign:
-          '0xf291c5ecb8552fa46180d35163f81e282322488a047b17ed47d4872c0ed9fe184ed89def7f1a5d75e7ce93f152638645b05a91f305c820539aec91b6c48858541b',
+        sign: '0xf291c5ecb8552fa46180d35163f81e282322488a047b17ed47d4872c0ed9fe184ed89def7f1a5d75e7ce93f152638645b05a91f305c820539aec91b6c48858541b',
       },
     });
     expect(messages[10]).toStrictEqual({
@@ -1925,13 +1816,13 @@ describe('readOracle', () => {
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: {
-        JSONPath: '$.data',
+        JSONPath: '$.ok',
         body: '',
         dataType: 'boolean',
-        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-        headers: { authorization: '%API_KEY%' },
+        dataset: '0x0000000000000000000000000000000000000000',
+        headers: {},
         method: 'GET',
-        url: 'https://foo.io',
+        url: 'https://api.market.iex.ec/version',
       },
     });
     const { value, date } = res;
@@ -1944,13 +1835,13 @@ describe('readOracle', () => {
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: {
-        JSONPath: '$.data',
+        JSONPath: '$.ethereum.eur',
         body: '',
         dataType: 'number',
-        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-        headers: { authorization: '%API_KEY%' },
+        dataset: '0x0000000000000000000000000000000000000000',
+        headers: {},
         method: 'GET',
-        url: 'https://foo.io',
+        url: 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur',
       },
     });
     const { value, date } = res;
@@ -1963,13 +1854,13 @@ describe('readOracle', () => {
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: {
-        JSONPath: '$.data',
+        JSONPath: '$.version',
         body: '',
         dataType: 'string',
-        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-        headers: { authorization: '%API_KEY%' },
+        dataset: '0x0000000000000000000000000000000000000000',
+        headers: {},
         method: 'GET',
-        url: 'https://foo.io',
+        url: 'https://api.market.iex.ec/version',
       },
     });
     const { value, date } = res;
@@ -1980,22 +1871,22 @@ describe('readOracle', () => {
   test('standard - from CID', async () => {
     jest.spyOn(ipfs, 'get').mockResolvedValueOnce(
       JSON.stringify({
-        JSONPath: '$.data',
+        JSONPath: '$.version',
         body: '',
         dataType: 'string',
-        dataset: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-        headers: { authorization: '%API_KEY%' },
+        dataset: '0x0000000000000000000000000000000000000000',
+        headers: {},
         method: 'GET',
-        url: 'https://foo.io',
+        url: 'https://api.market.iex.ec/version',
       }),
     );
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     const res = await readOracle({
       ethersProvider: signer.provider,
-      paramSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      paramSetOrCidOrOracleId: 'QmPisjyCjaZ2JdnibWw2JZHf68b2CpTkdjePmFM1BZxWtD',
     });
     const { value, date } = res;
-    expect(typeof value).toBe('boolean');
+    expect(typeof value).toBe('string');
     expect(typeof date).toBe('number');
   });
 
@@ -2003,7 +1894,7 @@ describe('readOracle', () => {
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     const res = await readOracle({
       ethersProvider: signer.provider,
-      paramSetOrCidOrOracleId: '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
+      paramSetOrCidOrOracleId: '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
     });
     const { value, date } = res;
     expect(typeof value).toBe('string');
@@ -2014,7 +1905,7 @@ describe('readOracle', () => {
     const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
     const res = await readOracle({
       ethersProvider: signer.provider,
-      paramSetOrCidOrOracleId: '0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6',
+      paramSetOrCidOrOracleId: '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
       dataType: 'boolean',
     });
     const { value, date } = res;
