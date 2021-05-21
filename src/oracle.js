@@ -296,6 +296,7 @@ const updateOracle = ({
           tag: ['tee'],
           params: {
             iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
+            iexec_developer_logger: true,
           },
         })
         .catch((e) => {
@@ -656,13 +657,7 @@ const createOracle = ({
   const start = async () => {
     try {
       const {
-        JSONPath,
-        url,
-        method,
-        headers,
-        body,
-        dataType,
-        apiKey,
+        JSONPath, url, method, headers, body, dataType, apiKey,
       } = await rawParamsSchema().validate(rawParams);
 
       let dataset;
