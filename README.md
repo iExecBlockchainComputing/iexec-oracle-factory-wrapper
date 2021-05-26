@@ -131,22 +131,22 @@ _NB:_
 
 factory.**updateOracle(paramSet|ipfsCid [, { workerpool }])** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) }** >
 
-| message                              | sent                  | additional entries                                                                                |
-| ------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------- |
-| ENSURE_PARAMS                        | once                  |                                                                                                   |
-| ENSURE_PARAMS_SUCCESS                | once                  | paramSet: Object<br/> cid: String                                                                 |
-| FETCH_APP_ORDER                      | once                  |                                                                                                   |
-| FETCH_APP_ORDER_SUCCESS              | once                  | order: Object                                                                                     |
-| FETCH_DATASET_ORDER                  | once if using dataset |                                                                                                   |
-| FETCH_DATASET_ORDER_SUCCESS          | once if using dataset | order: Object                                                                                     |
-| FETCH_WORKERPOOL_ORDER               | once                  |                                                                                                   |
-| FETCH_WORKERPOOL_ORDER_SUCCESS       | once                  | order: Object                                                                                     |
-| REQUEST_ORDER_SIGNATURE_SIGN_REQUEST | once                  | order: Object                                                                                     |
-| REQUEST_ORDER_SIGNATURE_SUCCESS      | once                  | order: Object                                                                                     |
-| MATCH_ORDERS_SIGN_TX_REQUEST         | once                  | apporder: Object<br/> datasetorder: Object<br/> workerpoolorder: Object<br/> requestorder: Object |
-| MATCH_ORDERS_SUCCESS                 | once                  | dealid: String<br/> txHash: String                                                                |
-| TASK_UPDATED                         | once per task update  | dealid: String<br/> taskid: String<br/> status: String                                            |
-| TASK_COMPLETED                       | once                  | dealid: String<br/> taskid: String<br/> status: String                                            |
+| message                              | sent                  | additional entries                                                                                                         |
+| ------------------------------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| ENSURE_PARAMS                        | once                  |                                                                                                                            |
+| ENSURE_PARAMS_SUCCESS                | once                  | paramSet: Object<br/> cid: String                                                                                          |
+| FETCH_APP_ORDER                      | once                  |                                                                                                                            |
+| FETCH_APP_ORDER_SUCCESS              | once                  | order: Object                                                                                                              |
+| FETCH_DATASET_ORDER                  | once if using dataset |                                                                                                                            |
+| FETCH_DATASET_ORDER_SUCCESS          | once if using dataset | order: Object                                                                                                              |
+| FETCH_WORKERPOOL_ORDER               | once                  |                                                                                                                            |
+| FETCH_WORKERPOOL_ORDER_SUCCESS       | once                  | order: Object                                                                                                              |
+| REQUEST_ORDER_SIGNATURE_SIGN_REQUEST | once                  | order: Object                                                                                                              |
+| REQUEST_ORDER_SIGNATURE_SUCCESS      | once                  | order: Object                                                                                                              |
+| MATCH_ORDERS_SIGN_TX_REQUEST         | once                  | apporder: Object<br/> datasetorder: Object<br/> workerpoolorder: Object<br/> requestorder: Object                          |
+| MATCH_ORDERS_SUCCESS                 | once                  | dealid: String<br/> txHash: String                                                                                         |
+| TASK_UPDATED                         | once per task update  | dealid: String<br/> taskid: String<br/> status: 'UNSET' \| 'ACTIVE' \| 'REVEALING' \| 'COMPLETED' \| 'TIMEOUT' \| 'FAILED' |
+| TASK_COMPLETED                       | once                  | dealid: String<br/> taskid: String<br/> status: String                                                                     |
 
 _Exemple:_
 
