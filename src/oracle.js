@@ -21,10 +21,12 @@ const createApiKeyDataset = ({
   callId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
 } = {}) => new Observable((observer) => {
+  let abort = false;
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
       const { chainId } = await iexec.network.getNetwork();
+      if (abort) return;
       const { ORACLE_APP_ADDRESS } = getDefaults(chainId);
 
       const key = iexec.dataset.generateEncryptionKey();
@@ -42,11 +44,13 @@ const createApiKeyDataset = ({
         .catch((e) => {
           throw new WorkflowError('Failed to encrypt API key', e);
         });
+      if (abort) return;
       const checksum = await iexec.dataset
         .computeEncryptedFileChecksum(encryptedFile)
         .catch((e) => {
           throw new WorkflowError('Failed to compute encrypted API key checksum', e);
         });
+      if (abort) return;
       safeObserver.next({
         message: 'FILE_ENCRYPTED',
         encryptedFile,
@@ -56,6 +60,7 @@ const createApiKeyDataset = ({
       const cid = await ipfs.add(encryptedFile, { ipfsGateway }).catch((e) => {
         throw new WorkflowError('Failed to upload encrypted API key', e);
       });
+      if (abort) return;
       const multiaddr = `/ipfs/${cid}`;
       safeObserver.next({
         message: 'ENCRYPTED_FILE_UPLOADED',
@@ -76,6 +81,7 @@ const createApiKeyDataset = ({
         .catch((e) => {
           throw new WorkflowError('Failed to deploy API key dataset', e);
         });
+      if (abort) return;
       safeObserver.next({
         message: 'DATASET_DEPLOYMENT_SUCCESS',
         address,
@@ -88,6 +94,7 @@ const createApiKeyDataset = ({
       await iexec.dataset.pushDatasetSecret(address, key).catch((e) => {
         throw new WorkflowError("Failed to push API key dataset's encryption key", e);
       });
+      if (abort) return;
       safeObserver.next({
         message: 'PUSH_SECRET_TO_SMS_SUCCESS',
       });
@@ -102,6 +109,7 @@ const createApiKeyDataset = ({
         .catch((e) => {
           throw new WorkflowError("Failed to create API key datasetorder's", e);
         });
+      if (abort) return;
       safeObserver.next({
         message: 'DATASET_ORDER_SIGNATURE_SIGN_REQUEST',
         order: orderToSign,
@@ -109,6 +117,7 @@ const createApiKeyDataset = ({
       const order = await iexec.order.signDatasetorder(orderToSign).catch((e) => {
         throw new WorkflowError("Failed to sign API key datasetorder's", e);
       });
+      if (abort) return;
       safeObserver.next({
         message: 'DATASET_ORDER_SIGNATURE_SUCCESS',
         order,
@@ -121,6 +130,7 @@ const createApiKeyDataset = ({
       const orderHash = await iexec.order.publishDatasetorder(order).catch((e) => {
         throw new WorkflowError("Failed to publish API key datasetorder's", e);
       });
+      if (abort) return;
       safeObserver.next({
         message: 'DATASET_ORDER_PUBLISH_SUCCESS',
         orderHash,
@@ -128,6 +138,7 @@ const createApiKeyDataset = ({
 
       safeObserver.complete();
     } catch (e) {
+      if (abort) return;
       if (e instanceof WorkflowError) {
         safeObserver.error(e);
       } else {
@@ -137,6 +148,7 @@ const createApiKeyDataset = ({
   };
   safeObserver.unsub = () => {
     // teardown callback
+    abort = true;
   };
   start();
   return safeObserver.unsubscribe.bind(safeObserver);
@@ -172,10 +184,13 @@ const updateOracle = ({
   workerpool,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
 } = {}) => new Observable((observer) => {
+  let abort = false;
+  let stopWatcher;
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
       const { chainId } = await iexec.network.getNetwork();
+      if (abort) return;
       const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } = getDefaults(chainId);
 
       let cid;
@@ -192,6 +207,7 @@ const updateOracle = ({
           throw new WorkflowError('Failed to load paramSet', e);
         }
       });
+      if (abort) return;
       if (isUploaded) {
         cid = paramSetOrCid;
       } else {
@@ -201,6 +217,7 @@ const updateOracle = ({
         cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e) => {
           throw new WorkflowError('Failed to upload paramSet', e);
         });
+        if (abort) return;
       }
       safeObserver.next({
         message: 'ENSURE_PARAMS_SUCCESS',
@@ -223,6 +240,7 @@ const updateOracle = ({
         .catch((e) => {
           throw new WorkflowError('Failed to fetch apporder', e);
         });
+      if (abort) return;
       const apporder = apporderbook && apporderbook.orders[0] && apporderbook.orders[0].order;
       if (!apporder) {
         throw new WorkflowError('No apporder published');
@@ -248,6 +266,7 @@ const updateOracle = ({
           .catch((e) => {
             throw new WorkflowError('Failed to fetch datasetorder', e);
           });
+        if (abort) return;
         datasetorder = datasetorderbook && datasetorderbook.orders[0] && datasetorderbook.orders[0].order;
         if (!datasetorder) {
           throw new WorkflowError('No datasetorder published');
@@ -272,6 +291,7 @@ const updateOracle = ({
         .catch((e) => {
           throw new WorkflowError('Failed to fetch workerpoolorder', e);
         });
+      if (abort) return;
       const workerpoolorder = workerpoolorderbook
           && workerpoolorderbook.orders[0]
           && workerpoolorderbook.orders[0].order;
@@ -302,6 +322,7 @@ const updateOracle = ({
         .catch((e) => {
           throw new WorkflowError('Failed to create requestorder', e);
         });
+      if (abort) return;
       safeObserver.next({
         message: 'REQUEST_ORDER_SIGNATURE_SIGN_REQUEST',
         order: requestorderToSign,
@@ -311,6 +332,7 @@ const updateOracle = ({
         .catch((e) => {
           throw new WorkflowError('Failed to sign requestorder', e);
         });
+      if (abort) return;
       safeObserver.next({
         message: 'REQUEST_ORDER_SIGNATURE_SUCCESS',
         order: requestorderToSign,
@@ -336,6 +358,7 @@ const updateOracle = ({
         .catch((e) => {
           throw new WorkflowError('Failed to match orders', e);
         });
+      if (abort) return;
       safeObserver.next({
         message: 'MATCH_ORDERS_SUCCESS',
         dealid,
@@ -344,10 +367,11 @@ const updateOracle = ({
 
       // task
       const taskid = await iexec.deal.computeTaskId(dealid, 0);
+      if (abort) return;
 
       const watchExecution = () => new Promise((resolve, reject) => {
         iexec.task.obsTask(taskid, { dealid }).then((obs) => {
-          obs.subscribe({
+          stopWatcher = obs.subscribe({
             next: (value) => {
               const { message } = value;
               if (message === 'TASK_TIMEDOUT') {
@@ -382,6 +406,7 @@ const updateOracle = ({
       });
       safeObserver.complete();
     } catch (e) {
+      if (abort) return;
       if (e instanceof WorkflowError || e instanceof ValidationError) {
         safeObserver.error(e);
       } else {
@@ -391,6 +416,10 @@ const updateOracle = ({
   };
   safeObserver.unsub = () => {
     // teardown callback
+    abort = true;
+    if (typeof stopWatcher === 'function') {
+      stopWatcher();
+    }
   };
   start();
   return safeObserver.unsubscribe.bind(safeObserver);
@@ -653,6 +682,8 @@ const createOracle = ({
   iexec = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
 }) => new Observable((observer) => {
+  let abort = false;
+  let stopCreateDataset;
   const safeObserver = new SafeObserver(observer);
   const start = async () => {
     try {
@@ -670,8 +701,9 @@ const createOracle = ({
           headers,
           body,
         });
+        if (abort) return;
         await new Promise((resolve, reject) => {
-          createApiKeyDataset({
+          stopCreateDataset = createApiKeyDataset({
             iexec,
             apiKey,
             callId,
@@ -699,12 +731,14 @@ const createOracle = ({
         dataset,
       });
       const jsonParams = await jsonParamSetSchema().validate(formatParamsJson(paramSet));
+      if (abort) return;
       safeObserver.next({
         message: 'PARAM_SET_CREATED',
         paramSet: JSON.parse(jsonParams),
       });
 
       const oracleId = await computeOracleId(paramSet);
+      if (abort) return;
       safeObserver.next({
         message: 'ORACLE_ID_COMPUTED',
         oracleId,
@@ -713,6 +747,7 @@ const createOracle = ({
       const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
         throw new WorkflowError('Failed to upload paramSet', e);
       });
+      if (abort) return;
       const multiaddr = `/ipfs/${cid}`;
       safeObserver.next({
         message: 'PARAM_SET_UPLOADED',
@@ -722,6 +757,7 @@ const createOracle = ({
 
       safeObserver.complete();
     } catch (e) {
+      if (abort) return;
       if (e instanceof WorkflowError || e instanceof ValidationError) {
         safeObserver.error(e);
       } else {
@@ -731,6 +767,10 @@ const createOracle = ({
   };
   safeObserver.unsub = () => {
     // teardown callback
+    abort = true;
+    if (typeof stopCreateDataset === 'function') {
+      stopCreateDataset();
+    }
   };
   start();
   return safeObserver.unsubscribe.bind(safeObserver);

@@ -54,7 +54,14 @@ rawParams: {
 > _NB:_ Use `%API_KEY%` placeholder in `url` or `headers` to inject `apiKey` (the apiKey will be secured in an encrypted iExec Dataset).
 > _NB:_ You may want to call `utils.testRawParams(rawParams)` to test the `rawParams` returned value before creating an oracle.
 
-factory.**createOracle(rawParams)** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) }** >
+factory.**createOracle(rawParams)** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) => cancel: Function() }** >
+
+> This method returns a cold Observable.
+> Calling the `subscribe({next, error, complete})` method on the observable will immediately return a cancel `function()` and start the asynchronous oracle creation process.
+> The `next` callback is called on every process step with a `message` and additional pieces of data, the values are described in the following table.
+> The `error` callback is called when an error occurs, the observable process is also canceled.
+> The `complete` callback is called when the process ends without error.
+> Calling the cancel `function()` will stop the observed process and prevent any further callback call.
 
 | message                              | sent                 | additional entries                          |
 | ------------------------------------ | -------------------- | ------------------------------------------- |
@@ -129,7 +136,14 @@ _NB:_
 
 > Update an oracle
 
-factory.**updateOracle(paramSet|ipfsCid [, { workerpool }])** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) }** >
+factory.**updateOracle(paramSet|ipfsCid [, { workerpool }])** => Observable < **{ subscribe: Function({ next: Function({ message: String, ...additionalEntries }), error: Function(Error), complete: Function() }) => cancel: Function() }** >
+
+> This method returns a cold Observable.
+> Calling the `subscribe({next, error, complete})` method on the observable will immediately return a cancel `function()` and start the asynchronous oracle update process.
+> The `next` callback is called on every process step with a `message` and additional pieces of data, the values are described in the following table.
+> The `error` callback is called when an error occurs, the observable process is also canceled.
+> The `complete` callback is called when the process ends without error.
+> Calling the cancel `function()` will stop the observed process and prevent any further callback call.
 
 | message                              | sent                  | additional entries                                                                                                         |
 | ------------------------------------ | --------------------- | -------------------------------------------------------------------------------------------------------------------------- |
