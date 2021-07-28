@@ -29,7 +29,10 @@ const getOracleFactory = async () => {
 _NodeJS Exemple:_
 
 ```js
-const { IExecOracleFactory, utils } = require('@iexec/iexec-oracle-factory-wrapper');
+const {
+  IExecOracleFactory,
+  utils,
+} = require('@iexec/iexec-oracle-factory-wrapper');
 
 const signer = utils.getSignerFromPrivateKey('goerli', process.env.PRIVATE_KEY);
 const factory = new IExecOracleFactory(signer);
@@ -217,6 +220,12 @@ const result = utils.testRawParams({
 console.log(`call test returned: ${result} (${typeof result})`);
 ```
 
+#### getChainDefaults
+
+> Get the default addresses of oracle app and contract for a given chain
+
+utils.**getChainDefaults(chainId: Int)** => **{ ORACLE_APP_ADDRESS: String, ORACLE_CONTRACT_ADDRES: String }** >
+
 #### computeOracleKey
 
 > Get the oracleId to use in smart contracts to consume the oracle
@@ -227,7 +236,7 @@ utils.**computeOracleKey(paramSet|ipfsCid)** => Promise < **oracleId: String** >
 
 > Create a Signer suitable for `new IExecOracleFactory(signer)` from a `privateKey` for server-side usage
 
-utils.**getSignerFromPrivateKey(host: String, privateKey: String)** => signer:Signer
+utils.**getSignerFromPrivateKey(host: String, privateKey: String)** => **signer:Signer**
 
 > _NB:_ set `host` with an RPC node url or a network name.
 
