@@ -1,15 +1,16 @@
 const Big = require('big.js');
 
-const sortObjKeys = (obj) => Object.keys(obj)
-  .sort()
-  .reduce((acc, curr) => {
-    if (typeof obj[curr] === 'object') {
-      acc[curr] = sortObjKeys(obj[curr]);
-    } else {
-      acc[curr] = obj[curr];
-    }
-    return acc;
-  }, {});
+const sortObjKeys = (obj) =>
+  Object.keys(obj)
+    .sort()
+    .reduce((acc, curr) => {
+      if (typeof obj[curr] === 'object') {
+        acc[curr] = sortObjKeys(obj[curr]);
+      } else {
+        acc[curr] = obj[curr];
+      }
+      return acc;
+    }, {});
 
 const formatParamsJson = (obj) => JSON.stringify(sortObjKeys(obj));
 
@@ -20,7 +21,9 @@ const formatOracleGetInt = (resultBn) => {
     const resultNumber = resultBig.toNumber();
     return resultNumber;
   } catch (e) {
-    throw Error(`Converting ${resultBig.toString()} to number will result in loosing precision`);
+    throw Error(
+      `Converting ${resultBig.toString()} to number will result in loosing precision`,
+    );
   }
 };
 

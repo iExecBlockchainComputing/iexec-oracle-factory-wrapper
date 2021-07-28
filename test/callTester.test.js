@@ -21,11 +21,14 @@ describe('testRawParams', () => {
       body: '%API_KEY%',
     });
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith('https://foo.io?query=bar&apiKey=topSecretKey', {
-      body: '%API_KEY%',
-      headers: {},
-      method: 'PUT',
-    });
+    expect(fetch).toHaveBeenCalledWith(
+      'https://foo.io?query=bar&apiKey=topSecretKey',
+      {
+        body: '%API_KEY%',
+        headers: {},
+        method: 'PUT',
+      },
+    );
     fetch.mockClear();
     await testRawParams({
       url: 'https://foo.io?query=bar',
@@ -116,7 +119,9 @@ describe('testRawParams', () => {
         dataType: 'boolean',
         JSONPath: '$.bar',
       }),
-    ).rejects.toThrow(Error('The API response format is not supported, it must be a JSON'));
+    ).rejects.toThrow(
+      Error('The API response format is not supported, it must be a JSON'),
+    );
   });
 
   test('error - throw when selected result is empty', async () => {
@@ -131,13 +136,16 @@ describe('testRawParams', () => {
         JSONPath: '$.bar',
       }),
     ).rejects.toThrow(
-      Error('JSONPath selector "$.bar" returned empty result, it must return a single value:\n[]'),
+      Error(
+        'JSONPath selector "$.bar" returned empty result, it must return a single value:\n[]',
+      ),
     );
   });
 
   test('error - throw when selected result is not unique', async () => {
     fetch.mockImplementationOnce(async () => ({
-      json: () => Promise.resolve({ foo: { target: 'foo' }, bar: { target: 'bar' } }),
+      json: () =>
+        Promise.resolve({ foo: { target: 'foo' }, bar: { target: 'bar' } }),
     }));
     await expect(
       testRawParams({

@@ -1,5 +1,9 @@
 const { BigNumber } = require('ethers');
-const { sortObjKeys, formatParamsJson, formatOracleGetInt } = require('../src/format');
+const {
+  sortObjKeys,
+  formatParamsJson,
+  formatOracleGetInt,
+} = require('../src/format');
 
 describe('sortObjKeys', () => {
   test('sort nested keys', () => {
@@ -41,12 +45,18 @@ describe('formatParamsJson', () => {
 
 describe('formatOracleGetInt', () => {
   test('standard - multiply by 1e-18 to convert getInt int result to number', () => {
-    expect(formatOracleGetInt(BigNumber.from('-1234567890'))).toBe(-1.23456789e-9);
+    expect(formatOracleGetInt(BigNumber.from('-1234567890'))).toBe(
+      -1.23456789e-9,
+    );
   });
 
   test('error - precision loss', () => {
-    expect(() => formatOracleGetInt(BigNumber.from('12345678901234567890123456789'))).toThrow(
-      Error('Converting 12345678901.234567890123456789 to number will result in loosing precision'),
+    expect(() =>
+      formatOracleGetInt(BigNumber.from('12345678901234567890123456789')),
+    ).toThrow(
+      Error(
+        'Converting 12345678901.234567890123456789 to number will result in loosing precision',
+      ),
     );
   });
 });

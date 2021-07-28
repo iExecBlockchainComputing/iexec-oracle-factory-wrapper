@@ -1,7 +1,11 @@
 const { Wallet } = require('ethers');
 const { IExec, utils } = require('iexec');
 const { createOracle, updateOracle, readOracle } = require('../src/oracle');
-const { ValidationError, WorkflowError, NoValueError } = require('../src/errors');
+const {
+  ValidationError,
+  WorkflowError,
+  NoValueError,
+} = require('../src/errors');
 const ipfs = require('../src/ipfs-service');
 
 afterEach(() => {
@@ -10,9 +14,14 @@ afterEach(() => {
 
 describe('createOracle', () => {
   test('standard - without apiKey', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     const messages = [];
     await new Promise((resolve, reject) => {
@@ -51,7 +60,8 @@ describe('createOracle', () => {
     });
     expect(messages[1]).toStrictEqual({
       message: 'ORACLE_ID_COMPUTED',
-      oracleId: '0xd042b577b7ede3dd5827614727ac841a1c1ee3aa6387765f64875171478c00e1',
+      oracleId:
+        '0xd042b577b7ede3dd5827614727ac841a1c1ee3aa6387765f64875171478c00e1',
     });
     expect(messages[2]).toStrictEqual({
       message: 'PARAM_SET_UPLOADED',
@@ -66,23 +76,28 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmekKuZECYc3k6mAp2MnLpDaaZgopMzi2t9YSHTNLebJAv');
 
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.generateEncryptionKey = jest
       .fn()
       .mockReturnValueOnce('oqff1ywBZyTK6g+qFYz8nnHt09hqB0zPfQrpX8OPHKo=');
     const encryptedFile = Buffer.from([
-      200, 234, 120, 231, 107, 81, 169, 4, 246, 109, 203, 206, 89, 138, 160, 209, 80, 179, 218, 68,
-      186, 150, 1, 47, 70, 8, 65, 101, 16, 112, 180, 162, 148, 60, 235, 131, 27, 42, 0, 29, 122, 51,
-      39, 55, 70, 82, 239, 191, 90, 212, 237, 119, 166, 7, 12, 136, 149, 185, 233, 204, 117, 53,
-      228, 133, 38, 4, 15, 195, 250, 59, 71, 225, 105, 97, 226, 202, 20, 76, 178, 174, 61, 126, 66,
-      241, 10, 227, 15, 248, 129, 26, 62, 84, 195, 166, 4, 121, 26, 145, 129, 46, 152, 54, 65, 65,
-      75, 250, 187, 172, 68, 6, 112, 78,
+      200, 234, 120, 231, 107, 81, 169, 4, 246, 109, 203, 206, 89, 138, 160,
+      209, 80, 179, 218, 68, 186, 150, 1, 47, 70, 8, 65, 101, 16, 112, 180, 162,
+      148, 60, 235, 131, 27, 42, 0, 29, 122, 51, 39, 55, 70, 82, 239, 191, 90,
+      212, 237, 119, 166, 7, 12, 136, 149, 185, 233, 204, 117, 53, 228, 133, 38,
+      4, 15, 195, 250, 59, 71, 225, 105, 97, 226, 202, 20, 76, 178, 174, 61,
+      126, 66, 241, 10, 227, 15, 248, 129, 26, 62, 84, 195, 166, 4, 121, 26,
+      145, 129, 46, 152, 54, 65, 65, 75, 250, 187, 172, 68, 6, 112, 78,
     ]);
     iexec.dataset.encrypt = jest.fn().mockResolvedValueOnce(encryptedFile);
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
     iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
     iexec.order.createDatasetorder = jest.fn().mockResolvedValueOnce({
@@ -107,7 +122,9 @@ describe('createOracle', () => {
     });
     iexec.order.publishDatasetorder = jest
       .fn()
-      .mockResolvedValueOnce('0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1');
+      .mockResolvedValueOnce(
+        '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
+      );
 
     const messages = [];
     await new Promise((resolve, reject) => {
@@ -143,21 +160,29 @@ describe('createOracle', () => {
     expect(messages[1]).toStrictEqual({
       message: 'FILE_ENCRYPTED',
       encryptedFile,
-      checksum: '0x2673b62364e23d409e44f649a16727fdc9d8fd4de42c7c8459acc477af33b540',
+      checksum:
+        '0x2673b62364e23d409e44f649a16727fdc9d8fd4de42c7c8459acc477af33b540',
     });
     expect(messages[2]).toStrictEqual({
       message: 'ENCRYPTED_FILE_UPLOADED',
       cid: 'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
       multiaddr: '/ipfs/QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
     });
-    expect(messages[3]).toStrictEqual({ message: 'DATASET_DEPLOYMENT_SIGN_TX_REQUEST' });
+    expect(messages[3]).toStrictEqual({
+      message: 'DATASET_DEPLOYMENT_SIGN_TX_REQUEST',
+    });
     expect(messages[4]).toStrictEqual({
       message: 'DATASET_DEPLOYMENT_SUCCESS',
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
-    expect(messages[5]).toStrictEqual({ message: 'PUSH_SECRET_TO_SMS_SIGN_REQUEST' });
-    expect(messages[6]).toStrictEqual({ message: 'PUSH_SECRET_TO_SMS_SUCCESS' });
+    expect(messages[5]).toStrictEqual({
+      message: 'PUSH_SECRET_TO_SMS_SIGN_REQUEST',
+    });
+    expect(messages[6]).toStrictEqual({
+      message: 'PUSH_SECRET_TO_SMS_SUCCESS',
+    });
     expect(messages[7]).toStrictEqual({
       message: 'DATASET_ORDER_SIGNATURE_SIGN_REQUEST',
       order: {
@@ -200,7 +225,8 @@ describe('createOracle', () => {
     });
     expect(messages[10]).toStrictEqual({
       message: 'DATASET_ORDER_PUBLISH_SUCCESS',
-      orderHash: '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
+      orderHash:
+        '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
     });
     expect(messages[11]).toStrictEqual({
       message: 'PARAM_SET_CREATED',
@@ -216,7 +242,8 @@ describe('createOracle', () => {
     });
     expect(messages[12]).toStrictEqual({
       message: 'ORACLE_ID_COMPUTED',
-      oracleId: '0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d',
+      oracleId:
+        '0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d',
     });
     expect(messages[13]).toStrictEqual({
       message: 'PARAM_SET_UPLOADED',
@@ -226,9 +253,14 @@ describe('createOracle', () => {
   }, 10000);
 
   test('cancel - without apiKey', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     const messages = [];
     await new Promise((resolve, reject) => {
@@ -275,23 +307,28 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmekKuZECYc3k6mAp2MnLpDaaZgopMzi2t9YSHTNLebJAv');
 
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.generateEncryptionKey = jest
       .fn()
       .mockReturnValueOnce('oqff1ywBZyTK6g+qFYz8nnHt09hqB0zPfQrpX8OPHKo=');
     const encryptedFile = Buffer.from([
-      200, 234, 120, 231, 107, 81, 169, 4, 246, 109, 203, 206, 89, 138, 160, 209, 80, 179, 218, 68,
-      186, 150, 1, 47, 70, 8, 65, 101, 16, 112, 180, 162, 148, 60, 235, 131, 27, 42, 0, 29, 122, 51,
-      39, 55, 70, 82, 239, 191, 90, 212, 237, 119, 166, 7, 12, 136, 149, 185, 233, 204, 117, 53,
-      228, 133, 38, 4, 15, 195, 250, 59, 71, 225, 105, 97, 226, 202, 20, 76, 178, 174, 61, 126, 66,
-      241, 10, 227, 15, 248, 129, 26, 62, 84, 195, 166, 4, 121, 26, 145, 129, 46, 152, 54, 65, 65,
-      75, 250, 187, 172, 68, 6, 112, 78,
+      200, 234, 120, 231, 107, 81, 169, 4, 246, 109, 203, 206, 89, 138, 160,
+      209, 80, 179, 218, 68, 186, 150, 1, 47, 70, 8, 65, 101, 16, 112, 180, 162,
+      148, 60, 235, 131, 27, 42, 0, 29, 122, 51, 39, 55, 70, 82, 239, 191, 90,
+      212, 237, 119, 166, 7, 12, 136, 149, 185, 233, 204, 117, 53, 228, 133, 38,
+      4, 15, 195, 250, 59, 71, 225, 105, 97, 226, 202, 20, 76, 178, 174, 61,
+      126, 66, 241, 10, 227, 15, 248, 129, 26, 62, 84, 195, 166, 4, 121, 26,
+      145, 129, 46, 152, 54, 65, 65, 75, 250, 187, 172, 68, 6, 112, 78,
     ]);
     iexec.dataset.encrypt = jest.fn().mockResolvedValueOnce(encryptedFile);
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
     iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
     iexec.order.createDatasetorder = jest.fn().mockResolvedValueOnce({
@@ -316,7 +353,9 @@ describe('createOracle', () => {
     });
     iexec.order.publishDatasetorder = jest
       .fn()
-      .mockResolvedValueOnce('0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1');
+      .mockResolvedValueOnce(
+        '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
+      );
 
     const messages = [];
     await new Promise((resolve, reject) => {
@@ -356,7 +395,10 @@ describe('createOracle', () => {
   test('error - failed to upload paramSet', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     const messages = [];
     const errors = [];
@@ -392,7 +434,10 @@ describe('createOracle', () => {
 
   test('error - unexpected error', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     const messages = [];
     const errors = [];
@@ -430,9 +475,14 @@ describe('createOracle', () => {
 
   test('error - with apiKey failed to encrypt apiKey', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
-    iexec.dataset.encrypt = jest.fn().mockRejectedValueOnce(Error('iexec.dataset.encrypt failed'));
+    iexec.dataset.encrypt = jest
+      .fn()
+      .mockRejectedValueOnce(Error('iexec.dataset.encrypt failed'));
     const messages = [];
     const errors = [];
     await new Promise((resolve, reject) => {
@@ -465,16 +515,23 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to encrypt API key');
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.encrypt failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.dataset.encrypt failed'),
+    );
   }, 10000);
 
   test('error - with apiKey failed to get encrypted apiKey checksum', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.computeEncryptedFileChecksum = jest
       .fn()
-      .mockRejectedValueOnce(Error('iexec.dataset.computeEncryptedFileChecksum failed'));
+      .mockRejectedValueOnce(
+        Error('iexec.dataset.computeEncryptedFileChecksum failed'),
+      );
     const messages = [];
     const errors = [];
     await new Promise((resolve, reject) => {
@@ -506,7 +563,9 @@ describe('createOracle', () => {
     expect(messages.length).toBe(1);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to compute encrypted API key checksum');
+    expect(errors[0].message).toBe(
+      'Failed to compute encrypted API key checksum',
+    );
     expect(errors[0].originalError).toStrictEqual(
       Error('iexec.dataset.computeEncryptedFileChecksum failed'),
     );
@@ -515,7 +574,10 @@ describe('createOracle', () => {
   test('error - with apiKey failed to upload encrypted apiKey', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     const messages = [];
     const errors = [];
@@ -553,9 +615,14 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to deploy dataset', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.deployDataset = jest
       .fn()
@@ -592,17 +659,25 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to deploy API key dataset');
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.deployDataset failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.dataset.deployDataset failed'),
+    );
   }, 10000);
 
   test('error - with apiKey failed to push encryption key', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
     iexec.dataset.pushDatasetSecret = jest
       .fn()
@@ -638,18 +713,28 @@ describe('createOracle', () => {
     expect(messages.length).toBe(6);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe("Failed to push API key dataset's encryption key");
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.dataset.pushDatasetSecret failed'));
+    expect(errors[0].message).toBe(
+      "Failed to push API key dataset's encryption key",
+    );
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.dataset.pushDatasetSecret failed'),
+    );
   }, 10000);
 
   test('error - with apiKey failed to create datasetorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
     iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
     iexec.order.createDatasetorder = jest
@@ -687,20 +772,30 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to create API key datasetorder's");
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.createDatasetorder failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.order.createDatasetorder failed'),
+    );
   }, 10000);
 
   test('error - with apiKey failed to sign datasetorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
     iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
-    iexec.order.createDatasetorder = jest.fn().mockResolvedValueOnce('datasetorderToSign');
+    iexec.order.createDatasetorder = jest
+      .fn()
+      .mockResolvedValueOnce('datasetorderToSign');
     iexec.order.signDatasetorder = jest
       .fn()
       .mockRejectedValueOnce(Error('iexec.order.signDatasetorder failed'));
@@ -736,21 +831,33 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to sign API key datasetorder's");
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.signDatasetorder failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.order.signDatasetorder failed'),
+    );
   }, 10000);
 
   test('error - with apiKey failed to sign datasetorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.dataset.deployDataset = jest.fn().mockResolvedValueOnce({
       address: '0xdB5e636e332916eA0de602CB94d00E8e343cAB36',
-      txHash: '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
+      txHash:
+        '0xc153e4bf01cfa4006ee8f59194dcceebd7126898b9c758d13d0b3664e058d73c',
     });
     iexec.dataset.pushDatasetSecret = jest.fn().mockResolvedValueOnce(true);
-    iexec.order.createDatasetorder = jest.fn().mockResolvedValueOnce('datasetorderToSign');
-    iexec.order.signDatasetorder = jest.fn().mockResolvedValueOnce('datasetorder');
+    iexec.order.createDatasetorder = jest
+      .fn()
+      .mockResolvedValueOnce('datasetorderToSign');
+    iexec.order.signDatasetorder = jest
+      .fn()
+      .mockResolvedValueOnce('datasetorder');
     iexec.order.publishDatasetorder = jest
       .fn()
       .mockRejectedValueOnce(Error('iexec.order.publishDatasetorder failed'));
@@ -786,16 +893,23 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to publish API key datasetorder's");
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.publishDatasetorder failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.order.publishDatasetorder failed'),
+    );
   }, 10000);
 
   test('error - with apiKey unexpected error while creating apiKey dataset', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
-    iexec.dataset.generateEncryptionKey = jest.fn().mockImplementationOnce(() => {
-      throw Error('something bad happened');
-    });
+    iexec.dataset.generateEncryptionKey = jest
+      .fn()
+      .mockImplementationOnce(() => {
+        throw Error('something bad happened');
+      });
     const messages = [];
     const errors = [];
     await new Promise((resolve, reject) => {
@@ -828,34 +942,48 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('API key dataset creation unexpected error');
-    expect(errors[0].originalError).toStrictEqual(Error('something bad happened'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('something bad happened'),
+    );
   }, 10000);
 });
 
 describe('updateOracle', () => {
   test('standard - from paramSet', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
-    iexec.orderbook.fetchAppOrderbook = jest
+    iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedApporder' }],
+    });
+    iexec.orderbook.fetchDatasetOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedDatasetorder' }],
+    });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedWorkerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedApporder' }] });
-    iexec.orderbook.fetchDatasetOrderbook = jest
+      .mockResolvedValueOnce('requestorderToSign');
+    iexec.order.signRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedDatasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
-      .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedWorkerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorderToSign');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('signedRequestorder');
+      .mockResolvedValueOnce('signedRequestorder');
     iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
       txHash: 'txHash',
       dealid: 'dealid',
     });
     iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
     iexec.task.obsTask = jest.fn().mockResolvedValueOnce({
-      subscribe: ({ next, error, complete }) => {
+      subscribe: ({ next, complete }) => {
         next({ message: 'TASK_UPDATED', task: { statusName: 'ACTIVE' } });
         next({ message: 'TASK_UPDATED', task: { statusName: 'REVEALING' } });
         next({ message: 'TASK_COMPLETED', task: { statusName: 'COMPLETED' } });
@@ -956,7 +1084,10 @@ describe('updateOracle', () => {
 
   test('standard - from CID', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     jest.spyOn(ipfs, 'get').mockResolvedValueOnce(
       JSON.stringify({
@@ -969,24 +1100,31 @@ describe('updateOracle', () => {
         url: 'https://foo.io',
       }),
     );
-    iexec.orderbook.fetchAppOrderbook = jest
+    iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedApporder' }],
+    });
+    iexec.orderbook.fetchDatasetOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedDatasetorder' }],
+    });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedWorkerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedApporder' }] });
-    iexec.orderbook.fetchDatasetOrderbook = jest
+      .mockResolvedValueOnce('requestorderToSign');
+    iexec.order.signRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedDatasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
-      .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedWorkerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorderToSign');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('signedRequestorder');
+      .mockResolvedValueOnce('signedRequestorder');
     iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
       txHash: 'txHash',
       dealid: 'dealid',
     });
     iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
     iexec.task.obsTask = jest.fn().mockResolvedValueOnce({
-      subscribe: ({ next, error, complete }) => {
+      subscribe: ({ next, complete }) => {
         next({ message: 'TASK_UPDATED', task: { statusName: 'ACTIVE' } });
         next({ message: 'TASK_UPDATED', task: { statusName: 'REVEALING' } });
         next({ message: 'TASK_COMPLETED', task: { statusName: 'COMPLETED' } });
@@ -1077,28 +1215,40 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('standard - no dataset', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
-    iexec.orderbook.fetchAppOrderbook = jest
+    iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedApporder' }],
+    });
+    iexec.orderbook.fetchDatasetOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedDatasetorder' }],
+    });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedWorkerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedApporder' }] });
-    iexec.orderbook.fetchDatasetOrderbook = jest
+      .mockResolvedValueOnce('requestorderToSign');
+    iexec.order.signRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedDatasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
-      .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedWorkerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorderToSign');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('signedRequestorder');
+      .mockResolvedValueOnce('signedRequestorder');
     iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
       txHash: 'txHash',
       dealid: 'dealid',
     });
     iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
     iexec.task.obsTask = jest.fn().mockResolvedValueOnce({
-      subscribe: ({ next, error, complete }) => {
+      subscribe: ({ next, complete }) => {
         next({ message: 'TASK_UPDATED', task: { statusName: 'ACTIVE' } });
         next({ message: 'TASK_UPDATED', task: { statusName: 'REVEALING' } });
         next({ message: 'TASK_COMPLETED', task: { statusName: 'COMPLETED' } });
@@ -1193,32 +1343,47 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('cancel during watch', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
-    iexec.orderbook.fetchAppOrderbook = jest
+    iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedApporder' }],
+    });
+    iexec.orderbook.fetchDatasetOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedDatasetorder' }],
+    });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 1,
+      orders: [{ order: 'signedWorkerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedApporder' }] });
-    iexec.orderbook.fetchDatasetOrderbook = jest
+      .mockResolvedValueOnce('requestorderToSign');
+    iexec.order.signRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedDatasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
-      .fn()
-      .mockResolvedValueOnce({ count: 1, orders: [{ order: 'signedWorkerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorderToSign');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('signedRequestorder');
+      .mockResolvedValueOnce('signedRequestorder');
     iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
       txHash: 'txHash',
       dealid: 'dealid',
     });
     iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
     iexec.task.obsTask = jest.fn().mockResolvedValueOnce({
-      subscribe: ({ next, error, complete }) => {
+      subscribe: ({ next, complete }) => {
         setTimeout(() => {
           next({ message: 'TASK_UPDATED', task: { statusName: 'ACTIVE' } });
           next({ message: 'TASK_UPDATED', task: { statusName: 'REVEALING' } });
-          next({ message: 'TASK_COMPLETED', task: { statusName: 'COMPLETED' } });
+          next({
+            message: 'TASK_COMPLETED',
+            task: { statusName: 'COMPLETED' },
+          });
           complete();
         }, 2000);
         return () => {};
@@ -1312,7 +1477,10 @@ describe('updateOracle', () => {
 
   test('error - from CID ipfs content not found', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('Content not found'));
 
@@ -1341,13 +1509,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to load paramSet');
     expect(errors[0].originalError).toStrictEqual(
-      Error('Failed to load paramSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'),
+      Error(
+        'Failed to load paramSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      ),
     );
   }, 10000);
 
   test('error - from CID ipfs content is not valid paramSet', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     jest.spyOn(ipfs, 'get').mockResolvedValueOnce('{"foo":"bar"}');
 
@@ -1384,7 +1557,10 @@ describe('updateOracle', () => {
 
   test('error - from paramSet invalid paramSet', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
 
     const messages = [];
@@ -1415,7 +1591,10 @@ describe('updateOracle', () => {
   test('error - from paramSet fail to upload', async () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
 
     const messages = [];
@@ -1453,9 +1632,14 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch apporder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1498,11 +1682,18 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no apporder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
-    iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({ count: 0, orders: [] });
+    iexec.orderbook.fetchAppOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [] });
 
     const messages = [];
     const errors = [];
@@ -1539,16 +1730,23 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch datasetorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'apporder' }] });
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
-      .mockRejectedValueOnce(Error('iexec.orderbook.fetchDatasetOrderbook fail'));
+      .mockRejectedValueOnce(
+        Error('iexec.orderbook.fetchDatasetOrderbook fail'),
+      );
 
     const messages = [];
     const errors = [];
@@ -1587,9 +1785,14 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no datasetorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1633,9 +1836,14 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch workerppolorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1645,7 +1853,9 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
     iexec.orderbook.fetchWorkerpoolOrderbook = jest
       .fn()
-      .mockRejectedValueOnce(Error('iexec.orderbook.fetchWorkerpoolOrderbook fail'));
+      .mockRejectedValueOnce(
+        Error('iexec.orderbook.fetchWorkerpoolOrderbook fail'),
+      );
 
     const messages = [];
     const errors = [];
@@ -1684,9 +1894,14 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no workerpoolorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1733,9 +1948,14 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to create requestorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1743,9 +1963,10 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
-      .fn()
-      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 0,
+      orders: [{ order: 'workerpoolorder' }],
+    });
     iexec.order.createRequestorder = jest
       .fn()
       .mockRejectedValueOnce(Error('iexec.order.createRequestorder failed'));
@@ -1781,13 +2002,20 @@ describe('updateOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to create requestorder');
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.createRequestorder failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.order.createRequestorder failed'),
+    );
   }, 10000);
 
   test('error - fail to sign requestorder', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1795,10 +2023,13 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 0,
+      orders: [{ order: 'workerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+      .mockResolvedValueOnce('requestorder');
     iexec.order.signRequestorder = jest
       .fn()
       .mockRejectedValueOnce(Error('iexec.order.signRequestorder failed'));
@@ -1834,13 +2065,20 @@ describe('updateOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to sign requestorder');
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.signRequestorder failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.order.signRequestorder failed'),
+    );
   }, 10000);
 
   test('error - fail to match orders', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1848,11 +2086,16 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 0,
+      orders: [{ order: 'workerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+      .mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest
+      .fn()
+      .mockResolvedValueOnce('requestorder');
     iexec.order.matchOrders = jest
       .fn()
       .mockRejectedValueOnce(Error('iexec.order.matchOrders failed'));
@@ -1888,13 +2131,20 @@ describe('updateOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to match orders');
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.order.matchOrders failed'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.order.matchOrders failed'),
+    );
   }, 10000);
 
   test('error - task observer error', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1902,18 +2152,23 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 0,
+      orders: [{ order: 'workerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+      .mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest
+      .fn()
+      .mockResolvedValueOnce('requestorder');
     iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
       txHash: 'txHash',
       dealid: 'dealid',
     });
     iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
     iexec.task.obsTask = jest.fn().mockResolvedValueOnce({
-      subscribe: ({ next, error, complete }) => {
+      subscribe: ({ error }) => {
         error(Error('iexec.task.obsTask error'));
       },
     });
@@ -1949,13 +2204,20 @@ describe('updateOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to monitor oracle update task');
-    expect(errors[0].originalError).toStrictEqual(Error('iexec.task.obsTask error'));
+    expect(errors[0].originalError).toStrictEqual(
+      Error('iexec.task.obsTask error'),
+    );
   }, 10000);
 
   test('error - update task timedout', async () => {
-    jest.spyOn(ipfs, 'add').mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    jest
+      .spyOn(ipfs, 'add')
+      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
@@ -1963,18 +2225,23 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
       .mockResolvedValueOnce({ count: 1, orders: [{ order: 'datasetorder' }] });
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
+      count: 0,
+      orders: [{ order: 'workerpoolorder' }],
+    });
+    iexec.order.createRequestorder = jest
       .fn()
-      .mockResolvedValueOnce({ count: 0, orders: [{ order: 'workerpoolorder' }] });
-    iexec.order.createRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
-    iexec.order.signRequestorder = jest.fn().mockResolvedValueOnce('requestorder');
+      .mockResolvedValueOnce('requestorder');
+    iexec.order.signRequestorder = jest
+      .fn()
+      .mockResolvedValueOnce('requestorder');
     iexec.order.matchOrders = jest.fn().mockResolvedValueOnce({
       txHash: 'txHash',
       dealid: 'dealid',
     });
     iexec.deal.computeTaskId = jest.fn().mockResolvedValueOnce('taskid');
     iexec.task.obsTask = jest.fn().mockResolvedValueOnce({
-      subscribe: ({ next, error, complete }) => {
+      subscribe: ({ next, complete }) => {
         next({ message: 'TASK_TIMEDOUT', task: { statusName: 'TIMEOUT' } });
         complete();
       },
@@ -2010,13 +2277,20 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(13);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Oracle update task timed out, update failed');
-    expect(errors[0].originalError).toStrictEqual(Error('Task taskid from deal dealid timed out'));
+    expect(errors[0].message).toBe(
+      'Oracle update task timed out, update failed',
+    );
+    expect(errors[0].originalError).toStrictEqual(
+      Error('Task taskid from deal dealid timed out'),
+    );
   }, 10000);
 
   test('error - unexpected error', async () => {
     const iexec = new IExec({
-      ethProvider: utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey),
+      ethProvider: utils.getSignerFromPrivateKey(
+        'goerli',
+        Wallet.createRandom().privateKey,
+      ),
     });
 
     const messages = [];
@@ -2058,7 +2332,10 @@ describe('updateOracle', () => {
 
 describe('readOracle', () => {
   test('standard - from paramSet dataType: "boolean"', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: {
@@ -2077,7 +2354,10 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "number"', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: {
@@ -2096,7 +2376,10 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "string"', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: {
@@ -2126,7 +2409,10 @@ describe('readOracle', () => {
         url: 'https://api.market.iex.ec/version',
       }),
     );
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: 'QmPisjyCjaZ2JdnibWw2JZHf68b2CpTkdjePmFM1BZxWtD',
@@ -2137,10 +2423,14 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (default dataType)', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     const res = await readOracle({
       ethersProvider: signer.provider,
-      paramSetOrCidOrOracleId: '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
+      paramSetOrCidOrOracleId:
+        '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
     });
     const { value, date } = res;
     expect(typeof value).toBe('string');
@@ -2148,10 +2438,14 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType boolean)', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     const res = await readOracle({
       ethersProvider: signer.provider,
-      paramSetOrCidOrOracleId: '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
+      paramSetOrCidOrOracleId:
+        '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
       dataType: 'boolean',
     });
     const { value, date } = res;
@@ -2160,7 +2454,10 @@ describe('readOracle', () => {
   });
 
   test('error - no value stored for oracleId', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     await expect(
       readOracle({
         ethersProvider: signer.provider,
@@ -2182,7 +2479,10 @@ describe('readOracle', () => {
   });
 
   test('error - dataType is not allowed for non oracleId inputs', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     await expect(
       readOracle({
         ethersProvider: signer.provider,
@@ -2197,11 +2497,18 @@ describe('readOracle', () => {
         },
         dataType: 'boolean',
       }),
-    ).rejects.toThrow(Error('dataType option is only allowed when reading oracle from oracleId'));
+    ).rejects.toThrow(
+      Error(
+        'dataType option is only allowed when reading oracle from oracleId',
+      ),
+    );
   });
 
   test('error - invalid paramSet', async () => {
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     await expect(
       readOracle({
         ethersProvider: signer.provider,
@@ -2216,23 +2523,34 @@ describe('readOracle', () => {
         },
       }),
     ).rejects.toThrow(
-      new ValidationError('method must be one of the following values: GET, POST, PUT, DELETE'),
+      new ValidationError(
+        'method must be one of the following values: GET, POST, PUT, DELETE',
+      ),
     );
   });
 
   test('error - failed to load paramSet', async () => {
     jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('ipfs.get failed'));
-    const signer = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'goerli',
+      Wallet.createRandom().privateKey,
+    );
     await expect(
       readOracle({
         ethersProvider: signer.provider,
-        paramSetOrCidOrOracleId: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        paramSetOrCidOrOracleId:
+          'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       }),
-    ).rejects.toThrow(new WorkflowError('Failed to load paramSet', Error('ipfs.get failed')));
+    ).rejects.toThrow(
+      new WorkflowError('Failed to load paramSet', Error('ipfs.get failed')),
+    );
   });
 
   test('error - unsupported chain', async () => {
-    const signer = utils.getSignerFromPrivateKey('kovan', Wallet.createRandom().privateKey);
+    const signer = utils.getSignerFromPrivateKey(
+      'kovan',
+      Wallet.createRandom().privateKey,
+    );
     await expect(
       readOracle({
         ethersProvider: signer.provider,

@@ -28,7 +28,9 @@ const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   // }
 
   const { cid } = await ipfs.add(content);
-  await ipfs.pin.add(cid, { timeout: 10000 }).catch((e) => log('Ipfs add pin failed', e));
+  await ipfs.pin
+    .add(cid, { timeout: 10000 })
+    .catch((e) => log('Ipfs add pin failed', e));
   await get(cid.toString(), { ipfsGateway });
   await ipfs.stop(); // not working: https://github.com/libp2p/js-libp2p/issues/779
   return cid.toString();

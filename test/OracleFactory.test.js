@@ -14,8 +14,13 @@ test('standard - instanciation', async () => {
   const updateOracleSpy = jest.spyOn(oracle, 'updateOracle').mockReturnValue();
   const readOracleSpy = jest.spyOn(oracle, 'readOracle').mockReturnValue();
 
-  const ethProvider = utils.getSignerFromPrivateKey('goerli', Wallet.createRandom().privateKey);
-  const factory = new OracleFactory(ethProvider, { ipfsGateway: 'ipfsGateway' });
+  const ethProvider = utils.getSignerFromPrivateKey(
+    'goerli',
+    Wallet.createRandom().privateKey,
+  );
+  const factory = new OracleFactory(ethProvider, {
+    ipfsGateway: 'ipfsGateway',
+  });
   expect(factory).toBeInstanceOf(OracleFactory);
   expect(Object.keys(factory).length).toBe(4);
 
@@ -68,5 +73,7 @@ test('standard - instanciation', async () => {
 
 test('error - invalid provider', () => {
   const ethProvider = {};
-  expect(() => new OracleFactory(ethProvider)).toThrow(Error('Unsupported ethProvider'));
+  expect(() => new OracleFactory(ethProvider)).toThrow(
+    Error('Unsupported ethProvider'),
+  );
 });

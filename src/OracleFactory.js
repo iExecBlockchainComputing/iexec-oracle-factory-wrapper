@@ -10,21 +10,25 @@ class IExecOracleFactory {
     } catch (e) {
       throw Error('Unsupported ethProvider');
     }
-    const ethersProvider = ethProvider.provider || new Web3Provider(ethProvider);
+    const ethersProvider =
+      ethProvider.provider || new Web3Provider(ethProvider);
 
-    this.createOracle = (rawParams) => createOracle({ rawParams, iexec, ipfsGateway });
-    this.updateOracle = (paramSetOrCid, { workerpool } = {}) => updateOracle({
-      paramSetOrCid,
-      iexec,
-      ipfsGateway,
-      workerpool,
-    });
-    this.readOracle = async (paramSetOrCidOrOracleId, { dataType } = {}) => readOracle({
-      paramSetOrCidOrOracleId,
-      dataType,
-      ethersProvider,
-      ipfsGateway,
-    });
+    this.createOracle = (rawParams) =>
+      createOracle({ rawParams, iexec, ipfsGateway });
+    this.updateOracle = (paramSetOrCid, { workerpool } = {}) =>
+      updateOracle({
+        paramSetOrCid,
+        iexec,
+        ipfsGateway,
+        workerpool,
+      });
+    this.readOracle = async (paramSetOrCidOrOracleId, { dataType } = {}) =>
+      readOracle({
+        paramSetOrCidOrOracleId,
+        dataType,
+        ethersProvider,
+        ipfsGateway,
+      });
     this.getIExec = () => iexec;
   }
 }

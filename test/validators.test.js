@@ -81,7 +81,9 @@ describe('callParamsSchema', () => {
         method: 'POST',
         foo: 'bar',
       }),
-    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
+    ).rejects.toThrow(
+      new ValidationError('this field has unspecified keys: foo'),
+    );
   });
 });
 
@@ -148,7 +150,9 @@ describe('strictCallParamsSchema', () => {
         method: 'POST',
         foo: 'bar',
       }),
-    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
+    ).rejects.toThrow(
+      new ValidationError('this field has unspecified keys: foo'),
+    );
   });
 });
 
@@ -307,7 +311,9 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         headers: {},
       }),
-    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no apiKey provided'));
+    ).rejects.toThrow(
+      new ValidationError('Using %API_KEY% placeholder but no apiKey provided'),
+    );
 
     await expect(
       rawParamsSchema().validate({
@@ -317,7 +323,9 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
       }),
-    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no apiKey provided'));
+    ).rejects.toThrow(
+      new ValidationError('Using %API_KEY% placeholder but no apiKey provided'),
+    );
   });
 
   test('throw with unused apiKey', async () => {
@@ -331,7 +339,9 @@ describe('rawParamsSchema', () => {
         apiKey: 'abcdef1234567890',
       }),
     ).rejects.toThrow(
-      new ValidationError('Provided apiKey but no %API_KEY% placeholder found in url or headers'),
+      new ValidationError(
+        'Provided apiKey but no %API_KEY% placeholder found in url or headers',
+      ),
     );
   });
 
@@ -384,7 +394,9 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         foo: 'bar',
       }),
-    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
+    ).rejects.toThrow(
+      new ValidationError('this field has unspecified keys: foo'),
+    );
   });
 });
 
@@ -568,7 +580,11 @@ describe('paramSetSchema', () => {
         dataType: 'string',
         headers: {},
       }),
-    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no dataset provided'));
+    ).rejects.toThrow(
+      new ValidationError(
+        'Using %API_KEY% placeholder but no dataset provided',
+      ),
+    );
 
     await expect(
       paramSetSchema().validate({
@@ -578,7 +594,11 @@ describe('paramSetSchema', () => {
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
       }),
-    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no dataset provided'));
+    ).rejects.toThrow(
+      new ValidationError(
+        'Using %API_KEY% placeholder but no dataset provided',
+      ),
+    );
   });
 
   test('throw with unused dataset', async () => {
@@ -592,7 +612,9 @@ describe('paramSetSchema', () => {
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       }),
     ).rejects.toThrow(
-      new ValidationError('Provided dataset but no %API_KEY% placeholder found in url or headers'),
+      new ValidationError(
+        'Provided dataset but no %API_KEY% placeholder found in url or headers',
+      ),
     );
   });
 
@@ -645,7 +667,9 @@ describe('paramSetSchema', () => {
         dataType: 'string',
         foo: 'bar',
       }),
-    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
+    ).rejects.toThrow(
+      new ValidationError('this field has unspecified keys: foo'),
+    );
   });
 });
 
@@ -786,7 +810,11 @@ describe('strictParamSetSchema', () => {
         dataType: 'string',
         headers: {},
       }),
-    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no dataset provided'));
+    ).rejects.toThrow(
+      new ValidationError(
+        'Using %API_KEY% placeholder but no dataset provided',
+      ),
+    );
 
     await expect(
       strictParamSetSchema().validate({
@@ -796,7 +824,11 @@ describe('strictParamSetSchema', () => {
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
       }),
-    ).rejects.toThrow(new ValidationError('Using %API_KEY% placeholder but no dataset provided'));
+    ).rejects.toThrow(
+      new ValidationError(
+        'Using %API_KEY% placeholder but no dataset provided',
+      ),
+    );
   });
 
   test('throw with unused dataset', async () => {
@@ -810,7 +842,9 @@ describe('strictParamSetSchema', () => {
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
       }),
     ).rejects.toThrow(
-      new ValidationError('Provided dataset but no %API_KEY% placeholder found in url or headers'),
+      new ValidationError(
+        'Provided dataset but no %API_KEY% placeholder found in url or headers',
+      ),
     );
   });
 
@@ -926,7 +960,9 @@ describe('strictParamSetSchema', () => {
         dataType: 'string',
         foo: 'bar',
       }),
-    ).rejects.toThrow(new ValidationError('this field has unspecified keys: foo'));
+    ).rejects.toThrow(
+      new ValidationError('this field has unspecified keys: foo'),
+    );
   });
 });
 
@@ -1043,7 +1079,9 @@ describe('internal schema', () => {
           dataType: 'string',
           dataset: 'foo',
         }),
-      ).rejects.toThrow(new ValidationError('dataset is not a valid ethereum address'));
+      ).rejects.toThrow(
+        new ValidationError('dataset is not a valid ethereum address'),
+      );
     });
   });
 
@@ -1057,7 +1095,9 @@ describe('internal schema', () => {
             authorization: '',
           },
         }),
-      ).rejects.toThrow(new ValidationError('headers is not a valid header list'));
+      ).rejects.toThrow(
+        new ValidationError('headers is not a valid header list'),
+      );
     });
   });
 
@@ -1077,10 +1117,10 @@ describe('internal schema', () => {
 
 describe('throwIfMissing', () => {
   test('throw', () => {
-    const foo = (bar = throwIfMissing()) => true;
-    expect(foo(null)).toBe(true);
-    expect(foo('')).toBe(true);
-    expect(foo(0)).toBe(true);
+    const foo = (bar = throwIfMissing()) => bar;
+    expect(foo(null)).toBe(null);
+    expect(foo('')).toBe('');
+    expect(foo(0)).toBe(0);
     expect(() => foo(undefined)).toThrow(Error('Missing parameter'));
     expect(() => foo()).toThrow(Error('Missing parameter'));
   });

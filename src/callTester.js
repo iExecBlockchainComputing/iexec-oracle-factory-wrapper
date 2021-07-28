@@ -4,15 +4,8 @@ const { rawParamsSchema } = require('./validators');
 const { API_KEY_PLACEHOLDER } = require('./conf');
 
 const testRawParams = async (rawParams) => {
-  const {
-    url,
-    method,
-    headers,
-    body,
-    apiKey,
-    JSONPath,
-    dataType,
-  } = await rawParamsSchema().validate(rawParams);
+  const { url, method, headers, body, apiKey, JSONPath, dataType } =
+    await rawParamsSchema().validate(rawParams);
 
   const finalUrl = url.replace(API_KEY_PLACEHOLDER, apiKey);
   const finalHeaders = Object.entries(headers)

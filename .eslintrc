@@ -1,5 +1,5 @@
 {
-  "extends": "airbnb-base",
+  "extends": ["airbnb-base", "prettier"],
   "rules": {
     "max-classes-per-file": ["error", 2],
     "no-template-curly-in-string": "off",
