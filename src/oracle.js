@@ -24,6 +24,7 @@ const createApiKeyDataset = ({
   apiKey = throwIfMissing(),
   callId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
+  oracleApp,
 } = {}) =>
   new Observable((observer) => {
     let abort = false;
@@ -32,7 +33,8 @@ const createApiKeyDataset = ({
       try {
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
-        const { ORACLE_APP_ADDRESS } = getDefaults(chainId);
+        const ORACLE_APP_ADDRESS =
+          oracleApp || getDefaults(chainId).ORACLE_APP_ADDRESS;
 
         const key = iexec.dataset.generateEncryptionKey();
         safeObserver.next({
@@ -213,6 +215,8 @@ const updateOracle = ({
   iexec = throwIfMissing(),
   workerpool,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
+  oracleApp,
+  oracleContract,
 } = {}) =>
   new Observable((observer) => {
     let abort = false;
@@ -222,8 +226,10 @@ const updateOracle = ({
       try {
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
-        const { ORACLE_APP_ADDRESS, ORACLE_CONTRACT_ADDRESS } =
-          getDefaults(chainId);
+        const ORACLE_APP_ADDRESS =
+          oracleApp || getDefaults(chainId).ORACLE_APP_ADDRESS;
+        const ORACLE_CONTRACT_ADDRESS =
+          oracleContract || getDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
 
         let cid;
         safeObserver.next({
@@ -658,11 +664,14 @@ const readOracle = async ({
   dataType,
   ethersProvider = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
+  oracleContract,
 } = {}) => {
   const chainId = await ethersProvider
     .getNetwork()
     .then((res) => `${res.chainId}`);
-  const { ORACLE_CONTRACT_ADDRESS } = getDefaults(chainId);
+
+  const ORACLE_CONTRACT_ADDRESS =
+    oracleContract || getDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
 
   let readDataType;
   let oracleId;
@@ -691,13 +700,13 @@ const readOracle = async ({
     oracleId = await computeOracleId(paramSet);
   }
 
-  const oracleContract = new Contract(
+  const oracleSmartContract = new Contract(
     ORACLE_CONTRACT_ADDRESS,
     READ_ABI,
     ethersProvider,
   );
 
-  const [rawValue, rawDateBn] = await oracleContract
+  const [rawValue, rawDateBn] = await oracleSmartContract
     .getRaw(oracleId)
     .catch(() => {
       throw Error(`Failed to read value from oracle with oracleId ${oracleId}`);
@@ -708,7 +717,7 @@ const readOracle = async ({
 
   switch (readDataType) {
     case 'boolean': {
-      const [result, dateBn] = await oracleContract
+      const [result, dateBn] = await oracleSmartContract
         .getBool(oracleId)
         .catch(() => {
           throw Error(
@@ -718,7 +727,7 @@ const readOracle = async ({
       return { value: result, date: dateBn.toNumber() };
     }
     case 'number': {
-      const [resultBn, dateBn] = await oracleContract
+      const [resultBn, dateBn] = await oracleSmartContract
         .getInt(oracleId)
         .catch(() => {
           throw Error(
@@ -729,7 +738,7 @@ const readOracle = async ({
       return { value: resultNumber, date: dateBn.toNumber() };
     }
     case 'string': {
-      const [resultString, dateBn] = await oracleContract
+      const [resultString, dateBn] = await oracleSmartContract
         .getString(oracleId)
         .catch(() => {
           throw Error(
@@ -748,6 +757,7 @@ const createOracle = ({
   rawParams = throwIfMissing(),
   iexec = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
+  oracleApp,
 }) =>
   new Observable((observer) => {
     let abort = false;
@@ -776,6 +786,7 @@ const createOracle = ({
               apiKey,
               callId,
               ipfsGateway,
+              oracleApp,
             }).subscribe({
               error: (e) => reject(e),
               next: (v) => {

@@ -6,7 +6,14 @@ A wrapper to build web2.0 API based oracles for Ethereum on the top of iExec
 
 ### IExecOracleFactory Constructor
 
-**new IExecOracleFactory(ethProvider: Web3|Signer \[, { ipfsGateway: String }\]) => IExecOracleFactory**
+**new IExecOracleFactory(ethProvider: Web3|Signer \[, { ipfsGateway: String, oracleApp: String, oracleContract: String, iexecOptions: Object }\]) => IExecOracleFactory**
+
+_Options:_
+
+- ipfsGateway: URL of a custom gateway to retrieve IPFS content (used to check data availability locally and to download the data during computation)
+- oracleApp: address of a custom oracle application
+- oracleContract: address of custom oracle smart contract
+- iexecOptions: custom options for iExec SDK (see [SDK documentation](https://github.com/iExecBlockchainComputing/iexec-sdk#instanciate-the-iexec-sdk))
 
 _Browser Example:_
 
