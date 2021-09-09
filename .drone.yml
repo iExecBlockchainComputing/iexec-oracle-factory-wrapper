@@ -1,0 +1,14 @@
+pipeline:
+  test_node12:
+    image: node:12
+    pull: true
+    commands:
+      - npm ci
+      - npm test
+
+  test_node14:
+    image: node:14
+    pull: true
+    commands:
+      - npm ci
+      - npm test
