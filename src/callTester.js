@@ -22,15 +22,21 @@ const testRawParams = async (rawParams) => {
     );
   });
 
+  const defaultMessage = `The API answered with status ${res.status}${
+    res.statusText ? `: ${res.statusText}` : ''
+  }`;
+
   const json = await res.json().catch(() => {
-    throw Error('The API response format is not supported, it must be a JSON');
+    throw Error(
+      `${defaultMessage} but the response body format is not supported, it must be a JSON`,
+    );
   });
 
   const jsonPathResult = jp.query(json, JSONPath);
 
   if (jsonPathResult.length === 0) {
     throw Error(
-      `JSONPath selector "${JSONPath}" returned empty result, it must return a single value:\n${JSON.stringify(
+      `${defaultMessage} but JSONPath selector "${JSONPath}" returned empty result, it must return a single value:\n${JSON.stringify(
         jsonPathResult,
         null,
         2,
@@ -39,7 +45,7 @@ const testRawParams = async (rawParams) => {
   }
   if (jsonPathResult.length > 1) {
     throw Error(
-      `JSONPath selector "${JSONPath}" returned multiple results, it must return a single value:\n${JSON.stringify(
+      `${defaultMessage} but JSONPath selector "${JSONPath}" returned multiple results, it must return a single value:\n${JSON.stringify(
         jsonPathResult,
         null,
         2,
@@ -53,27 +59,27 @@ const testRawParams = async (rawParams) => {
     case 'boolean':
       if (dataType !== 'boolean') {
         throw Error(
-          `JSONPath selector "${JSONPath}" returned a ${typeofSelected}, wich is NOT compatible with \`dataType: "${dataType}"\`,  use \`dataType: "boolean"\` to store ${typeofSelected}`,
+          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, wich is NOT compatible with \`dataType: "${dataType}"\`,  use \`dataType: "boolean"\` to store ${typeofSelected}`,
         );
       }
       return selected;
     case 'string':
       if (dataType !== 'string') {
         throw Error(
-          `JSONPath selector "${JSONPath}" returned a ${typeofSelected}, wich is NOT compatible with \`dataType: "${dataType}"\`,  use \`dataType: "string"\` to store ${typeofSelected}`,
+          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, wich is NOT compatible with \`dataType: "${dataType}"\`,  use \`dataType: "string"\` to store ${typeofSelected}`,
         );
       }
       return selected;
     case 'number':
       if (dataType !== 'number') {
         throw Error(
-          `JSONPath selector "${JSONPath}" returned a ${typeofSelected}, wich is NOT compatible with \`dataType: "${dataType}"\`,  use \`dataType: "number"\` to store ${typeofSelected}`,
+          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, wich is NOT compatible with \`dataType: "${dataType}"\`,  use \`dataType: "number"\` to store ${typeofSelected}`,
         );
       }
       return selected;
     default:
       throw Error(
-        `JSONPath selector "${JSONPath}" returned a ${typeofSelected}, it must be string, number or boolean:\n${JSON.stringify(
+        `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, it must be string, number or boolean:\n${JSON.stringify(
           selected,
           null,
           2,

@@ -120,7 +120,9 @@ describe('testRawParams', () => {
         JSONPath: '$.bar',
       }),
     ).rejects.toThrow(
-      Error('The API response format is not supported, it must be a JSON'),
+      Error(
+        'The API answered with status undefined but the response body format is not supported, it must be a JSON',
+      ),
     );
   });
 
@@ -137,7 +139,7 @@ describe('testRawParams', () => {
       }),
     ).rejects.toThrow(
       Error(
-        'JSONPath selector "$.bar" returned empty result, it must return a single value:\n[]',
+        'The API answered with status undefined but JSONPath selector "$.bar" returned empty result, it must return a single value:\n[]',
       ),
     );
   });
@@ -156,7 +158,7 @@ describe('testRawParams', () => {
       }),
     ).rejects.toThrow(
       Error(
-        'JSONPath selector "$..target" returned multiple results, it must return a single value:\n[\n  "foo",\n  "bar"\n]',
+        'The API answered with status undefined but JSONPath selector "$..target" returned multiple results, it must return a single value:\n[\n  "foo",\n  "bar"\n]',
       ),
     );
   });
@@ -174,7 +176,7 @@ describe('testRawParams', () => {
       }),
     ).rejects.toThrow(
       Error(
-        'JSONPath selector "$.foo" returned a object, it must be string, number or boolean:\n[]',
+        'The API answered with status undefined but JSONPath selector "$.foo" returned a object, it must be string, number or boolean:\n[]',
       ),
     );
   });
@@ -192,7 +194,7 @@ describe('testRawParams', () => {
       }),
     ).rejects.toThrow(
       Error(
-        'JSONPath selector "$.foo" returned a boolean, wich is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean',
+        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, wich is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean',
       ),
     );
     await expect(
@@ -204,7 +206,7 @@ describe('testRawParams', () => {
       }),
     ).rejects.toThrow(
       Error(
-        'JSONPath selector "$.bar" returned a number, wich is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number',
+        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, wich is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number',
       ),
     );
     await expect(
@@ -216,7 +218,7 @@ describe('testRawParams', () => {
       }),
     ).rejects.toThrow(
       Error(
-        'JSONPath selector "$.baz" returned a string, wich is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string',
+        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, wich is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string',
       ),
     );
   });
