@@ -4,6 +4,7 @@ pipeline:
     pull: true
     commands:
       - npm ci
+      - npm run build
       - npm test
 
   test_node14:
@@ -11,4 +12,14 @@ pipeline:
     pull: true
     commands:
       - npm ci
+      - npm run build
       - npm test
+
+  npm_publish:
+    image: plugins/npm
+    secrets: [npm_password]
+    username: iexecteam
+    email: dev@iex.ec
+    tag: latest
+    when:
+      ref: [refs/tags/v*]
