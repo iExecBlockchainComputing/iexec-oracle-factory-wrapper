@@ -25,7 +25,7 @@ const createApiKeyDataset = ({
   callId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleApp,
-} = {}) =>
+}) =>
   new Observable((observer) => {
     let abort = false;
     const safeObserver = new SafeObserver(observer);
@@ -184,7 +184,7 @@ const createApiKeyDataset = ({
 const getParamSet = async ({
   paramSetOrCid,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
-} = {}) => {
+}) => {
   let paramSet;
   let paramsJson;
   let isUploaded = false;
@@ -217,7 +217,7 @@ const updateOracle = ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleApp,
   oracleContract,
-} = {}) =>
+}) =>
   new Observable((observer) => {
     let abort = false;
     let stopWatcher;
@@ -665,7 +665,7 @@ const readOracle = async ({
   ethersProvider = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleContract,
-} = {}) => {
+}) => {
   const chainId = await ethersProvider
     .getNetwork()
     .then((res) => `${res.chainId}`);
