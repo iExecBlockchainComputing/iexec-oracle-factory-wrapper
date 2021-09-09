@@ -1,6 +1,6 @@
 pipeline:
   test_node12:
-    image: node:12
+    image: node:16
     pull: true
     commands:
       - npm ci

@@ -468,9 +468,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Create oracle unexpected error');
-    expect(errors[0].originalError).toStrictEqual(
-      TypeError("Cannot read property 'catch' of undefined"),
-    );
+    expect(errors[0].originalError).toBeInstanceOf(TypeError);
   }, 10000);
 
   test('error - with apiKey failed to encrypt apiKey', async () => {
@@ -2324,9 +2322,7 @@ describe('updateOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Update oracle unexpected error');
-    expect(errors[0].originalError).toStrictEqual(
-      TypeError("Cannot read property 'catch' of undefined"),
-    );
+    expect(errors[0].originalError).toBeInstanceOf(TypeError);
   }, 10000);
 });
 
