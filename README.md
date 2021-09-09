@@ -233,11 +233,15 @@ console.log(`call test returned: ${result} (${typeof result})`);
 
 utils.**getChainDefaults(chainId: Int)** => **{ ORACLE_APP_ADDRESS: String, ORACLE_CONTRACT_ADDRES: String }** >
 
-#### computeOracleKey
+#### computeOracleId
 
 > Get the oracleId to use in smart contracts to consume the oracle
 
-utils.**computeOracleKey(paramSet|ipfsCid)** => Promise < **oracleId: String** >
+utils.**computeOracleId(paramSet|ipfsCid [, { ipfsGateway:String }])** => Promise < **oracleId: String** >
+
+_Options:_
+
+- ipfsGateway: use to override default IPFS gateway when computing oracleId from `ipfsCid`.
 
 #### getSignerFromPrivateKey
 

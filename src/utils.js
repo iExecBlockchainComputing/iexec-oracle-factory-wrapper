@@ -2,10 +2,13 @@ const { getSignerFromPrivateKey } = require('iexec').utils;
 const { getParamSet } = require('./oracle');
 const hashComputeOracleId = require('./hash').computeOracleId;
 const callTesterTestRawParams = require('./callTester').testRawParams;
-const { getDefaults } = require('./conf');
+const { getDefaults, DEFAULT_IPFS_GATEWAY } = require('./conf');
 
-const computeOracleId = async (paramSetOrCid) => {
-  const { paramSet } = await getParamSet({ paramSetOrCid });
+const computeOracleId = async (
+  paramSetOrCid,
+  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {},
+) => {
+  const { paramSet } = await getParamSet({ paramSetOrCid, ipfsGateway });
   const oracleId = await hashComputeOracleId(paramSet);
   return oracleId;
 };
