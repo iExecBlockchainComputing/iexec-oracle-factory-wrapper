@@ -17,7 +17,7 @@ pipeline:
 
   npm_publish:
     image: plugins/npm
-    secrets: [npm_password]
+    secrets: [npm_token]
     username: iexecteam
     email: dev@iex.ec
     tag: latest
