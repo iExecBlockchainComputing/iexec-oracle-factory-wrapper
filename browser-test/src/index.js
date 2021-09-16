@@ -130,7 +130,7 @@ const init = async () => {
                   )) ||
                 {},
             },
-            { workerpool: '0xe6806E69BA8650AF23264702ddD43C4DCe35CcCe' },
+            { workerpool: '0xAd0b7eFEc0ABF34421B668ea7bCadaC12Dd97541' }, // viviani prod pool
           )
           .subscribe({
             error: (e) => {
