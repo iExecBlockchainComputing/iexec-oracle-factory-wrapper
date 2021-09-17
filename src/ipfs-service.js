@@ -19,21 +19,26 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
 
 const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const ipfs = await Ipfs.create();
-
-  // not released yet
-  // if (ipfsConfig && ipfsConfig.pinService) {
-  //   await ipfs.pin.remote.service
-  //     .add('pin-service', ipfsConfig.pinService)
-  //     .catch((e) => log(e));
-  // }
-
-  const { cid } = await ipfs.add(content);
-  await ipfs.pin
-    .add(cid, { timeout: 10000 })
-    .catch((e) => log('Ipfs add pin failed', e));
-  await get(cid.toString(), { ipfsGateway });
-  await ipfs.stop(); // not working: https://github.com/libp2p/js-libp2p/issues/779
-  return cid.toString();
+  try {
+    // not released yet
+    // if (ipfsConfig && ipfsConfig.pinService) {
+    //   await ipfs.pin.remote.service
+    //     .add('pin-service', ipfsConfig.pinService)
+    //     .catch((e) => log(e));
+    // }
+    const { cid } = await ipfs.add(content);
+    await ipfs.pin
+      .add(cid, { timeout: 10000 })
+      .catch((e) => log('Ipfs add pin failed', e));
+    await get(cid.toString(), { ipfsGateway });
+    await ipfs.stop();
+    return cid.toString();
+  } catch (e) {
+    if (typeof ipfs.stop === 'function') {
+      await ipfs.stop();
+    }
+    throw e;
+  }
 };
 
 const isCid = (value) => {
