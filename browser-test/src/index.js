@@ -162,6 +162,7 @@ const init = async () => {
         factory
           .updateOracle(
             document.getElementById('update-oracle-from-cid-cid-input').value,
+            { workerpool: '0xAd0b7eFEc0ABF34421B668ea7bCadaC12Dd97541' }, // viviani prod pool
           )
           .subscribe({
             error: (e) => {
