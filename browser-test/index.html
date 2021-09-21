@@ -13,7 +13,7 @@
         <input
           id="test-params-url-input"
           type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur"
+          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
         />
       </div>
       <div>
@@ -26,9 +26,7 @@
       </div>
       <div>
         <label for="test-params-headers-input">headers:</label>
-        <textarea id="test-params-headers-input">
-{"accept": "application/json"}</textarea
-        >
+        <textarea id="test-params-headers-input"></textarea>
       </div>
       <div>
         <label for="test-params-apikey-input">apiKey:</label>
@@ -39,7 +37,7 @@
         <input
           id="test-params-jsonpath-input"
           type="text"
-          value="$.ethereum.eur"
+          value="$['ethereum']['usd']"
         />
       </div>
       <div>
@@ -64,7 +62,7 @@
         <input
           id="create-oracle-url-input"
           type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur"
+          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
         />
       </div>
       <div>
@@ -77,9 +75,7 @@
       </div>
       <div>
         <label for="create-oracle-headers-input">headers:</label>
-        <textarea id="create-oracle-headers-input">
-{"accept": "application/json"}</textarea
-        >
+        <textarea id="create-oracle-headers-input"></textarea>
       </div>
       <div>
         <label for="create-oracle-apikey-input">apiKey:</label>
@@ -90,7 +86,7 @@
         <input
           id="create-oracle-jsonpath-input"
           type="text"
-          value="$.ethereum.eur"
+          value="$['ethereum']['usd']"
         />
       </div>
       <div>
@@ -115,7 +111,7 @@
         <input
           id="update-oracle-from-params-url-input"
           type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur"
+          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
         />
       </div>
       <div>
@@ -132,9 +128,7 @@
       </div>
       <div>
         <label for="update-oracle-from-params-headers-input">headers:</label>
-        <textarea id="update-oracle-from-params-headers-input">
-{"accept": "application/json"}</textarea
-        >
+        <textarea id="update-oracle-from-params-headers-input"></textarea>
       </div>
       <div>
         <label for="update-oracle-from-params-dataset-input">dataset:</label>
@@ -149,7 +143,7 @@
         <input
           id="update-oracle-from-params-jsonpath-input"
           type="text"
-          value="$.ethereum.eur"
+          value="$['ethereum']['usd']"
         />
       </div>
       <div>
@@ -186,7 +180,7 @@
         <input
           id="update-oracle-from-cid-cid-input"
           type="text"
-          value="QmWiCQLd2PiTjiQdquZeJuyD6LgdoJdfeK9T3pYEggDzBF"
+          value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
         />
       </div>
       <div>
@@ -211,7 +205,7 @@
         <input
           id="read-oracle-from-params-url-input"
           type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur"
+          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
         />
       </div>
       <div>
@@ -228,9 +222,7 @@
       </div>
       <div>
         <label for="read-oracle-from-params-headers-input">headers:</label>
-        <textarea id="read-oracle-from-params-headers-input">
-{"accept": "application/json"}</textarea
-        >
+        <textarea id="read-oracle-from-params-headers-input"></textarea>
       </div>
       <div>
         <label for="read-oracle-from-params-dataset-input">dataset:</label>
@@ -245,7 +237,7 @@
         <input
           id="read-oracle-from-params-jsonpath-input"
           type="text"
-          value="$.ethereum.eur"
+          value="$['ethereum']['usd']"
         />
       </div>
       <div>
@@ -278,7 +270,7 @@
         <input
           id="read-oracle-from-cid-cid-input"
           type="text"
-          value="QmWiCQLd2PiTjiQdquZeJuyD6LgdoJdfeK9T3pYEggDzBF"
+          value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
         />
       </div>
       <div>
@@ -299,7 +291,7 @@
         <input
           id="read-oracle-from-oracleid-oracleid-input"
           type="text"
-          value="0x9f6487aa185b3dce95576f085d9c8fe77d35095e87c42feea15714c47c21c8d6"
+          value="0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491"
         />
       </div>
       <div>
@@ -307,7 +299,7 @@
         <input
           id="read-oracle-from-oracleid-datatype-input"
           type="text"
-          value="raw"
+          value="number"
         />
       </div>
       <div>
