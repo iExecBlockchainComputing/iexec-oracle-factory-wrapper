@@ -51,12 +51,12 @@ const factory = new IExecOracleFactory(signer);
 
 ```ts
 rawParams: {
-  url:String;
+  url:string;
   method:'GET'|'POST'|'PUT'|'DELETE';
-  headers:Map<String,String>;
-  body:?String;
-  apiKey:?String;
-  JSONPath:String;
+  headers:Map<string,string>;
+  body?:string;
+  apiKey?:string;
+  JSONPath:string;
   dataType:'boolean'|'number'|'string';
 }
 ```
