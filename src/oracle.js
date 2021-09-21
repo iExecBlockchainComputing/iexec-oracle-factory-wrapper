@@ -364,7 +364,6 @@ const updateOracle = ({
             tag: ['tee'],
             params: {
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
-              iexec_developer_logger: true,
             },
           })
           .catch((e) => {
