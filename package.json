@@ -55,7 +55,7 @@
         "@babel/env",
         {
           "targets": {
-            "node": "10.12.0",
+            "node": "14.0.0",
             "browsers": [
               "defaults",
               "not IE 11"
