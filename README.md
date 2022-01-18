@@ -304,11 +304,11 @@ npm test
 ### Known issues
 
 - install issue with npm@7.6.0 https://github.com/ipfs/js-ipfs/issues/3562
-- an issue occurs with babel BigInt polyfill in browsers, use the following browserlist to excludes browsers without native BigInt support
+- an issue occurs with babel BigInt polyfill in browsers, use the following browserslist to excludes browsers without native BigInt support
 
 ```json
 {
-  "browserlist": [
+  "browserslist": [
     ">0.5%",
     "not dead",
     "not op_mini all",
