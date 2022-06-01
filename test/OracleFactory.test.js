@@ -71,7 +71,7 @@ test('standard - instanciation', async () => {
   });
 });
 
-test('error - invalid provider', () => {
+test.skip('error - invalid provider', () => {
   const ethProvider = {};
   expect(() => new OracleFactory(ethProvider)).toThrow(
     Error('Unsupported ethProvider'),
