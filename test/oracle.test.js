@@ -2576,7 +2576,7 @@ describe('readOracle', () => {
 
   test('error - unsupported chain', async () => {
     const signer = utils.getSignerFromPrivateKey(
-      'kovan',
+      'goerli',
       Wallet.createRandom().privateKey,
     );
     await expect(
@@ -2592,6 +2592,6 @@ describe('readOracle', () => {
           url: 'https://foo.io',
         },
       }),
-    ).rejects.toThrow(Error('Unsupported chain 42'));
+    ).rejects.toThrow(Error('Unsupported chain 5'));
   });
 });
