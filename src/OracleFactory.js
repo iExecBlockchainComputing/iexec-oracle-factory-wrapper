@@ -33,6 +33,7 @@ class IExecOracleFactory {
         dataType,
         ethersProvider,
         ipfsGateway,
+        oracleContract,
       });
     this.getIExec = () => iexec;
   }
