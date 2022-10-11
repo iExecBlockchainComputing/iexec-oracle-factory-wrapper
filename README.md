@@ -33,7 +33,7 @@ const getOracleFactory = async () => {
 };
 ```
 
-_NodeJS Exemple:_
+_NodeJS Example:_
 
 ```js
 const {
@@ -91,7 +91,7 @@ factory.**createOracle(rawParams)** => Observable < **{ subscribe: Function({ ne
 | PARAM_SET_UPLOADED                   | once                 | cid: String                                 |
 | COMPLETED                            | once                 |                                             |
 
-_Exemple:_
+_Example:_
 
 ```js
 let paramSet;
@@ -172,7 +172,7 @@ factory.**updateOracle(paramSet|ipfsCid [, { workerpool }])** => Observable < **
 | TASK_UPDATED                         | once per task update  | dealid: String<br/> taskid: String<br/> status: 'UNSET' \| 'ACTIVE' \| 'REVEALING' \| 'COMPLETED' \| 'TIMEOUT' \| 'FAILED' |
 | TASK_COMPLETED                       | once                  | dealid: String<br/> taskid: String<br/> status: String                                                                     |
 
-_Exemple:_
+_Example:_
 
 ```js
 factory
@@ -231,7 +231,7 @@ console.log(`call test returned: ${result} (${typeof result})`);
 
 > Get the default addresses of oracle app and contract for a given chain
 
-utils.**getChainDefaults(chainId: Int)** => **{ ORACLE_APP_ADDRESS: String, ORACLE_CONTRACT_ADDRES: String }** >
+utils.**getChainDefaults(chainId: Int)** => **{ ORACLE_APP_ADDRESS: String, ORACLE_CONTRACT_ADDRESS: String }** >
 
 #### computeOracleId
 
@@ -271,9 +271,9 @@ const { errors } = require('@iexec/iexec-oracle-factory-wrapper');
 
 > A `NoValueError` is thrown when attempting to read an oracle with no stored value (ie: never updated)
 
-## Test in the browser:
+## Test in the browser
 
-```
+```sh
 # build the lib
 npm i
 npm run build
@@ -284,13 +284,13 @@ npm i
 npm start
 ```
 
-browse http://localhost:1234
+browse [http://localhost:1234]
 
 ## Development
 
 ### Run Tests
 
-```
+```sh
 npm i
 npm test
 ```
