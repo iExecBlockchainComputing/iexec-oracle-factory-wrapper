@@ -1,4 +1,4 @@
-const { Wallet } = require('ethers');
+const { Wallet, getDefaultProvider } = require('ethers');
 const { IExec, utils } = require('iexec');
 const { createOracle, updateOracle, readOracle } = require('../src/oracle');
 const {
@@ -2328,12 +2328,9 @@ describe('updateOracle', () => {
 
 describe('readOracle', () => {
   test('standard - from paramSet dataType: "boolean"', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId: {
         JSONPath: '$.ok',
         body: '',
@@ -2350,12 +2347,9 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "number"', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId: {
         JSONPath: "$['ethereum']['usd']",
         body: '',
@@ -2372,12 +2366,9 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "string"', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId: {
         JSONPath: '$.version',
         body: '',
@@ -2419,12 +2410,9 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (default dataType)', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId:
         '0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491',
     });
@@ -2434,12 +2422,9 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType number)', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId:
         '0x31172fe38a7be8a62fa4882d3a5b5cf7da13fa6ad5b144a0c2f35b559bbba14f',
       dataType: 'number',
@@ -2450,12 +2435,9 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType string)', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId:
         '0x9fc5c194d4898197e535060b54256435fda773ae59c93cf88be84bce1ca4ce3e',
       dataType: 'string',
@@ -2466,12 +2448,9 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType boolean)', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     const res = await readOracle({
-      ethersProvider: signer.provider,
+      ethersProvider: provider,
       paramSetOrCidOrOracleId:
         '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
       dataType: 'boolean',
@@ -2482,13 +2461,10 @@ describe('readOracle', () => {
   });
 
   test('error - no value stored for oracleId', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     await expect(
       readOracle({
-        ethersProvider: signer.provider,
+        ethersProvider: provider,
         paramSetOrCidOrOracleId: {
           JSONPath: '$.data',
           body: '',
@@ -2507,13 +2483,10 @@ describe('readOracle', () => {
   });
 
   test('error - dataType is not allowed for non oracleId inputs', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     await expect(
       readOracle({
-        ethersProvider: signer.provider,
+        ethersProvider: provider,
         paramSetOrCidOrOracleId: {
           JSONPath: '$.data',
           body: '',
@@ -2533,13 +2506,10 @@ describe('readOracle', () => {
   });
 
   test('error - invalid paramSet', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     await expect(
       readOracle({
-        ethersProvider: signer.provider,
+        ethersProvider: provider,
         paramSetOrCidOrOracleId: {
           JSONPath: '$.data',
           body: '',
@@ -2559,13 +2529,10 @@ describe('readOracle', () => {
 
   test('error - failed to load paramSet', async () => {
     jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('ipfs.get failed'));
-    const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('https://viviani.iex.ec');
     await expect(
       readOracle({
-        ethersProvider: signer.provider,
+        ethersProvider: provider,
         paramSetOrCidOrOracleId:
           'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
       }),
@@ -2575,13 +2542,10 @@ describe('readOracle', () => {
   });
 
   test('error - unsupported chain', async () => {
-    const signer = utils.getSignerFromPrivateKey(
-      'goerli',
-      Wallet.createRandom().privateKey,
-    );
+    const provider = getDefaultProvider('optimism');
     await expect(
       readOracle({
-        ethersProvider: signer.provider,
+        ethersProvider: provider,
         paramSetOrCidOrOracleId: {
           JSONPath: '$.data',
           body: '',
@@ -2592,6 +2556,6 @@ describe('readOracle', () => {
           url: 'https://foo.io',
         },
       }),
-    ).rejects.toThrow(Error('Unsupported chain 5'));
+    ).rejects.toThrow(Error('Unsupported chain 10'));
   });
 });

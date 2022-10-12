@@ -5,12 +5,21 @@ const { createOracle, updateOracle, readOracle } = require('./oracle');
 class IExecOracleFactory {
   constructor(
     ethProvider,
-    { ipfsGateway, oracleApp, oracleContract, iexecOptions = {} } = {},
+    {
+      ipfsGateway,
+      oracleApp,
+      oracleContract,
+      providerOptions = {},
+      iexecOptions = {},
+    } = {},
   ) {
     let iexec;
     let ethersProvider;
     try {
-      iexec = new IExec({ ethProvider }, { confirms: 3, ...iexecOptions });
+      iexec = new IExec(
+        { ethProvider },
+        { confirms: 3, providerOptions, ...iexecOptions },
+      );
       ethersProvider = ethProvider.provider || new Web3Provider(ethProvider);
     } catch (e) {
       throw Error('Unsupported ethProvider');
@@ -33,6 +42,7 @@ class IExecOracleFactory {
         dataType,
         ethersProvider,
         ipfsGateway,
+        oracleContract,
       });
     this.getIExec = () => iexec;
   }
