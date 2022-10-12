@@ -18,7 +18,7 @@ const readerConfMap = {
     ORACLE_CONTRACT_ADDRESS: '', // TODO
   },
   5: {
-    ORACLE_CONTRACT_ADDRESS: '', // TODO
+    ORACLE_CONTRACT_ADDRESS: '0x8fbaa165ab51754d8a718c5c71c7aca42679ff7a', // TODO replace this mock contract
   },
   133: {
     ORACLE_CONTRACT_ADDRESS: factoryConfMap[133].ORACLE_CONTRACT_ADDRESS,
