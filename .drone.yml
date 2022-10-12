@@ -22,4 +22,15 @@ pipeline:
     email: dev@iex.ec
     tag: latest
     when:
-      ref: [refs/tags/v*]
+      ref:
+        include: refs/tags/v[1-9]*.*[0-9].*[0-9]
+        exclude: refs/tags/v[1-9]*.*[0-9].*[0-9]-*
+
+  npm_publish_alpha:
+    image: plugins/npm
+    secrets: [npm_token]
+    username: iexecteam
+    email: dev@iex.ec
+    tag: alpha
+    when:
+      ref: refs/tags/v[1-9]*.*[0-9].*[0-9]-alpha.*[0-9]
