@@ -218,6 +218,7 @@ const updateOracle = ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleApp,
   oracleContract,
+  targetBlockchains,
 }) =>
   new Observable((observer) => {
     let abort = false;
@@ -364,6 +365,7 @@ const updateOracle = ({
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
             tag: ['tee'],
             params: {
+              iexec_args: targetBlockchains,
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
               iexec_developer_logger: true,
             },
