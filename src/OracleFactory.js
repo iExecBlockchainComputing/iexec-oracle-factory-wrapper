@@ -29,8 +29,7 @@ class IExecOracleFactory {
       createOracle({ rawParams, iexec, ipfsGateway, oracleApp });
     this.updateOracle = (
       paramSetOrCid,
-      { workerpool } = {},
-      targetBlockchains,
+      { workerpool, targetBlockchains } = {},
     ) =>
       updateOracle({
         paramSetOrCid,

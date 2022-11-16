@@ -365,7 +365,7 @@ const updateOracle = ({
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
             tag: ['tee'],
             params: {
-              iexec_args: targetBlockchains,
+              iexec_args: targetBlockchains ? targetBlockchains.join(',') : [],
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
               iexec_developer_logger: true,
             },
