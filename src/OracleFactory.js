@@ -27,7 +27,10 @@ class IExecOracleFactory {
 
     this.createOracle = (rawParams) =>
       createOracle({ rawParams, iexec, ipfsGateway, oracleApp });
-    this.updateOracle = (paramSetOrCid, { workerpool } = {}) =>
+    this.updateOracle = (
+      paramSetOrCid,
+      { workerpool, targetBlockchains } = {},
+    ) =>
       updateOracle({
         paramSetOrCid,
         iexec,
@@ -35,6 +38,7 @@ class IExecOracleFactory {
         workerpool,
         oracleApp,
         oracleContract,
+        targetBlockchains,
       });
     this.readOracle = async (paramSetOrCidOrOracleId, { dataType } = {}) =>
       readOracle({

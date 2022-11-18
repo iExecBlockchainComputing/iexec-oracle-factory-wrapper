@@ -1,4 +1,4 @@
-const { string, object, array, ValidationError } = require('yup');
+const { string, number, object, array, ValidationError } = require('yup');
 const { getAddress } = require('ethers').utils;
 const jp = require('jsonpath');
 const { API_KEY_PLACEHOLDER } = require('./conf');
@@ -365,6 +365,9 @@ const readDataTypeSchema = () =>
     )
     .required();
 
+const updateTargetBlockchainsSchema = () =>
+  array().of(number().integer().required()).default([]);
+
 const throwIfMissing = () => {
   throw new ValidationError('Missing parameter');
 };
@@ -377,5 +380,6 @@ module.exports = {
   strictParamSetSchema,
   jsonParamSetSchema,
   readDataTypeSchema,
+  updateTargetBlockchainsSchema,
   throwIfMissing,
 };

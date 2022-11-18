@@ -6,6 +6,7 @@ const {
   rawParamsSchema,
   jsonParamSetSchema,
   throwIfMissing,
+  updateTargetBlockchainsSchema,
 } = require('../src/validators');
 const { ValidationError } = require('../src/errors');
 
@@ -1063,6 +1064,43 @@ describe('jsonParamSetSchema', () => {
     await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
         '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramSet (this field has unspecified keys: foo)',
+      ),
+    );
+  });
+});
+
+describe('updateTargetBlockchainsSchema', () => {
+  test('valid undefined', async () => {
+    await expect(
+      updateTargetBlockchainsSchema().validate(),
+    ).resolves.toStrictEqual([]);
+  });
+  test('valid array of number', async () => {
+    await expect(
+      updateTargetBlockchainsSchema().validate([1, 5]),
+    ).resolves.toStrictEqual([1, 5]);
+  });
+  test('valid array of string number', async () => {
+    await expect(
+      updateTargetBlockchainsSchema().validate(['1', '5']),
+    ).resolves.toStrictEqual([1, 5]);
+  });
+  test('valid empty array', async () => {
+    await expect(
+      updateTargetBlockchainsSchema().validate([]),
+    ).resolves.toStrictEqual([]);
+  });
+  test('invalid object', async () => {
+    await expect(updateTargetBlockchainsSchema().validate({})).rejects.toThrow(
+      'this must be a `array` type, but the final value was: `null`',
+    );
+  });
+  test('invalid array of string', async () => {
+    await expect(
+      updateTargetBlockchainsSchema().validate(['foo', 'bar']),
+    ).rejects.toThrow(
+      new ValidationError(
+        '[0] must be a `number` type, but the final value was: `NaN` (cast from the value `"foo"`).',
       ),
     );
   });

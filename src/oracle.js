@@ -17,6 +17,7 @@ const {
   rawParamsSchema,
   readDataTypeSchema,
   throwIfMissing,
+  updateTargetBlockchainsSchema,
 } = require('./validators');
 const { isOracleId, computeOracleId, computeCallId } = require('./hash');
 
@@ -218,6 +219,7 @@ const updateOracle = ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleApp,
   oracleContract,
+  targetBlockchains,
 }) =>
   new Observable((observer) => {
     let abort = false;
@@ -225,6 +227,8 @@ const updateOracle = ({
     const safeObserver = new SafeObserver(observer);
     const start = async () => {
       try {
+        const targetBlockchainsArray =
+          await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
         const ORACLE_APP_ADDRESS =
@@ -364,6 +368,7 @@ const updateOracle = ({
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
             tag: ['tee'],
             params: {
+              iexec_args: targetBlockchainsArray.join(','),
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
               iexec_developer_logger: true,
             },
