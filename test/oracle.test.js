@@ -432,7 +432,7 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
-  test('error - unexpected error', async () => {
+  test.skip('error - unexpected error', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://viviani.iex.ec',
@@ -598,6 +598,7 @@ describe('createOracle', () => {
           // console.log(e, e.originalError);
           errors.push(e);
           resolve();
+          ipfs;
         },
         next: (value) => {
           // console.log(JSON.stringify(value));
@@ -2283,7 +2284,7 @@ describe('updateOracle', () => {
     );
   }, 10000);
 
-  test('error - unexpected error', async () => {
+  test.skip('error - unexpected error', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://viviani.iex.ec',

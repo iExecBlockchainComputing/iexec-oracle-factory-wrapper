@@ -1,10 +1,13 @@
-const Ipfs = require('ipfs');
 const CID = require('cids');
 const fetch = require('cross-fetch');
 const { getLogger } = require('./logger');
 const { DEFAULT_IPFS_GATEWAY } = require('./conf');
 
 const log = getLogger('ipfs-service');
+
+const kuboRpcPromise = import('kubo-rpc-client/dist/src').catch((e) =>
+  log(`dynamic import failed: ${e}`),
+);
 
 const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const multiaddr = `/ipfs/${cid.toString()}`;
@@ -18,27 +21,11 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
 };
 
 const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
-  const ipfs = await Ipfs.create();
-  try {
-    // not released yet
-    // if (ipfsConfig && ipfsConfig.pinService) {
-    //   await ipfs.pin.remote.service
-    //     .add('pin-service', ipfsConfig.pinService)
-    //     .catch((e) => log(e));
-    // }
-    const { cid } = await ipfs.add(content);
-    await ipfs.pin
-      .add(cid, { timeout: 10000 })
-      .catch((e) => log('Ipfs add pin failed', e));
-    await get(cid.toString(), { ipfsGateway });
-    await ipfs.stop();
-    return cid.toString();
-  } catch (e) {
-    if (typeof ipfs.stop === 'function') {
-      await ipfs.stop();
-    }
-    throw e;
-  }
+  const { create } = await kuboRpcPromise;
+  const ipfsClient = create('/dns4/ipfs-upload.iex.ec/https/');
+  const { cid } = await ipfsClient.add(content);
+  await get(cid.toString(), { ipfsGateway });
+  return cid.toString();
 };
 
 const isCid = (value) => {
