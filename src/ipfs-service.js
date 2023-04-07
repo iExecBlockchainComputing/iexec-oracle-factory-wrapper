@@ -5,7 +5,7 @@ const { DEFAULT_IPFS_GATEWAY } = require('./conf');
 
 const log = getLogger('ipfs-service');
 
-const kuboRpcPromise = import('kubo-rpc-client/dist/src').catch((e) =>
+const kuboRpcPromise = import('kubo-rpc-client').catch((e) =>
   log(`dynamic import failed: ${e}`),
 );
 
