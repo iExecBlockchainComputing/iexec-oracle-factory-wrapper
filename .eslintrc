@@ -4,5 +4,8 @@
     "max-classes-per-file": ["error", 2],
     "no-template-curly-in-string": "off",
     "no-underscore-dangle": ["error", { "allow": ["_subscribe"] }]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
   }
 }
