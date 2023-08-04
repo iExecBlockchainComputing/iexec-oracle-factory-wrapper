@@ -19,7 +19,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -77,7 +77,7 @@ describe('createOracle', () => {
 
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -258,7 +258,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -308,7 +308,7 @@ describe('createOracle', () => {
 
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -396,7 +396,7 @@ describe('createOracle', () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -435,7 +435,7 @@ describe('createOracle', () => {
   test('error - unexpected error', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -474,7 +474,7 @@ describe('createOracle', () => {
   test('error - with apiKey failed to encrypt apiKey', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -521,7 +521,7 @@ describe('createOracle', () => {
   test('error - with apiKey failed to get encrypted apiKey checksum', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -573,7 +573,7 @@ describe('createOracle', () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -618,7 +618,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -668,7 +668,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -725,7 +725,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -781,7 +781,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -840,7 +840,7 @@ describe('createOracle', () => {
       .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -899,7 +899,7 @@ describe('createOracle', () => {
   test('error - with apiKey unexpected error while creating apiKey dataset', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -953,7 +953,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1083,7 +1083,7 @@ describe('updateOracle', () => {
   test('standard - from CID', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1218,7 +1218,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1346,7 +1346,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1476,7 +1476,7 @@ describe('updateOracle', () => {
   test('error - from CID ipfs content not found', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1516,7 +1516,7 @@ describe('updateOracle', () => {
   test('error - from CID ipfs content is not valid paramSet', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1556,7 +1556,7 @@ describe('updateOracle', () => {
   test('error - from paramSet invalid paramSet', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1590,7 +1590,7 @@ describe('updateOracle', () => {
     jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1635,7 +1635,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1685,7 +1685,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1733,7 +1733,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1788,7 +1788,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1839,7 +1839,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1897,7 +1897,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -1951,7 +1951,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -2011,7 +2011,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -2074,7 +2074,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -2140,7 +2140,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -2213,7 +2213,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -2286,7 +2286,7 @@ describe('updateOracle', () => {
   test('error - unexpected error', async () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
-        'https://viviani.iex.ec',
+        'https://bellecour.iex.ec',
         Wallet.createRandom().privateKey,
       ),
     });
@@ -2328,7 +2328,7 @@ describe('updateOracle', () => {
 
 describe('readOracle', () => {
   test('standard - from paramSet dataType: "boolean"', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2347,7 +2347,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "number"', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2366,7 +2366,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "string"', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2397,7 +2397,7 @@ describe('readOracle', () => {
       }),
     );
     const signer = utils.getSignerFromPrivateKey(
-      'https://viviani.iex.ec',
+      'https://bellecour.iex.ec',
       Wallet.createRandom().privateKey,
     );
     const res = await readOracle({
@@ -2410,7 +2410,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (default dataType)', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2422,7 +2422,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType number)', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2435,7 +2435,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType string)', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2448,7 +2448,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType boolean)', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2461,7 +2461,7 @@ describe('readOracle', () => {
   });
 
   test('error - no value stored for oracleId', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     await expect(
       readOracle({
         ethersProvider: provider,
@@ -2483,7 +2483,7 @@ describe('readOracle', () => {
   });
 
   test('error - dataType is not allowed for non oracleId inputs', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     await expect(
       readOracle({
         ethersProvider: provider,
@@ -2506,7 +2506,7 @@ describe('readOracle', () => {
   });
 
   test('error - invalid paramSet', async () => {
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     await expect(
       readOracle({
         ethersProvider: provider,
@@ -2529,7 +2529,7 @@ describe('readOracle', () => {
 
   test('error - failed to load paramSet', async () => {
     jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('ipfs.get failed'));
-    const provider = getDefaultProvider('https://viviani.iex.ec');
+    const provider = getDefaultProvider('https://bellecour.iex.ec');
     await expect(
       readOracle({
         ethersProvider: provider,

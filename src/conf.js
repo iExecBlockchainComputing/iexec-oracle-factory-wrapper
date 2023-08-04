@@ -35,7 +35,6 @@ const networkMap = {
   80001: 'https://matic-mumbai.chainstacklabs.com',
   mainnet: 'homestead',
   goerli: 'goerli',
-  viviani: 'https://viviani.iex.ec',
   bellecour: 'https://bellecour.iex.ec',
   polygon: 'matic',
   mumbai: 'https://matic-mumbai.chainstacklabs.com',
