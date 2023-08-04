@@ -15,22 +15,116 @@ pipeline:
       - npm run build
       - npm test
 
-  npm_publish:
-    image: plugins/npm
-    secrets: [npm_token]
-    username: iexecteam
-    email: dev@iex.ec
-    tag: latest
-    when:
-      ref:
-        include: refs/tags/v[1-9]*.*[0-9].*[0-9]
-        exclude: refs/tags/v[1-9]*.*[0-9].*[0-9]-*
+  - name: npm-publish-dry-run
+    image: node:16
+    commands:
+      - npm publish --dry-run
+---
+# sdk @iexec/iexec-oracle-factory-wrapper publish npm nightly pipeline
+kind: pipeline
+type: docker
+name: sdk-publish-nightly
 
-  npm_publish_alpha:
+trigger:
+  event:
+    - promote
+  target:
+    - sdk-nightly
+  branch:
+    - develop
+
+steps:
+  - name: install
+    image: node:16
+    pull: always
+    commands:
+      - node -v
+      - npm -v
+      - npm ci
+
+  - test_node16:
+    image: node:16
+    pull: true
+    commands:
+      - npm ci
+      - npm run build
+      - npm test
+
+  - test_node14:
+    image: node:14
+    pull: true
+    commands:
+      - npm ci
+      - npm run build
+      - npm test
+
+  - name: build
+    image: node:16
+    commands:
+      - npm run build
+
+  - name: set-version-nightly
+    image: node:16
+    commands:
+      - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
+
+  - name: publish
     image: plugins/npm
-    secrets: [npm_token]
-    username: iexecteam
-    email: dev@iex.ec
-    tag: alpha
-    when:
-      ref: refs/tags/v[1-9]*.*[0-9].*[0-9]-alpha.*[0-9]
+    pull: always
+    settings:
+      username:
+        from_secret: npm_username
+      token:
+        from_secret: npm_token
+      tag: nightly
+      access: public
+
+---
+# sdk @iexec/iexec-oracle-factory-wrapper publish npm latest pipeline
+kind: pipeline
+type: docker
+name: sdk-publish-latest
+
+trigger:
+  event:
+    - promote
+  target:
+    - sdk-latest
+  branch:
+    - main
+
+steps:
+  - name: install
+    image: node:16
+    pull: always
+    commands:
+      - node -v
+      - npm -v
+      - npm ci
+
+  - test_node16:
+    image: node:16
+    pull: true
+    commands:
+      - npm ci
+      - npm run build
+      - npm test
+
+  - test_node14:
+    image: node:14
+    pull: true
+    commands:
+      - npm ci
+      - npm run build
+      - npm test
+
+  - name: publish
+    image: plugins/npm
+    pull: always
+    settings:
+      username:
+        from_secret: npm_username
+      token:
+        from_secret: npm_token
+      tag: latest
+      access: public
