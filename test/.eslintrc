@@ -1,8 +1,5 @@
 {
   "env": {
     "jest": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 2020
   }
 }
