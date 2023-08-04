@@ -1,5 +1,22 @@
-pipeline:
-  test_node16:
+# sdk @iexec/web3mail default pipeline
+kind: pipeline
+type: docker
+name: sdk-default
+
+trigger:
+  event:
+    exclude:
+      - promote
+steps:
+  - name: install
+    image: node:16
+    pull: always
+    commands:
+      - node -v
+      - npm -v
+      - npm ci
+
+  - name: test_node16
     image: node:16
     pull: true
     commands:
@@ -7,7 +24,7 @@ pipeline:
       - npm run build
       - npm test
 
-  test_node14:
+  - name: test_node14
     image: node:14
     pull: true
     commands:
@@ -15,10 +32,11 @@ pipeline:
       - npm run build
       - npm test
 
-  name: npm-publish-dry-run
+  - name: npm-publish-dry-run
     image: node:16
     commands:
       - npm publish --dry-run
+
 ---
 # sdk @iexec/iexec-oracle-factory-wrapper publish npm nightly pipeline
 kind: pipeline
