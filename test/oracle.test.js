@@ -2367,8 +2367,9 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test('standard - from paramSet dataType: "string"', async () => {
+  test.skip('standard - from paramSet dataType: "string"', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
+    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
