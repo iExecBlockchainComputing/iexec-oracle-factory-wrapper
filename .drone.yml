@@ -15,7 +15,7 @@ pipeline:
       - npm run build
       - npm test
 
-  - name: npm-publish-dry-run
+  name: npm-publish-dry-run
     image: node:16
     commands:
       - npm publish --dry-run
