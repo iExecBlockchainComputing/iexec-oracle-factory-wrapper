@@ -50,7 +50,8 @@ const networkMap = {
   mumbai: 'https://matic-mumbai.chainstacklabs.com',
 };
 
-const DEFAULT_IPFS_GATEWAY = 'https://ipfs.io';
+// const DEFAULT_IPFS_GATEWAY = 'https://ipfs.io';
+const DEFAULT_IPFS_GATEWAY = 'https://ipfs-gateway.v8-bellecour.iex.ec';
 
 const getDefaultProvider = (network, options) => {
   const resolvedNetwork = networkMap[network] || network;

@@ -22,7 +22,8 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
 
 const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const { create } = await kuboRpcPromise;
-  const ipfsClient = create('/dns4/ipfs-upload.iex.ec/https/');
+  // const ipfsClient = create('/dns4/ipfs-upload.iex.ec/https/');
+  const ipfsClient = create('/dns4/ipfs-upload.v8-bellecour.iex.ec/https');
   const { cid } = await ipfsClient.add(content);
   await get(cid.toString(), { ipfsGateway });
   return cid.toString();
