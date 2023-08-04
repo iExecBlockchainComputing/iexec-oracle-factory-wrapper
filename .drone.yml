@@ -60,7 +60,7 @@ steps:
       - npm -v
       - npm ci
 
-  - test_node16:
+  - name: test_node16
     image: node:16
     pull: true
     commands:
@@ -68,7 +68,7 @@ steps:
       - npm run build
       - npm test
 
-  - test_node14:
+  - name: test_node14
     image: node:14
     pull: true
     commands:
@@ -120,7 +120,7 @@ steps:
       - npm -v
       - npm ci
 
-  - test_node16:
+  - name: test_node16
     image: node:16
     pull: true
     commands:
@@ -128,7 +128,7 @@ steps:
       - npm run build
       - npm test
 
-  - test_node14:
+  - name: test_node14
     image: node:14
     pull: true
     commands:
