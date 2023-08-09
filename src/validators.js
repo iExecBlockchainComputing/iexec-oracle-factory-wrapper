@@ -1,5 +1,5 @@
 import { string, number, object, array, ValidationError } from 'yup';
-import { getAddress } from 'ethers/utils';
+import { utils } from 'ethers';
 import jp from 'jsonpath';
 import { API_KEY_PLACEHOLDER } from './conf';
 
@@ -75,7 +75,7 @@ const datasetAddressSchema = () =>
     .test('is-address', '${path} is not a valid ethereum address', (value) => {
       try {
         if (value) {
-          getAddress(value);
+          utils.getAddress(value);
         }
         return true;
       } catch (e) {

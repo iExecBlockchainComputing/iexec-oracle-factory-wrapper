@@ -1,9 +1,8 @@
-import {getSignerFromPrivateKey } from 'iexec/utils';
+import { getSignerFromPrivateKey } from 'iexec/utils';
 import { getParamSet } from './oracle';
 import { computeOracleId as hashComputeOracleId } from './hash';
-import { testRawParams as callTesterTestRawParams } from './callTester';
+import testRawParams from './callTester';
 import { getDefaults, DEFAULT_IPFS_GATEWAY } from './conf';
-
 
 const computeOracleId = async (
   paramSetOrCid,
@@ -16,8 +15,7 @@ const computeOracleId = async (
 
 export {
   computeOracleId,
-  callTesterTestRawParams as testRawParams,
+  testRawParams,
   getSignerFromPrivateKey,
-  getDefaults as getChainDefaults
+  getDefaults as getChainDefaults,
 };
-

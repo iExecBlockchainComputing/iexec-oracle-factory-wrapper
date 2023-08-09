@@ -56,12 +56,13 @@
         "@babel/env",
         {
           "targets": {
-            "node": "14.0.0",
+            "node": "16.0.0",
             "browsers": [
               "defaults",
               "not IE 11"
             ]
-          }
+          },
+          "modules": false
         }
       ]
     ]
