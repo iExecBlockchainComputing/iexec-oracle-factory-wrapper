@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { IExec, utils } from 'iexec';
 import { Wallet } from 'ethers';
 import OracleFactory from '../src/OracleFactory';

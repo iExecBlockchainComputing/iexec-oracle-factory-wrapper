@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import OracleReader from '../src/OracleReader';
 import * as oracle from '../src/oracle';
 import { getDefaultProvider } from '../src/conf';

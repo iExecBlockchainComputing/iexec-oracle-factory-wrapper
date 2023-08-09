@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { Wallet, getDefaultProvider } from 'ethers';
 import { IExec, utils } from 'iexec';
 import { createOracle, updateOracle, readOracle } from '../src/oracle';
