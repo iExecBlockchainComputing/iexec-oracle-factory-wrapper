@@ -2,7 +2,6 @@ import { IExec } from 'iexec';
 import { providers } from 'ethers';
 import { createOracle, updateOracle, readOracle } from './oracle';
 
-
 class IExecOracleFactory {
   constructor(
     ethProvider,
@@ -21,7 +20,8 @@ class IExecOracleFactory {
         { ethProvider },
         { confirms: 3, providerOptions, ...iexecOptions },
       );
-      ethersProvider = ethProvider.provider || new providers.Web3Provider(ethProvider);
+      ethersProvider =
+        ethProvider.provider || new providers.Web3Provider(ethProvider);
     } catch (e) {
       throw Error('Unsupported ethProvider');
     }

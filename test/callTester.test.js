@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import fetch from 'cross-fetch';
 import testRawParams from '../src/callTester';
 

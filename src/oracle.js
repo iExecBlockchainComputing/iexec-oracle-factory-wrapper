@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import CID from 'cids';
 import { Contract } from 'ethers';
-import ipfs from './ipfs-service';
+import * as ipfs from './ipfs-service';
 import { formatParamsJson, formatOracleGetInt } from './format';
 import { Observable, SafeObserver } from './reactive';
 import {

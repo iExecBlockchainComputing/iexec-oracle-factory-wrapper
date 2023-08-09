@@ -28,13 +28,14 @@
     "src/"
   ],
   "dependencies": {
+    "@jest/globals": "^29.6.2",
     "big.js": "^6.2.1",
     "buffer": "^6.0.3",
     "cids": "^1.1.9",
     "cross-fetch": "^3.1.5",
     "debug": "^4.3.4",
     "ethers": "^5.7.1",
-    "iexec": "^7.2.5",
+    "iexec": "^8.2.1",
     "jsonpath": "^1.1.1",
     "kubo-rpc-client": "^3.0.1",
     "yup": "^0.32.11"
