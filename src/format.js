@@ -1,4 +1,4 @@
-import Big from 'big';
+import Big from 'big.js';
 
 const sortObjKeys = (obj) =>
   Object.keys(obj)

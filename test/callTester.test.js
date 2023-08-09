@@ -1,5 +1,5 @@
 import fetch from 'cross-fetch';
-import { testRawParams } from '../src/callTester';
+import testRawParams from '../src/callTester';
 
 jest.mock('cross-fetch');
 
