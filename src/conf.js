@@ -1,4 +1,4 @@
-const { getDefaultProvider: getEthersDefaultProvider } = require('ethers');
+import { getDefaultProvider as getEthersDefaultProvider } from 'ethers';
 
 const API_KEY_PLACEHOLDER = '%API_KEY%';
 
@@ -9,8 +9,8 @@ const factoryConfMap = {
   },
 
   134: {
-    ORACLE_APP_ADDRESS: '0xA638bF4665Ce7bd7021A4a12416Ea7a0a3272b6f',
-    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+    ORACLE_APP_ADDRESS: 'oracle-factory-dev.apps.iexec.eth',
+    ORACLE_CONTRACT_ADDRESS: '0x0132DaF5c7C177499c256b5eaC30E7201A9b75e2',
   },
 };
 
@@ -50,7 +50,7 @@ const networkMap = {
   mumbai: 'https://matic-mumbai.chainstacklabs.com',
 };
 
-const DEFAULT_IPFS_GATEWAY = 'https://ipfs.io';
+const DEFAULT_IPFS_GATEWAY = 'https://ipfs-gateway.v8-bellecour.iex.ec';
 
 const getDefaultProvider = (network, options) => {
   const resolvedNetwork = networkMap[network] || network;
@@ -77,7 +77,7 @@ const getDefaults = (chainId) => {
   return conf;
 };
 
-module.exports = {
+export {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
   getReaderDefaults,

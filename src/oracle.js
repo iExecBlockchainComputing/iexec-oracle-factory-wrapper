@@ -1,25 +1,25 @@
-const { Buffer } = require('buffer');
-const CID = require('cids');
-const { Contract } = require('ethers');
-const ipfs = require('./ipfs-service');
-const { formatParamsJson, formatOracleGetInt } = require('./format');
-const { Observable, SafeObserver } = require('./reactive');
-const {
+import { Buffer } from 'buffer';
+import CID from 'cids';
+import { Contract } from 'ethers';
+import ipfs from './ipfs-service';
+import { formatParamsJson, formatOracleGetInt } from './format';
+import { Observable, SafeObserver } from './reactive';
+import {
   getFactoryDefaults,
   getReaderDefaults,
   DEFAULT_IPFS_GATEWAY,
   API_KEY_PLACEHOLDER,
-} = require('./conf');
-const { WorkflowError, ValidationError, NoValueError } = require('./errors');
-const {
+} from './conf';
+import { WorkflowError, ValidationError, NoValueError } from './errors';
+import {
   jsonParamSetSchema,
   paramSetSchema,
   rawParamsSchema,
   readDataTypeSchema,
   throwIfMissing,
   updateTargetBlockchainsSchema,
-} = require('./validators');
-const { isOracleId, computeOracleId, computeCallId } = require('./hash');
+} from './validators';
+import { isOracleId, computeOracleId, computeCallId } from './hash';
 
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
@@ -830,7 +830,7 @@ const createOracle = ({
           message: 'ORACLE_ID_COMPUTED',
           oracleId,
         });
-
+        console.log('Typeof', typeof jsonParams);
         const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
           throw new WorkflowError('Failed to upload paramSet', e);
         });
@@ -865,9 +865,4 @@ const createOracle = ({
     return safeObserver.unsubscribe.bind(safeObserver);
   });
 
-module.exports = {
-  getParamSet,
-  createOracle,
-  updateOracle,
-  readOracle,
-};
+export { getParamSet, createOracle, updateOracle, readOracle };

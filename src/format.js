@@ -1,4 +1,4 @@
-const Big = require('big.js');
+import Big from 'big.js';
 
 const sortObjKeys = (obj) =>
   Object.keys(obj)
@@ -27,8 +27,4 @@ const formatOracleGetInt = (resultBn) => {
   }
 };
 
-module.exports = {
-  sortObjKeys,
-  formatParamsJson,
-  formatOracleGetInt,
-};
+export { sortObjKeys, formatParamsJson, formatOracleGetInt };

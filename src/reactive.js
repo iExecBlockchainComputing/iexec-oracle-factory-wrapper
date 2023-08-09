@@ -63,7 +63,7 @@ class Observable {
   }
 }
 
-module.exports = {
+export {
   Observable,
   SafeObserver,
 };

@@ -1,7 +1,7 @@
-const { string, number, object, array, ValidationError } = require('yup');
-const { getAddress } = require('ethers').utils;
-const jp = require('jsonpath');
-const { API_KEY_PLACEHOLDER } = require('./conf');
+import { string, number, object, array, ValidationError } from 'yup';
+import { getAddress } from 'ethers/utils';
+import jp from 'jsonpath';
+import { API_KEY_PLACEHOLDER } from './conf';
 
 const countSubstrAllowOverlap = (str, substr) => {
   if (substr.length <= 0) return str.length + 1;
@@ -372,7 +372,7 @@ const throwIfMissing = () => {
   throw new ValidationError('Missing parameter');
 };
 
-module.exports = {
+export {
   callParamsSchema,
   rawParamsSchema,
   paramSetSchema,

@@ -1,6 +1,7 @@
-const { IExec } = require('iexec');
-const { Web3Provider } = require('ethers').providers;
-const { createOracle, updateOracle, readOracle } = require('./oracle');
+import { IExec } from 'iexec';
+import { providers } from 'ethers';
+import { createOracle, updateOracle, readOracle } from './oracle';
+
 
 class IExecOracleFactory {
   constructor(
@@ -20,7 +21,7 @@ class IExecOracleFactory {
         { ethProvider },
         { confirms: 3, providerOptions, ...iexecOptions },
       );
-      ethersProvider = ethProvider.provider || new Web3Provider(ethProvider);
+      ethersProvider = ethProvider.provider || new providers.Web3Provider(ethProvider);
     } catch (e) {
       throw Error('Unsupported ethProvider');
     }
@@ -52,4 +53,4 @@ class IExecOracleFactory {
   }
 }
 
-module.exports = IExecOracleFactory;
+export default IExecOracleFactory;
