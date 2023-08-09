@@ -1,4 +1,4 @@
-const {
+import {
   callParamsSchema,
   strictCallParamsSchema,
   paramSetSchema,
@@ -7,8 +7,8 @@ const {
   jsonParamSetSchema,
   throwIfMissing,
   updateTargetBlockchainsSchema,
-} = require('../src/validators');
-const { ValidationError } = require('../src/errors');
+} from '../src/validators';
+import { ValidationError } from '../src/errors';
 
 describe('callParamsSchema', () => {
   test('validate only required keys add default optional keys', async () => {

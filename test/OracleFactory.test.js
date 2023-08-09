@@ -1,7 +1,8 @@
-const { IExec, utils } = require('iexec');
-const { Wallet } = require('ethers');
-const OracleFactory = require('../src/OracleFactory');
-const oracle = require('../src/oracle');
+import { IExec, utils } from 'iexec';
+import { Wallet } from 'ethers';
+import OracleFactory from '../src/OracleFactory';
+import * as oracle from '../src/oracle';
+
 
 jest.mock('../src/oracle');
 

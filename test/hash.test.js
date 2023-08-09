@@ -1,4 +1,4 @@
-const { isOracleId, computeCallId, computeOracleId } = require('../src/hash');
+import { isOracleId, computeCallId, computeOracleId } from '../src/hash';
 
 describe('isOracleId', () => {
   test('true with matching bytes32', () => {

@@ -1,5 +1,5 @@
-const fetch = require('cross-fetch');
-const { testRawParams } = require('../src/callTester');
+import fetch from 'cross-fetch';
+import { testRawParams } from '../src/callTester';
 
 jest.mock('cross-fetch');
 

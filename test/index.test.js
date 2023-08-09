@@ -1,8 +1,9 @@
-const exportedModule = require('../src');
-const OracleFactory = require('../src/OracleFactory');
-const OracleReader = require('../src/OracleReader');
-const utils = require('../src/utils');
-const errors = require('../src/errors');
+import * as exportedModule from '../src/index';
+import OracleFactory from '../src/OracleFactory';
+import OracleReader from '../src/OracleReader';
+import * as utils from '../src/utils';
+import * as errors from '../src/errors';
+
 
 test('exports { IExecOracleFactory, utils, errors }', () => {
   expect(Object.entries(exportedModule).length).toBe(4);

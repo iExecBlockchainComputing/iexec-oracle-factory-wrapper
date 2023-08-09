@@ -1,6 +1,6 @@
-const OracleReader = require('../src/OracleReader');
-const oracle = require('../src/oracle');
-const { getDefaultProvider } = require('../src/conf');
+import OracleReader from '../src/OracleReader';
+import * as oracle from '../src/oracle';
+import { getDefaultProvider } from '../src/conf';
 
 jest.mock('../src/oracle');
 
