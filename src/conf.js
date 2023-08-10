@@ -3,11 +3,6 @@ const { getDefaultProvider: getEthersDefaultProvider } = require('ethers');
 const API_KEY_PLACEHOLDER = '%API_KEY%';
 
 const factoryConfMap = {
-  133: {
-    ORACLE_APP_ADDRESS: '0xE7Da3c01BbC71daCB05C30b7832214d82a045e70',
-    ORACLE_CONTRACT_ADDRESS: '0x8ecEDdd1377E52d23A46E2bd3dF0aFE35B526D5F',
-  },
-
   134: {
     ORACLE_APP_ADDRESS: '0xA638bF4665Ce7bd7021A4a12416Ea7a0a3272b6f',
     ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
@@ -24,9 +19,6 @@ const readerConfMap = {
   134: {
     ORACLE_CONTRACT_ADDRESS: factoryConfMap[134].ORACLE_CONTRACT_ADDRESS,
   },
-  133: {
-    ORACLE_CONTRACT_ADDRESS: factoryConfMap[133].ORACLE_CONTRACT_ADDRESS,
-  },
   137: {
     ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
   },
@@ -38,13 +30,11 @@ const readerConfMap = {
 const networkMap = {
   1: 'homestead',
   5: 'goerli',
-  133: 'https://viviani.iex.ec',
   134: 'https://bellecour.iex.ec',
   137: 'matic',
   80001: 'https://matic-mumbai.chainstacklabs.com',
   mainnet: 'homestead',
   goerli: 'goerli',
-  viviani: 'https://viviani.iex.ec',
   bellecour: 'https://bellecour.iex.ec',
   polygon: 'matic',
   mumbai: 'https://matic-mumbai.chainstacklabs.com',
