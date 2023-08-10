@@ -130,7 +130,7 @@ const init = async () => {
                   )) ||
                 {},
             },
-            { workerpool: '0xAd0b7eFEc0ABF34421B668ea7bCadaC12Dd97541' }, // viviani prod pool
+            { workerpool: '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f' }, // bellecour prod pool
           )
           .subscribe({
             error: (e) => {
@@ -162,7 +162,7 @@ const init = async () => {
         factory
           .updateOracle(
             document.getElementById('update-oracle-from-cid-cid-input').value,
-            { workerpool: '0xAd0b7eFEc0ABF34421B668ea7bCadaC12Dd97541' }, // viviani prod pool
+            { workerpool: '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f' }, // bellecour prod pool
           )
           .subscribe({
             error: (e) => {
