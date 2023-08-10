@@ -1,4 +1,4 @@
-# sdk @iexec/web3mail default pipeline
+# sdk @iexec/iexec-oracle-factory-wrapper default pipeline
 kind: pipeline
 type: docker
 name: sdk-default
