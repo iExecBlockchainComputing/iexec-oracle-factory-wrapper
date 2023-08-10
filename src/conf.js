@@ -4,7 +4,7 @@ const API_KEY_PLACEHOLDER = '%API_KEY%';
 
 const factoryConfMap = {
   134: {
-    ORACLE_APP_ADDRESS: '0xA638bF4665Ce7bd7021A4a12416Ea7a0a3272b6f',
+    ORACLE_APP_ADDRESS: 'oracle-factory.apps.iexec.eth',
     ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
   },
 };
