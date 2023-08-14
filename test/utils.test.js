@@ -1,4 +1,4 @@
-import { computeOracleId, getChainDefaults } from '../src/utils';
+import { computeOracleId, getChainDefaults } from '../src/utils.js';
 
 describe('computeOracleId', () => {
   test('computeOracleId from paramSet', async () => {

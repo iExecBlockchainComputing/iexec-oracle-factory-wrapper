@@ -1,4 +1,4 @@
-import { isOracleId, computeCallId, computeOracleId } from '../src/hash';
+import { isOracleId, computeCallId, computeOracleId } from '../src/hash.js';
 
 describe('isOracleId', () => {
   test('true with matching bytes32', () => {

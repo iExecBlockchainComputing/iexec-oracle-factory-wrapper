@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import fetch from 'cross-fetch';
-import testRawParams from '../src/callTester';
+import testRawParams from '../src/callTester.js';
 
 jest.mock('cross-fetch');
 

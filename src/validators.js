@@ -1,7 +1,7 @@
 import { string, number, object, array, ValidationError } from 'yup';
 import { utils } from 'ethers';
 import jp from 'jsonpath';
-import { API_KEY_PLACEHOLDER } from './conf';
+import { API_KEY_PLACEHOLDER } from './conf.js';
 
 const countSubstrAllowOverlap = (str, substr) => {
   if (substr.length <= 0) return str.length + 1;

@@ -1,8 +1,8 @@
 import CID from 'cids';
 import fetch from 'cross-fetch';
 import { create } from 'kubo-rpc-client';
-import getLogger from './logger';
-import { DEFAULT_IPFS_GATEWAY } from './conf';
+import getLogger from './logger.js';
+import { DEFAULT_IPFS_GATEWAY } from './conf.js';
 
 const log = getLogger('ipfs-service');
 

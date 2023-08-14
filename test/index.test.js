@@ -1,8 +1,8 @@
-import * as exportedModule from '../src/index';
-import OracleFactory from '../src/OracleFactory';
-import OracleReader from '../src/OracleReader';
-import * as utils from '../src/utils';
-import * as errors from '../src/errors';
+import * as exportedModule from '../src/index.js';
+import OracleFactory from '../src/OracleFactory.js';
+import OracleReader from '../src/OracleReader.js';
+import * as utils from '../src/utils.js';
+import * as errors from '../src/errors.js';
 
 
 test('exports { IExecOracleFactory, utils, errors }', () => {

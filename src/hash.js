@@ -1,6 +1,6 @@
 import { utils } from 'ethers';
-import { strictParamSetSchema, strictCallParamsSchema } from './validators';
-import { sortObjKeys } from './format';
+import { strictParamSetSchema, strictCallParamsSchema } from './validators.js';
+import { sortObjKeys } from './format.js';
 
 const bytes32Regex = /^(0x)([0-9a-f]{2}){32}$/;
 

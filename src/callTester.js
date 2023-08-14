@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 import jp from 'jsonpath';
-import { rawParamsSchema } from './validators';
-import { API_KEY_PLACEHOLDER } from './conf';
+import { rawParamsSchema } from './validators.js';
+import { API_KEY_PLACEHOLDER } from './conf.js';
 
 const testRawParams = async (rawParams) => {
   const { url, method, headers, body, apiKey, JSONPath, dataType } =

@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import { IExec, utils } from 'iexec';
 import { Wallet } from 'ethers';
-import OracleFactory from '../src/OracleFactory';
-import * as oracle from '../src/oracle';
+import OracleFactory from '../src/OracleFactory.js';
+import * as oracle from '../src/oracle.js';
 
 
 jest.mock('../src/oracle');

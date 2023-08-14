@@ -1,9 +1,9 @@
 import { jest } from '@jest/globals';
 import { Wallet, getDefaultProvider } from 'ethers';
 import { IExec, utils } from 'iexec';
-import { createOracle, updateOracle, readOracle } from '../src/oracle';
-import { ValidationError, WorkflowError, NoValueError } from '../src/errors';
-import * as ipfs from '../src/ipfs-service';
+import { createOracle, updateOracle, readOracle } from '../src/oracle.js';
+import { ValidationError, WorkflowError, NoValueError } from '../src/errors.js';
+import * as ipfs from '../src/ipfs-service.js';
 
 afterEach(() => {
   jest.resetAllMocks();

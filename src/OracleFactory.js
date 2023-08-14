@@ -1,6 +1,6 @@
 import { IExec } from 'iexec';
 import { providers } from 'ethers';
-import { createOracle, updateOracle, readOracle } from './oracle';
+import { createOracle, updateOracle, readOracle } from './oracle.js';
 
 class IExecOracleFactory {
   constructor(

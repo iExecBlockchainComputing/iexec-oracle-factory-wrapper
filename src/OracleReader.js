@@ -1,6 +1,6 @@
 import { providers } from 'ethers';
-import { getDefaultProvider } from './conf';
-import { readOracle } from './oracle';
+import { getDefaultProvider } from './conf.js';
+import { readOracle } from './oracle.js';
 
 class IExecOracleReader {
   constructor(

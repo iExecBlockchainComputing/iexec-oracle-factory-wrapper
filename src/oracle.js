@@ -1,16 +1,16 @@
 import { Buffer } from 'buffer';
 import CID from 'cids';
 import { Contract } from 'ethers';
-import * as ipfs from './ipfs-service';
-import { formatParamsJson, formatOracleGetInt } from './format';
-import { Observable, SafeObserver } from './reactive';
+import * as ipfs from './ipfs-service.js';
+import { formatParamsJson, formatOracleGetInt } from './format.js';
+import { Observable, SafeObserver } from './reactive.js';
 import {
   getFactoryDefaults,
   getReaderDefaults,
   DEFAULT_IPFS_GATEWAY,
   API_KEY_PLACEHOLDER,
-} from './conf';
-import { WorkflowError, ValidationError, NoValueError } from './errors';
+} from './conf.js';
+import { WorkflowError, ValidationError, NoValueError } from './errors.js';
 import {
   jsonParamSetSchema,
   paramSetSchema,
@@ -18,8 +18,8 @@ import {
   readDataTypeSchema,
   throwIfMissing,
   updateTargetBlockchainsSchema,
-} from './validators';
-import { isOracleId, computeOracleId, computeCallId } from './hash';
+} from './validators.js';
+import { isOracleId, computeOracleId, computeCallId } from './hash.js';
 
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
