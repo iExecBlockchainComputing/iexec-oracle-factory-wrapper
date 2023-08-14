@@ -830,7 +830,6 @@ const createOracle = ({
           message: 'ORACLE_ID_COMPUTED',
           oracleId,
         });
-        console.log('Typeof', typeof jsonParams);
         const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
           throw new WorkflowError('Failed to upload paramSet', e);
         });
