@@ -14,17 +14,13 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
     throw Error(`Failed to load content from ${publicUrl}`);
   }
   const arrayBuffer = await res.arrayBuffer();
-  return Buffer.from(arrayBuffer);
+  return new Uint8Array(arrayBuffer);
 };
 
 const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const ipfsClient = create('/dns4/ipfs-upload.v8-bellecour.iex.ec/https');
-  const json = {
-    message: "Bad Luck, IEXEC node work well this time !",
-  };
-  const jsonStr = JSON.stringify(json);
-  const { cid } = await ipfsClient.add(jsonStr);
-  console.log('cid', cid);
+  const { cid } = await ipfsClient.add(content);
+  console.log('cid', cid.toString());
   await get(cid.toString(), { ipfsGateway });
   return cid.toString();
 };
