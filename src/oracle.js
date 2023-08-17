@@ -119,7 +119,7 @@ const createApiKeyDataset = ({
         const orderToSign = await iexec.order
           .createDatasetorder({
             dataset: address,
-            tag: ['tee'],
+            tag: ['tee', 'scone'],
             apprestrict: ORACLE_APP_ADDRESS,
             volume: Number.MAX_SAFE_INTEGER - 1,
           })
@@ -274,8 +274,8 @@ const updateOracle = ({
         const datasetAddress = paramSet.dataset;
         const apporderbook = await iexec.orderbook
           .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
-            minTag: ['tee'],
-            maxTag: ['tee'],
+            minTag: ['tee', 'scone'],
+            maxTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             dataset: datasetAddress,
@@ -306,8 +306,8 @@ const updateOracle = ({
           });
           const datasetorderbook = await iexec.orderbook
             .fetchDatasetOrderbook(datasetAddress, {
-              minTag: ['tee'],
-              maxTag: ['tee'],
+              minTag: ['tee', 'scone'],
+              maxTag: ['tee', 'scone'],
               requester: await iexec.wallet.getAddress(),
               workerpool,
               app: ORACLE_APP_ADDRESS,
@@ -334,7 +334,7 @@ const updateOracle = ({
         });
         const workerpoolorderbook = await iexec.orderbook
           .fetchWorkerpoolOrderbook({
-            minTag: ['tee'],
+            minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             app: ORACLE_APP_ADDRESS,
@@ -366,7 +366,7 @@ const updateOracle = ({
             appmaxprice: apporder.appprice,
             datasetmaxprice: datasetorder && datasetorder.datasetprice,
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
-            tag: ['tee'],
+            tag: ['tee', 'scone'],
             params: {
               iexec_args: targetBlockchainsArray.join(','),
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
