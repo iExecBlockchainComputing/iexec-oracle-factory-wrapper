@@ -19,7 +19,12 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
 
 const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const ipfsClient = create('/dns4/ipfs-upload.v8-bellecour.iex.ec/https');
-  const { cid } = await ipfsClient.add(content);
+  const json = {
+    message: "Bad Luck, IEXEC node work well this time !",
+  };
+  const jsonStr = JSON.stringify(json);
+  const { cid } = await ipfsClient.add(jsonStr);
+  console.log('cid', cid);
   await get(cid.toString(), { ipfsGateway });
   return cid.toString();
 };
