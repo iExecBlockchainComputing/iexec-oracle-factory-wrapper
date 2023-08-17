@@ -32,10 +32,6 @@ test('standard - instantiation', async () => {
   expect(factoryWithoutOption).toBeInstanceOf(OracleFactory);
   expect(Object.keys(factoryWithoutOption).length).toBe(4);
 
-  oracle.createOracle = jest.fn();
-  oracle.updateOracle = jest.fn().mockReturnValueOnce();
-  oracle.readOracle = jest.fn().mockResolvedValueOnce();
-
   const iexecWithOptions = factoryWithOptions.getIExec();
   expect(iexecWithOptions).toBeInstanceOf(IExec);
 
