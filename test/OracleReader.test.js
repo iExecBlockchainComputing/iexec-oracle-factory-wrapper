@@ -12,7 +12,7 @@ afterEach(() => {
 test('standard - instantiation', async () => {
   const readOracleSpy = jest.spyOn(oracle, 'readOracle').mockReturnValue();
 
-  const ethProvider = 'viviani';
+  const ethProvider = 'bellecour';
 
   const readerWithOptions = new OracleReader(ethProvider, {
     ipfsGateway: 'ipfsGateway',
@@ -25,7 +25,7 @@ test('standard - instantiation', async () => {
 
   oracle.readOracle = jest.fn().mockResolvedValueOnce();
 
-  const expectedProvider = getDefaultProvider('viviani');
+  const expectedProvider = getDefaultProvider('bellecour');
 
   await readerWithOptions.readOracle('paramSetOrCidOrOracleId');
   expect(readOracleSpy).toHaveBeenNthCalledWith(1, {
