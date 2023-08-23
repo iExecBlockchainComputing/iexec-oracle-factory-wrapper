@@ -222,6 +222,7 @@ const updateOracle = ({
   targetBlockchains,
 }) =>
   new Observable((observer) => {
+    console.log('updateOracle');
     console.log(
       'paramSetOrCid',
       paramSetOrCid,
@@ -690,6 +691,7 @@ const readOracle = async ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleContract,
 }) => {
+  console.log('readOracle');
   console.log(
     'paramSetOrCidOrOracleId',
     paramSetOrCidOrOracleId,
@@ -798,6 +800,7 @@ const createOracle = ({
   oracleApp,
 }) =>
   new Observable((observer) => {
+    console.log('createOracle');
     console.log(
       'rawParams',
       rawParams,
