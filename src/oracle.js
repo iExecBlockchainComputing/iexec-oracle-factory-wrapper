@@ -222,6 +222,24 @@ const updateOracle = ({
   targetBlockchains,
 }) =>
   new Observable((observer) => {
+    console.log(
+      'paramSetOrCid',
+      paramSetOrCid,
+      'iexec',
+      iexec,
+      'workerpool',
+      workerpool,
+      'ipfsGateway',
+      ipfsGateway,
+      'DEFAULT_IPFS_GATEWAY',
+      DEFAULT_IPFS_GATEWAY,
+      'oracleApp',
+      oracleApp,
+      'oracleContract',
+      oracleContract,
+      'targetBlockchains',
+      targetBlockchains,
+    );
     let abort = false;
     let stopWatcher;
     const safeObserver = new SafeObserver(observer);
@@ -672,6 +690,20 @@ const readOracle = async ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleContract,
 }) => {
+  console.log(
+    'paramSetOrCidOrOracleId',
+    paramSetOrCidOrOracleId,
+    'dataType',
+    dataType,
+    'ethersProvider',
+    ethersProvider,
+    'ipfsGateway',
+    ipfsGateway,
+    'DEFAULT_IPFS_GATEWAY',
+    DEFAULT_IPFS_GATEWAY,
+    'oracleContract',
+    oracleContract,
+  );
   const chainId = await ethersProvider
     .getNetwork()
     .then((res) => `${res.chainId}`);
@@ -766,6 +798,18 @@ const createOracle = ({
   oracleApp,
 }) =>
   new Observable((observer) => {
+    console.log(
+      'rawParams',
+      rawParams,
+      'iexec',
+      iexec,
+      'ipfsGateway',
+      ipfsGateway,
+      'DEFAULT_IPFS_GATEWAY',
+      DEFAULT_IPFS_GATEWAY,
+      'oracleApp',
+      oracleApp,
+    );
     let abort = false;
     let stopCreateDataset;
     const safeObserver = new SafeObserver(observer);
