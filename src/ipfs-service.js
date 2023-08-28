@@ -1,10 +1,7 @@
 import CID from 'cids';
 import fetch from 'cross-fetch';
 import { create } from 'kubo-rpc-client';
-import getLogger from './logger.js';
 import { DEFAULT_IPFS_GATEWAY, IPFS_UPLOAD_URL } from './conf.js';
-
-const log = getLogger('ipfs-service');
 
 const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const multiaddr = `/ipfs/${cid.toString()}`;
@@ -20,7 +17,6 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
 const add = async (content, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
   const ipfsClient = create(IPFS_UPLOAD_URL);
   const { cid } = await ipfsClient.add(content);
-  console.log('cid', cid.toString());
   await get(cid.toString(), { ipfsGateway });
   return cid.toString();
 };
