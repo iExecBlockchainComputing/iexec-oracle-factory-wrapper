@@ -41,7 +41,7 @@ const networkMap = {
 };
 
 const DEFAULT_IPFS_GATEWAY = 'https://ipfs-gateway.v8-bellecour.iex.ec';
-
+const IPFS_UPLOAD_URL = '/dns4/ipfs-upload.v8-bellecour.iex.ec/https';
 const getDefaultProvider = (network, options) => {
   const resolvedNetwork = networkMap[network] || network;
   return getEthersDefaultProvider(resolvedNetwork, options);
