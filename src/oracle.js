@@ -1,25 +1,25 @@
-const { Buffer } = require('buffer');
-const CID = require('cids');
-const { Contract } = require('ethers');
-const ipfs = require('./ipfs-service');
-const { formatParamsJson, formatOracleGetInt } = require('./format');
-const { Observable, SafeObserver } = require('./reactive');
-const {
+import { Buffer } from 'buffer';
+import CID from 'cids';
+import { Contract } from 'ethers';
+import {
+  API_KEY_PLACEHOLDER,
+  DEFAULT_IPFS_GATEWAY,
   getFactoryDefaults,
   getReaderDefaults,
-  DEFAULT_IPFS_GATEWAY,
-  API_KEY_PLACEHOLDER,
-} = require('./conf');
-const { WorkflowError, ValidationError, NoValueError } = require('./errors');
-const {
+} from './conf.js';
+import { NoValueError, ValidationError, WorkflowError } from './errors.js';
+import { formatOracleGetInt, formatParamsJson } from './format.js';
+import { computeCallId, computeOracleId, isOracleId } from './hash.js';
+import * as ipfs from './ipfs-service.js';
+import { Observable, SafeObserver } from './reactive.js';
+import {
   jsonParamSetSchema,
   paramSetSchema,
   rawParamsSchema,
   readDataTypeSchema,
   throwIfMissing,
   updateTargetBlockchainsSchema,
-} = require('./validators');
-const { isOracleId, computeOracleId, computeCallId } = require('./hash');
+} from './validators.js';
 
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
@@ -119,7 +119,7 @@ const createApiKeyDataset = ({
         const orderToSign = await iexec.order
           .createDatasetorder({
             dataset: address,
-            tag: ['tee'],
+            tag: ['tee', 'scone'],
             apprestrict: ORACLE_APP_ADDRESS,
             volume: Number.MAX_SAFE_INTEGER - 1,
           })
@@ -196,8 +196,12 @@ const getParamSet = async ({
       throw Error(`Failed to load paramSetSet from CID ${cid}`);
     });
     const contentText = contentBuffer.toString();
+    const numbers = contentText.split(',');
+    const decodedString = numbers
+      .map((number) => String.fromCharCode(Number(number)))
+      .join('');
     try {
-      paramsJson = await jsonParamSetSchema().validate(contentText);
+      paramsJson = await jsonParamSetSchema().validate(decodedString);
       paramSet = JSON.parse(paramsJson);
       isUploaded = true;
     } catch (e) {
@@ -274,8 +278,8 @@ const updateOracle = ({
         const datasetAddress = paramSet.dataset;
         const apporderbook = await iexec.orderbook
           .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
-            minTag: ['tee'],
-            maxTag: ['tee'],
+            minTag: ['tee', 'scone'],
+            maxTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             dataset: datasetAddress,
@@ -306,8 +310,8 @@ const updateOracle = ({
           });
           const datasetorderbook = await iexec.orderbook
             .fetchDatasetOrderbook(datasetAddress, {
-              minTag: ['tee'],
-              maxTag: ['tee'],
+              minTag: ['tee', 'scone'],
+              maxTag: ['tee', 'scone'],
               requester: await iexec.wallet.getAddress(),
               workerpool,
               app: ORACLE_APP_ADDRESS,
@@ -334,7 +338,7 @@ const updateOracle = ({
         });
         const workerpoolorderbook = await iexec.orderbook
           .fetchWorkerpoolOrderbook({
-            minTag: ['tee'],
+            minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             app: ORACLE_APP_ADDRESS,
@@ -366,7 +370,7 @@ const updateOracle = ({
             appmaxprice: apporder.appprice,
             datasetmaxprice: datasetorder && datasetorder.datasetprice,
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
-            tag: ['tee'],
+            tag: ['tee', 'scone'],
             params: {
               iexec_args: targetBlockchainsArray.join(','),
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
@@ -830,7 +834,6 @@ const createOracle = ({
           message: 'ORACLE_ID_COMPUTED',
           oracleId,
         });
-
         const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
           throw new WorkflowError('Failed to upload paramSet', e);
         });
@@ -865,9 +868,4 @@ const createOracle = ({
     return safeObserver.unsubscribe.bind(safeObserver);
   });
 
-module.exports = {
-  getParamSet,
-  createOracle,
-  updateOracle,
-  readOracle,
-};
+export { createOracle, getParamSet, readOracle, updateOracle };

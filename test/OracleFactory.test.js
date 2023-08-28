@@ -1,7 +1,9 @@
-const { IExec, utils } = require('iexec');
-const { Wallet } = require('ethers');
-const OracleFactory = require('../src/OracleFactory');
-const oracle = require('../src/oracle');
+import { jest } from '@jest/globals';
+import { IExec, utils } from 'iexec';
+import { Wallet } from 'ethers';
+import OracleFactory from '../src/OracleFactory.js';
+import * as oracle from '../src/oracle.js';
+
 
 jest.mock('../src/oracle');
 
@@ -29,10 +31,6 @@ test('standard - instantiation', async () => {
   expect(Object.keys(factoryWithOptions).length).toBe(4);
   expect(factoryWithoutOption).toBeInstanceOf(OracleFactory);
   expect(Object.keys(factoryWithoutOption).length).toBe(4);
-
-  oracle.createOracle = jest.fn();
-  oracle.updateOracle = jest.fn().mockReturnValueOnce();
-  oracle.readOracle = jest.fn().mockResolvedValueOnce();
 
   const iexecWithOptions = factoryWithOptions.getIExec();
   expect(iexecWithOptions).toBeInstanceOf(IExec);

@@ -1,7 +1,7 @@
-const fetch = require('cross-fetch');
-const jp = require('jsonpath');
-const { rawParamsSchema } = require('./validators');
-const { API_KEY_PLACEHOLDER } = require('./conf');
+import fetch from 'cross-fetch';
+import jp from 'jsonpath';
+import { rawParamsSchema } from './validators.js';
+import { API_KEY_PLACEHOLDER } from './conf.js';
 
 const testRawParams = async (rawParams) => {
   const { url, method, headers, body, apiKey, JSONPath, dataType } =
@@ -88,6 +88,4 @@ const testRawParams = async (rawParams) => {
   }
 };
 
-module.exports = {
-  testRawParams,
-};
+export default testRawParams;

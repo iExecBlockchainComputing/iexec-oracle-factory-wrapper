@@ -1,4 +1,4 @@
-const { getDefaultProvider: getEthersDefaultProvider } = require('ethers');
+import { getDefaultProvider as getEthersDefaultProvider } from 'ethers';
 
 const API_KEY_PLACEHOLDER = '%API_KEY%';
 
@@ -40,8 +40,8 @@ const networkMap = {
   mumbai: 'https://matic-mumbai.chainstacklabs.com',
 };
 
-const DEFAULT_IPFS_GATEWAY = 'https://ipfs.io';
-
+const DEFAULT_IPFS_GATEWAY = 'https://ipfs-gateway.v8-bellecour.iex.ec';
+const IPFS_UPLOAD_URL = '/dns4/ipfs-upload.v8-bellecour.iex.ec/https';
 const getDefaultProvider = (network, options) => {
   const resolvedNetwork = networkMap[network] || network;
   return getEthersDefaultProvider(resolvedNetwork, options);
@@ -67,7 +67,7 @@ const getDefaults = (chainId) => {
   return conf;
 };
 
-module.exports = {
+export {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
   getReaderDefaults,

@@ -1,6 +1,6 @@
-const { Web3Provider } = require('ethers').providers;
-const { getDefaultProvider } = require('./conf');
-const { readOracle } = require('./oracle');
+import { providers } from 'ethers';
+import { getDefaultProvider } from './conf.js';
+import { readOracle } from './oracle.js';
 
 class IExecOracleReader {
   constructor(
@@ -10,7 +10,7 @@ class IExecOracleReader {
     let ethersProvider;
     try {
       if (typeof ethProvider === 'object') {
-        ethersProvider = new Web3Provider(ethProvider);
+        ethersProvider = new providers.Web3Provider(ethProvider);
       } else {
         ethersProvider = getDefaultProvider(ethProvider, providerOptions);
       }
@@ -28,4 +28,4 @@ class IExecOracleReader {
   }
 }
 
-module.exports = IExecOracleReader;
+export default IExecOracleReader;

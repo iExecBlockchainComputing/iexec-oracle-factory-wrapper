@@ -1,9 +1,7 @@
-const Debug = require('debug');
+import Debug from 'debug';
 
 const debug = Debug('iexec-oracle-factory-wrapper');
 
 const getLogger = (namespace) => debug.extend(namespace);
 
-module.exports = {
-  getLogger,
-};
+export default getLogger;

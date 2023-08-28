@@ -1,9 +1,9 @@
-const { BigNumber } = require('ethers');
-const {
+import { BigNumber } from 'ethers';
+import {
   sortObjKeys,
   formatParamsJson,
   formatOracleGetInt,
-} = require('../src/format');
+} from '../src/format.js';
 
 describe('sortObjKeys', () => {
   test('sort nested keys', () => {
