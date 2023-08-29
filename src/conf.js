@@ -70,6 +70,7 @@ const getDefaults = (chainId) => {
 export {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
+  IPFS_UPLOAD_URL,
   getReaderDefaults,
   getFactoryDefaults,
   getDefaults,
