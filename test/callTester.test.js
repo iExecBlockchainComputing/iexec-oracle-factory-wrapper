@@ -1,18 +1,19 @@
 import { jest } from '@jest/globals';
-import fetch from 'cross-fetch';
-import testRawParams from '../src/callTester.js';
-
-jest.mock('cross-fetch');
+jest.unstable_mockModule('cross-fetch', () => {
+  return {
+    default: jest.fn().mockImplementation(async () => ({
+      json: () => Promise.resolve({ foo: false, bar: true }),
+    })),
+  };
+});
+const { default: fetch } = await import('cross-fetch');
+const { default: testRawParams } = await import('../src/callTester.js');
 
 afterEach(() => {
   jest.resetAllMocks();
 });
-
 describe('testRawParams', () => {
   test('standard - perfom fetch with %API_KEY% placeholder replacement in url and headers', async () => {
-    fetch.mockImplementation(async () => ({
-      json: () => Promise.resolve({ foo: false, bar: true }),
-    }));
     await testRawParams({
       url: 'https://foo.io?query=bar&apiKey=%API_KEY%',
       method: 'PUT',
