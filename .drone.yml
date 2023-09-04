@@ -16,21 +16,11 @@ steps:
       - npm -v
       - npm ci
 
-  # - name: test_node16
-  #   image: node:16
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
-
-  # - name: test_node14
-  #   image: node:14
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
+  - name: test_node16
+    image: node:16
+    pull: true
+    commands:
+      - npm test
 
   - name: npm-publish-dry-run
     image: node:16
