@@ -2346,9 +2346,8 @@ describe('updateOracle', () => {
 });
 
 describe('readOracle', () => {
-  test.skip('standard - from paramSet dataType: "boolean"', async () => {
+  test('standard - from paramSet dataType: "boolean"', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2385,9 +2384,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from paramSet dataType: "string"', async () => {
+  test('standard - from paramSet dataType: "string"', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2405,7 +2403,7 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from CID', async () => {
+  test('standard - from CID', async () => {
     ipfs.get.mockResolvedValueOnce(
       JSON.stringify({
         JSONPath: '$.version',
@@ -2421,7 +2419,6 @@ describe('readOracle', () => {
       'https://bellecour.iex.ec',
       Wallet.createRandom().privateKey,
     );
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: 'QmPisjyCjaZ2JdnibWw2JZHf68b2CpTkdjePmFM1BZxWtD',
@@ -2456,9 +2453,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from oracleId (dataType string)', async () => {
+  test('standard - from oracleId (dataType string)', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2470,9 +2466,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from oracleId (dataType boolean)', async () => {
+  test('standard - from oracleId (dataType boolean)', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
