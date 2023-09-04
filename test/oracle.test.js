@@ -450,7 +450,10 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
-  test.skip('error - unexpected error', async () => {
+  test('error - unexpected error', async () => {
+    ipfs.add.mockImplementation(() => {
+      throw TypeError('fake error');
+    });
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2302,7 +2305,10 @@ describe('updateOracle', () => {
     );
   }, 10000);
 
-  test.skip('error - unexpected error', async () => {
+  test('error - unexpected error', async () => {
+    ipfs.add.mockImplementation(() => {
+      throw TypeError('fake error');
+    });
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
