@@ -1,17 +1,23 @@
 import { jest } from '@jest/globals';
-import OracleReader from '../src/OracleReader.js';
-import * as oracle from '../src/oracle.js';
 import { getDefaultProvider } from '../src/conf.js';
 
-jest.mock('../src/oracle');
+jest.unstable_mockModule('../src/oracle.js', () => ({
+  readOracle: jest.fn(),
+}));
+// dynamically import tested module after all mocks are loaded
+const { readOracle } = await import('../src/oracle.js');
+// this will use the already loaded mock of oracle.js
+const { default: OracleReader } = await import('../src/OracleReader.js');
+
+afterEach(() => {
+  jest.resetAllMocks();
+});
 
 afterEach(() => {
   jest.resetAllMocks();
 });
 
 test('standard - instantiation', async () => {
-  const readOracleSpy = jest.spyOn(oracle, 'readOracle').mockReturnValue();
-
   const ethProvider = 'bellecour';
 
   const readerWithOptions = new OracleReader(ethProvider, {
@@ -23,12 +29,10 @@ test('standard - instantiation', async () => {
 
   const readerWithoutOption = new OracleReader(ethProvider);
 
-  oracle.readOracle = jest.fn().mockResolvedValueOnce();
-
   const expectedProvider = getDefaultProvider('bellecour');
 
   await readerWithOptions.readOracle('paramSetOrCidOrOracleId');
-  expect(readOracleSpy).toHaveBeenNthCalledWith(1, {
+  expect(readOracle).toHaveBeenNthCalledWith(1, {
     ethersProvider: expectedProvider,
     ipfsGateway: 'ipfsGateway',
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
@@ -39,7 +43,7 @@ test('standard - instantiation', async () => {
   await readerWithOptions.readOracle('paramSetOrCidOrOracleId', {
     dataType: 'dataType',
   });
-  expect(readOracleSpy).toHaveBeenNthCalledWith(2, {
+  expect(readOracle).toHaveBeenNthCalledWith(2, {
     ethersProvider: expectedProvider,
     ipfsGateway: 'ipfsGateway',
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
@@ -48,12 +52,12 @@ test('standard - instantiation', async () => {
   });
 
   await readerWithoutOption.readOracle('paramSetOrCidOrOracleId');
-  expect(readOracleSpy).toHaveBeenNthCalledWith(3, {
+  expect(readOracle).toHaveBeenNthCalledWith(3, {
     ethersProvider: expectedProvider,
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
   });
 
-  expect(readOracleSpy).toHaveBeenCalledTimes(3);
+  expect(readOracle).toHaveBeenCalledTimes(3);
 });
 
 test('error - invalid provider', () => {
