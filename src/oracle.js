@@ -1,17 +1,16 @@
 import { Buffer } from 'buffer';
 import CID from 'cids';
 import { Contract } from 'ethers';
+import * as ipfs from './ipfs-service.js';
+import { formatParamsJson, formatOracleGetInt } from './format.js';
+import { Observable, SafeObserver } from './reactive.js';
 import {
-  API_KEY_PLACEHOLDER,
-  DEFAULT_IPFS_GATEWAY,
   getFactoryDefaults,
   getReaderDefaults,
+  DEFAULT_IPFS_GATEWAY,
+  API_KEY_PLACEHOLDER,
 } from './conf.js';
-import { NoValueError, ValidationError, WorkflowError } from './errors.js';
-import { formatOracleGetInt, formatParamsJson } from './format.js';
-import { computeCallId, computeOracleId, isOracleId } from './hash.js';
-import * as ipfs from './ipfs-service.js';
-import { Observable, SafeObserver } from './reactive.js';
+import { WorkflowError, ValidationError, NoValueError } from './errors.js';
 import {
   jsonParamSetSchema,
   paramSetSchema,
@@ -20,6 +19,7 @@ import {
   throwIfMissing,
   updateTargetBlockchainsSchema,
 } from './validators.js';
+import { isOracleId, computeOracleId, computeCallId } from './hash.js';
 
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
@@ -196,12 +196,8 @@ const getParamSet = async ({
       throw Error(`Failed to load paramSetSet from CID ${cid}`);
     });
     const contentText = contentBuffer.toString();
-    const numbers = contentText.split(',');
-    const decodedString = numbers
-      .map((number) => String.fromCharCode(Number(number)))
-      .join('');
     try {
-      paramsJson = await jsonParamSetSchema().validate(decodedString);
+      paramsJson = await jsonParamSetSchema().validate(contentText);
       paramSet = JSON.parse(paramsJson);
       isUploaded = true;
     } catch (e) {
@@ -868,4 +864,4 @@ const createOracle = ({
     return safeObserver.unsubscribe.bind(safeObserver);
   });
 
-export { createOracle, getParamSet, readOracle, updateOracle };
+export { getParamSet, createOracle, updateOracle, readOracle };
