@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Changed the default IPFS gateway to the v8 stack-specific gateway.
+- Migrated IPFS upload from `ipfs` to `kubo-rpc-client` using the iExec v8 stack-specific IPFS node.
 - Upgraded iexec sdk to version 8.2.1.
 - Upgraded react-wallet-manager to version 2.0.1.
 - Migrated from CommonJs to ES modules.
