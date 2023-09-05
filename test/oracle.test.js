@@ -1,9 +1,30 @@
-import { jest } from '@jest/globals';
+import { beforeEach, jest } from '@jest/globals';
 import { Wallet, getDefaultProvider } from 'ethers';
 import { IExec, utils } from 'iexec';
-import { createOracle, updateOracle, readOracle } from '../src/oracle.js';
+import add from '../src/ipfs/add.js';
+import get from '../src/ipfs/get.js';
+import isCid from '../src/ipfs/isCid.js';
 import { ValidationError, WorkflowError, NoValueError } from '../src/errors.js';
-import * as ipfs from '../src/ipfs-service.js';
+
+jest.unstable_mockModule('../src/ipfs-service.js', () => ({
+  add: jest.fn(),
+  get: jest.fn(),
+  isCid: jest.fn(),
+}));
+
+const ipfs = await import('../src/ipfs-service.js');
+
+// dynamically import tested module after all mock are loaded
+const { createOracle, updateOracle, readOracle } = await import(
+  '../src/oracle.js'
+);
+
+beforeEach(() => {
+  // use ipfs real implementation as default mock
+  ipfs.add.mockImplementation(add);
+  ipfs.get.mockImplementation(get);
+  ipfs.isCid.mockImplementation(isCid);
+});
 
 afterEach(() => {
   jest.resetAllMocks();
@@ -11,9 +32,9 @@ afterEach(() => {
 
 describe('createOracle', () => {
   test('standard - without apiKey', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -250,9 +271,9 @@ describe('createOracle', () => {
   }, 10000);
 
   test('cancel - without apiKey', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -390,7 +411,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - failed to upload paramSet', async () => {
-    jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
+    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -429,7 +450,10 @@ describe('createOracle', () => {
     expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
-  test.skip('error - unexpected error', async () => {
+  test('error - unexpected error', async () => {
+    ipfs.add.mockImplementation(() => {
+      throw TypeError('fake error');
+    });
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -567,7 +591,7 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to upload encrypted apiKey', async () => {
-    jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
+    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -611,9 +635,9 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to deploy dataset', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    ipfs.add.mockResolvedValueOnce(
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -661,9 +685,9 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to push encryption key', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    ipfs.add.mockResolvedValueOnce(
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -718,9 +742,9 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to create datasetorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    ipfs.add.mockResolvedValueOnce(
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -774,9 +798,9 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to sign datasetorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    ipfs.add.mockResolvedValueOnce(
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -833,9 +857,9 @@ describe('createOracle', () => {
   }, 10000);
 
   test('error - with apiKey failed to sign datasetorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S');
+    ipfs.add.mockResolvedValueOnce(
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -946,9 +970,9 @@ describe('createOracle', () => {
 
 describe('updateOracle', () => {
   test('standard - from paramSet', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1085,7 +1109,7 @@ describe('updateOracle', () => {
         Wallet.createRandom().privateKey,
       ),
     });
-    jest.spyOn(ipfs, 'get').mockResolvedValueOnce(
+    ipfs.get.mockResolvedValueOnce(
       JSON.stringify({
         JSONPath: '$.data',
         body: '',
@@ -1211,9 +1235,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('standard - no dataset', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1339,9 +1363,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('cancel during watch', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1478,7 +1502,7 @@ describe('updateOracle', () => {
         Wallet.createRandom().privateKey,
       ),
     });
-    jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('Content not found'));
+    ipfs.get.mockRejectedValueOnce(Error('Content not found'));
 
     const messages = [];
     const errors = [];
@@ -1518,7 +1542,7 @@ describe('updateOracle', () => {
         Wallet.createRandom().privateKey,
       ),
     });
-    jest.spyOn(ipfs, 'get').mockResolvedValueOnce('{"foo":"bar"}');
+    ipfs.get.mockResolvedValueOnce('{"foo":"bar"}');
 
     const messages = [];
     const errors = [];
@@ -1585,7 +1609,7 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - from paramSet fail to upload', async () => {
-    jest.spyOn(ipfs, 'add').mockRejectedValueOnce(Error('ipfs.add failed'));
+    ipfs.add.mockRejectedValueOnce(Error('ipfs.add failed'));
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1628,9 +1652,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch apporder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1678,9 +1702,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no apporder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1726,9 +1750,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch datasetorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1781,9 +1805,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no datasetorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1832,9 +1856,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to fetch workerppolorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1890,9 +1914,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - no workerpoolorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -1944,9 +1968,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to create requestorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2004,9 +2028,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to sign requestorder', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2067,9 +2091,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - fail to match orders', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2133,9 +2157,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - task observer error', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2206,9 +2230,9 @@ describe('updateOracle', () => {
   }, 10000);
 
   test('error - update task timedout', async () => {
-    jest
-      .spyOn(ipfs, 'add')
-      .mockResolvedValueOnce('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh');
+    ipfs.add.mockResolvedValueOnce(
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+    );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2281,7 +2305,10 @@ describe('updateOracle', () => {
     );
   }, 10000);
 
-  test.skip('error - unexpected error', async () => {
+  test('error - unexpected error', async () => {
+    ipfs.add.mockImplementation(() => {
+      throw TypeError('fake error');
+    });
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
@@ -2325,9 +2352,8 @@ describe('updateOracle', () => {
 });
 
 describe('readOracle', () => {
-  test.skip('standard - from paramSet dataType: "boolean"', async () => {
+  test('standard - from paramSet dataType: "boolean"', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2364,9 +2390,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from paramSet dataType: "string"', async () => {
+  test('standard - from paramSet dataType: "string"', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId: {
@@ -2384,8 +2409,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from CID', async () => {
-    jest.spyOn(ipfs, 'get').mockResolvedValueOnce(
+  test('standard - from CID', async () => {
+    ipfs.get.mockResolvedValueOnce(
       JSON.stringify({
         JSONPath: '$.version',
         body: '',
@@ -2400,7 +2425,6 @@ describe('readOracle', () => {
       'https://bellecour.iex.ec',
       Wallet.createRandom().privateKey,
     );
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: signer.provider,
       paramSetOrCidOrOracleId: 'QmPisjyCjaZ2JdnibWw2JZHf68b2CpTkdjePmFM1BZxWtD',
@@ -2435,9 +2459,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from oracleId (dataType string)', async () => {
+  test('standard - from oracleId (dataType string)', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2449,9 +2472,8 @@ describe('readOracle', () => {
     expect(typeof date).toBe('number');
   });
 
-  test.skip('standard - from oracleId (dataType boolean)', async () => {
+  test('standard - from oracleId (dataType boolean)', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec');
-    // TODO: replace paramSetOrCidOrOracleId with an existing oracle on bellecour
     const res = await readOracle({
       ethersProvider: provider,
       paramSetOrCidOrOracleId:
@@ -2531,7 +2553,7 @@ describe('readOracle', () => {
   });
 
   test('error - failed to load paramSet', async () => {
-    jest.spyOn(ipfs, 'get').mockRejectedValueOnce(Error('ipfs.get failed'));
+    ipfs.get.mockRejectedValueOnce(Error('ipfs.get failed'));
     const provider = getDefaultProvider('https://bellecour.iex.ec');
     await expect(
       readOracle({

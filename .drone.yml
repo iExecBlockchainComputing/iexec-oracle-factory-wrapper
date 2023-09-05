@@ -9,31 +9,25 @@ trigger:
       - promote
 steps:
   - name: install
-    image: node:16
+    image: node:18
     pull: always
     commands:
       - node -v
       - npm -v
       - npm ci
 
-  # - name: test_node16
-  #   image: node:16
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
+  - name: test
+    image: node:18
+    commands:
+      - npm test
 
-  # - name: test_node14
-  #   image: node:14
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
+  - name: build
+    image: node:18
+    commands:
+      - npm run build
 
   - name: npm-publish-dry-run
-    image: node:16
+    image: node:18
     commands:
       - npm publish --dry-run
 
@@ -53,36 +47,20 @@ trigger:
 
 steps:
   - name: install
-    image: node:16
+    image: node:18
     pull: always
     commands:
       - node -v
       - npm -v
       - npm ci
 
-  # - name: test_node16
-  #   image: node:16
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
-
-  # - name: test_node14
-  #   image: node:14
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
-
   - name: build
-    image: node:16
+    image: node:18
     commands:
       - npm run build
 
   - name: set-version-nightly
-    image: node:16
+    image: node:18
     commands:
       - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
 
@@ -113,28 +91,17 @@ trigger:
 
 steps:
   - name: install
-    image: node:16
+    image: node:18
     pull: always
     commands:
       - node -v
       - npm -v
       - npm ci
 
-  # - name: test_node16
-  #   image: node:16
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
-
-  # - name: test_node14
-  #   image: node:14
-  #   pull: true
-  #   commands:
-  #     - npm ci
-  #     - npm run build
-  #     - npm test
+  - name: build
+    image: node:18
+    commands:
+      - npm run build
 
   - name: publish
     image: plugins/npm
