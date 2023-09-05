@@ -1,4 +1,5 @@
 import fetch from 'cross-fetch';
+import { Buffer } from 'buffer';
 import { DEFAULT_IPFS_GATEWAY } from '../conf.js';
 
 const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
@@ -9,7 +10,7 @@ const get = async (cid, { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}) => {
     throw Error(`Failed to load content from ${publicUrl}`);
   }
   const arrayBuffer = await res.arrayBuffer();
-  return new Uint8Array(arrayBuffer);
+  return Buffer.from(arrayBuffer);
 };
 
 export default get;
