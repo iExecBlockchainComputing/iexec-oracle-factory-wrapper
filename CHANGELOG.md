@@ -17,4 +17,4 @@ All notable changes to this project will be documented in this file.
 
 ### Removed
 
-- Removed Create React App (CRA) bundler.
+- Removed support for viviani testnet
