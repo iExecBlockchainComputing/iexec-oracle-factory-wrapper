@@ -1,4 +1,4 @@
-const { ValidationError } = require('yup');
+import { ValidationError } from 'yup';
 
 class WorkflowError extends Error {
   constructor(message, originalError) {
@@ -10,7 +10,7 @@ class WorkflowError extends Error {
 
 class NoValueError extends Error {}
 
-module.exports = {
+export  {
   ValidationError,
   WorkflowError,
   NoValueError,

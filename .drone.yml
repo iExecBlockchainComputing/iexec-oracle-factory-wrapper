@@ -1,25 +1,115 @@
-pipeline:
-  test_node16:
-    image: node:16
-    pull: true
+# sdk @iexec/iexec-oracle-factory-wrapper default pipeline
+kind: pipeline
+type: docker
+name: sdk-default
+
+trigger:
+  event:
+    exclude:
+      - promote
+steps:
+  - name: install
+    image: node:18
+    pull: always
     commands:
+      - node -v
+      - npm -v
       - npm ci
-      - npm run build
+
+  - name: test
+    image: node:18
+    commands:
       - npm test
 
-  test_node14:
-    image: node:14
-    pull: true
+  - name: build
+    image: node:18
     commands:
-      - npm ci
       - npm run build
-      - npm test
 
-  npm_publish:
+  - name: npm-publish-dry-run
+    image: node:18
+    commands:
+      - npm publish --dry-run
+
+---
+# sdk @iexec/iexec-oracle-factory-wrapper publish npm nightly pipeline
+kind: pipeline
+type: docker
+name: sdk-publish-nightly
+
+trigger:
+  event:
+    - promote
+  target:
+    - sdk-nightly
+  branch:
+    - develop
+
+steps:
+  - name: install
+    image: node:18
+    pull: always
+    commands:
+      - node -v
+      - npm -v
+      - npm ci
+
+  - name: build
+    image: node:18
+    commands:
+      - npm run build
+
+  - name: set-version-nightly
+    image: node:18
+    commands:
+      - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
+
+  - name: publish
     image: plugins/npm
-    secrets: [npm_token]
-    username: iexecteam
-    email: dev@iex.ec
-    tag: latest
-    when:
-      ref: [refs/tags/v*]
+    pull: always
+    settings:
+      username:
+        from_secret: npm_username
+      token:
+        from_secret: npm_token
+      tag: nightly
+      access: public
+
+---
+# sdk @iexec/iexec-oracle-factory-wrapper publish npm latest pipeline
+kind: pipeline
+type: docker
+name: sdk-publish-latest
+
+trigger:
+  event:
+    - promote
+  target:
+    - sdk-latest
+  branch:
+    - main
+
+steps:
+  - name: install
+    image: node:18
+    pull: always
+    commands:
+      - node -v
+      - npm -v
+      - npm ci
+
+  - name: build
+    image: node:18
+    commands:
+      - npm run build
+
+  - name: publish
+    image: plugins/npm
+    pull: always
+    settings:
+      username:
+        from_secret: npm_username
+      token:
+        from_secret: npm_token
+      tag: latest
+      access: public

@@ -1,14 +1,18 @@
-const fetch = require('cross-fetch');
-const { testRawParams } = require('../src/callTester');
-
-jest.mock('cross-fetch');
+import { jest } from '@jest/globals';
+jest.unstable_mockModule('cross-fetch', () => {
+  return {
+    default: jest.fn(),
+  };
+});
+const { default: fetch } = await import('cross-fetch');
+// dynamically import tested module after all mocks are loaded
+const { default: testRawParams } = await import('../src/callTester.js');
 
 afterEach(() => {
   jest.resetAllMocks();
 });
-
 describe('testRawParams', () => {
-  test('standard - perfom fetch with %API_KEY% placeholder replacement in url and headers', async () => {
+  test('standard - perform fetch with %API_KEY% placeholder replacement in url and headers', async () => {
     fetch.mockImplementation(async () => ({
       json: () => Promise.resolve({ foo: false, bar: true }),
     }));

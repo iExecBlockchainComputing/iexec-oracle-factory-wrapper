@@ -1,23 +1,25 @@
-const { Buffer } = require('buffer');
-const CID = require('cids');
-const { Contract } = require('ethers');
-const ipfs = require('./ipfs-service');
-const { formatParamsJson, formatOracleGetInt } = require('./format');
-const { Observable, SafeObserver } = require('./reactive');
-const {
-  getDefaults,
+import { Buffer } from 'buffer';
+import CID from 'cids';
+import { Contract } from 'ethers';
+import * as ipfs from './ipfs-service.js';
+import { formatParamsJson, formatOracleGetInt } from './format.js';
+import { Observable, SafeObserver } from './reactive.js';
+import {
+  getFactoryDefaults,
+  getReaderDefaults,
   DEFAULT_IPFS_GATEWAY,
   API_KEY_PLACEHOLDER,
-} = require('./conf');
-const { WorkflowError, ValidationError, NoValueError } = require('./errors');
-const {
+} from './conf.js';
+import { WorkflowError, ValidationError, NoValueError } from './errors.js';
+import {
   jsonParamSetSchema,
   paramSetSchema,
   rawParamsSchema,
   readDataTypeSchema,
   throwIfMissing,
-} = require('./validators');
-const { isOracleId, computeOracleId, computeCallId } = require('./hash');
+  updateTargetBlockchainsSchema,
+} from './validators.js';
+import { isOracleId, computeOracleId, computeCallId } from './hash.js';
 
 const createApiKeyDataset = ({
   iexec = throwIfMissing(),
@@ -34,7 +36,7 @@ const createApiKeyDataset = ({
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
         const ORACLE_APP_ADDRESS =
-          oracleApp || getDefaults(chainId).ORACLE_APP_ADDRESS;
+          oracleApp || getFactoryDefaults(chainId).ORACLE_APP_ADDRESS;
 
         const key = iexec.dataset.generateEncryptionKey();
         safeObserver.next({
@@ -117,7 +119,7 @@ const createApiKeyDataset = ({
         const orderToSign = await iexec.order
           .createDatasetorder({
             dataset: address,
-            tag: ['tee'],
+            tag: ['tee', 'scone'],
             apprestrict: ORACLE_APP_ADDRESS,
             volume: Number.MAX_SAFE_INTEGER - 1,
           })
@@ -217,6 +219,7 @@ const updateOracle = ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleApp,
   oracleContract,
+  targetBlockchains,
 }) =>
   new Observable((observer) => {
     let abort = false;
@@ -224,12 +227,14 @@ const updateOracle = ({
     const safeObserver = new SafeObserver(observer);
     const start = async () => {
       try {
+        const targetBlockchainsArray =
+          await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
         const ORACLE_APP_ADDRESS =
-          oracleApp || getDefaults(chainId).ORACLE_APP_ADDRESS;
+          oracleApp || getFactoryDefaults(chainId).ORACLE_APP_ADDRESS;
         const ORACLE_CONTRACT_ADDRESS =
-          oracleContract || getDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
+          oracleContract || getFactoryDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
 
         let cid;
         safeObserver.next({
@@ -269,8 +274,8 @@ const updateOracle = ({
         const datasetAddress = paramSet.dataset;
         const apporderbook = await iexec.orderbook
           .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
-            minTag: ['tee'],
-            maxTag: ['tee'],
+            minTag: ['tee', 'scone'],
+            maxTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             dataset: datasetAddress,
@@ -301,8 +306,8 @@ const updateOracle = ({
           });
           const datasetorderbook = await iexec.orderbook
             .fetchDatasetOrderbook(datasetAddress, {
-              minTag: ['tee'],
-              maxTag: ['tee'],
+              minTag: ['tee', 'scone'],
+              maxTag: ['tee', 'scone'],
               requester: await iexec.wallet.getAddress(),
               workerpool,
               app: ORACLE_APP_ADDRESS,
@@ -329,7 +334,7 @@ const updateOracle = ({
         });
         const workerpoolorderbook = await iexec.orderbook
           .fetchWorkerpoolOrderbook({
-            minTag: ['tee'],
+            minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             app: ORACLE_APP_ADDRESS,
@@ -361,8 +366,9 @@ const updateOracle = ({
             appmaxprice: apporder.appprice,
             datasetmaxprice: datasetorder && datasetorder.datasetprice,
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
-            tag: ['tee'],
+            tag: ['tee', 'scone'],
             params: {
+              iexec_args: targetBlockchainsArray.join(','),
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
               iexec_developer_logger: true,
             },
@@ -671,7 +677,7 @@ const readOracle = async ({
     .then((res) => `${res.chainId}`);
 
   const ORACLE_CONTRACT_ADDRESS =
-    oracleContract || getDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
+    oracleContract || getReaderDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
 
   let readDataType;
   let oracleId;
@@ -721,7 +727,7 @@ const readOracle = async ({
         .getBool(oracleId)
         .catch(() => {
           throw Error(
-            `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not boolean dataType`,
+            `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not boolean dataType`,
           );
         });
       return { value: result, date: dateBn.toNumber() };
@@ -731,7 +737,7 @@ const readOracle = async ({
         .getInt(oracleId)
         .catch(() => {
           throw Error(
-            `Failed to read number from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not number dataType`,
+            `Failed to read number from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not number dataType`,
           );
         });
       const resultNumber = formatOracleGetInt(resultBn);
@@ -742,7 +748,7 @@ const readOracle = async ({
         .getString(oracleId)
         .catch(() => {
           throw Error(
-            `Failed to read string from oracle with oracleId ${oracleId}\nThis may occure when:\n- No value is stored\n- Stored value is not string dataType`,
+            `Failed to read string from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not string dataType`,
           );
         });
       return { value: resultString, date: dateBn.toNumber() };
@@ -824,7 +830,6 @@ const createOracle = ({
           message: 'ORACLE_ID_COMPUTED',
           oracleId,
         });
-
         const cid = await ipfs.add(jsonParams, { ipfsGateway }).catch((e) => {
           throw new WorkflowError('Failed to upload paramSet', e);
         });
@@ -859,9 +864,4 @@ const createOracle = ({
     return safeObserver.unsubscribe.bind(safeObserver);
   });
 
-module.exports = {
-  getParamSet,
-  createOracle,
-  updateOracle,
-  readOracle,
-};
+export { getParamSet, createOracle, updateOracle, readOracle };

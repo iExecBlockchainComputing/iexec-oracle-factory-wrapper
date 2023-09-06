@@ -1,4 +1,4 @@
-import { IExecOracleFactory, utils } from '../../dist';
+import { IExecOracleFactory, IExecOracleReader, utils } from '../../dist';
 import './styles.css';
 
 const init = async () => {
@@ -130,7 +130,7 @@ const init = async () => {
                   )) ||
                 {},
             },
-            { workerpool: '0xAd0b7eFEc0ABF34421B668ea7bCadaC12Dd97541' }, // viviani prod pool
+            { workerpool: '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f' }, // bellecour prod pool
           )
           .subscribe({
             error: (e) => {
@@ -162,7 +162,7 @@ const init = async () => {
         factory
           .updateOracle(
             document.getElementById('update-oracle-from-cid-cid-input').value,
-            { workerpool: '0xAd0b7eFEc0ABF34421B668ea7bCadaC12Dd97541' }, // viviani prod pool
+            { workerpool: '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f' }, // bellecour prod pool
           )
           .subscribe({
             error: (e) => {
@@ -270,6 +270,41 @@ const init = async () => {
             out.classList.add('error');
             out.value += e.toString();
           });
+      });
+
+    document
+      .getElementById('read-x-chain-oracle-from-oracleid-button')
+      .addEventListener('click', async () => {
+        const provider =
+          document.getElementById(
+            'read-x-chain-oracle-from-oracleid-provider-input',
+          ).value || 'injected';
+        const out = document.getElementById(
+          'read-x-chain-oracle-from-oracleid-out',
+        );
+        out.value = '';
+        out.classList.remove('error');
+        out.value += `reading value with provider ${provider}\n`;
+        try {
+          const reader = new IExecOracleReader(
+            provider === 'injected' ? ethProvider : provider,
+          );
+          const res = await reader.readOracle(
+            document.getElementById(
+              'read-x-chain-oracle-from-oracleid-oracleid-input',
+            ).value,
+            {
+              dataType: document.getElementById(
+                'read-x-chain-oracle-from-oracleid-datatype-input',
+              ).value,
+            },
+          );
+
+          out.value += JSON.stringify(res);
+        } catch (e) {
+          out.classList.add('error');
+          out.value += e.toString();
+        }
       });
 
     console.log('initialized');

@@ -1,74 +1,115 @@
-const { IExec, utils } = require('iexec');
-const { Wallet } = require('ethers');
-const OracleFactory = require('../src/OracleFactory');
-const oracle = require('../src/oracle');
+import { jest } from '@jest/globals';
+import { IExec, utils } from 'iexec';
+import { Wallet } from 'ethers';
 
-jest.mock('../src/oracle');
+jest.unstable_mockModule('../src/oracle.js', () => ({
+  createOracle: jest.fn(),
+  updateOracle: jest.fn(),
+  readOracle: jest.fn(),
+}));
+// dynamically import tested module after all mocks are loaded
+const { createOracle, updateOracle, readOracle } = await import(
+  '../src/oracle.js'
+);
+// this will use the already loaded mock of oracle.js
+const { default: OracleFactory } = await import('../src/OracleFactory.js');
 
 afterEach(() => {
   jest.resetAllMocks();
 });
 
-test('standard - instanciation', async () => {
-  const createOracleSpy = jest.spyOn(oracle, 'createOracle').mockReturnValue();
-  const updateOracleSpy = jest.spyOn(oracle, 'updateOracle').mockReturnValue();
-  const readOracleSpy = jest.spyOn(oracle, 'readOracle').mockReturnValue();
-
+test('standard - instantiation', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
-    'goerli',
+    'bellecour',
     Wallet.createRandom().privateKey,
   );
-  const factory = new OracleFactory(ethProvider, {
+  const factoryWithOptions = new OracleFactory(ethProvider, {
     ipfsGateway: 'ipfsGateway',
+    oracleContract: 'oracleContract',
+    oracleApp: 'oracleApp',
   });
-  expect(factory).toBeInstanceOf(OracleFactory);
-  expect(Object.keys(factory).length).toBe(4);
+  const factoryWithoutOption = new OracleFactory(ethProvider);
 
-  const factory2 = new OracleFactory(ethProvider);
-  oracle.createOracle = jest.fn();
-  oracle.updateOracle = jest.fn().mockReturnValueOnce();
-  oracle.readOracle = jest.fn().mockResolvedValueOnce();
-  const iexec = factory.getIExec();
-  factory.createOracle('rawParams');
-  factory2.createOracle('rawParams');
-  factory.updateOracle('paramSetOrCid');
-  factory.updateOracle('paramSetOrCid', { workerpool: 'workerpool' });
-  await factory.readOracle('paramSetOrCidOrOracleId');
-  await factory.readOracle('paramSetOrCidOrOracleId', { dataType: 'dataType' });
+  expect(factoryWithOptions).toBeInstanceOf(OracleFactory);
+  expect(Object.keys(factoryWithOptions).length).toBe(4);
+  expect(factoryWithoutOption).toBeInstanceOf(OracleFactory);
+  expect(Object.keys(factoryWithoutOption).length).toBe(4);
 
-  expect(iexec).toBeInstanceOf(IExec);
-  expect(createOracleSpy).toHaveBeenCalledTimes(2);
-  expect(updateOracleSpy).toHaveBeenCalledTimes(2);
-  expect(readOracleSpy).toHaveBeenCalledTimes(2);
-  expect(createOracleSpy).toHaveBeenNthCalledWith(1, {
-    iexec,
+  const iexecWithOptions = factoryWithOptions.getIExec();
+  expect(iexecWithOptions).toBeInstanceOf(IExec);
+
+  const iexecWithoutOption = factoryWithoutOption.getIExec();
+  expect(iexecWithoutOption).toBeInstanceOf(IExec);
+
+  factoryWithOptions.createOracle('rawParams');
+  expect(createOracle).toHaveBeenNthCalledWith(1, {
+    iexec: iexecWithOptions,
+    ipfsGateway: 'ipfsGateway',
+    oracleApp: 'oracleApp',
     rawParams: 'rawParams',
-    ipfsGateway: 'ipfsGateway',
   });
-  expect(updateOracleSpy).toHaveBeenNthCalledWith(1, {
-    iexec,
+
+  factoryWithoutOption.createOracle('rawParams');
+  expect(createOracle).toHaveBeenNthCalledWith(2, {
+    iexec: iexecWithoutOption,
+    rawParams: 'rawParams',
+  });
+
+  factoryWithOptions.updateOracle('paramSetOrCid');
+  expect(updateOracle).toHaveBeenNthCalledWith(1, {
+    iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
+    oracleContract: 'oracleContract',
+    oracleApp: 'oracleApp',
     paramSetOrCid: 'paramSetOrCid',
-    workerpool: undefined,
   });
-  expect(updateOracleSpy).toHaveBeenNthCalledWith(2, {
-    iexec,
+
+  factoryWithOptions.updateOracle('paramSetOrCid', {
+    workerpool: 'workerpool',
+  });
+  expect(updateOracle).toHaveBeenNthCalledWith(2, {
+    iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
+    oracleContract: 'oracleContract',
+    oracleApp: 'oracleApp',
     paramSetOrCid: 'paramSetOrCid',
     workerpool: 'workerpool',
   });
-  expect(readOracleSpy).toHaveBeenNthCalledWith(1, {
-    ethersProvider: ethProvider.provider,
-    ipfsGateway: 'ipfsGateway',
-    paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
-    dataType: undefined,
+
+  factoryWithoutOption.updateOracle('paramSetOrCid');
+  expect(updateOracle).toHaveBeenNthCalledWith(3, {
+    iexec: iexecWithoutOption,
+    paramSetOrCid: 'paramSetOrCid',
   });
-  expect(readOracleSpy).toHaveBeenNthCalledWith(2, {
+
+  await factoryWithOptions.readOracle('paramSetOrCidOrOracleId');
+  expect(readOracle).toHaveBeenNthCalledWith(1, {
     ethersProvider: ethProvider.provider,
     ipfsGateway: 'ipfsGateway',
+    oracleContract: 'oracleContract',
+    paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
+  });
+
+  await factoryWithOptions.readOracle('paramSetOrCidOrOracleId', {
+    dataType: 'dataType',
+  });
+  expect(readOracle).toHaveBeenNthCalledWith(2, {
+    ethersProvider: ethProvider.provider,
+    ipfsGateway: 'ipfsGateway',
+    oracleContract: 'oracleContract',
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
     dataType: 'dataType',
   });
+
+  await factoryWithoutOption.readOracle('paramSetOrCidOrOracleId');
+  expect(readOracle).toHaveBeenNthCalledWith(3, {
+    ethersProvider: ethProvider.provider,
+    paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
+  });
+
+  expect(createOracle).toHaveBeenCalledTimes(2);
+  expect(updateOracle).toHaveBeenCalledTimes(3);
+  expect(readOracle).toHaveBeenCalledTimes(3);
 });
 
 test('error - invalid provider', () => {

@@ -4,15 +4,20 @@ A wrapper to build web2.0 API based oracles for Ethereum on the top of iExec
 
 ## API
 
-### IExecOracleFactory Constructor
+### IExecOracleFactory
 
-**new IExecOracleFactory(ethProvider: Web3|Signer \[, { ipfsGateway: String, oracleApp: String, oracleContract: String, iexecOptions: Object }\]) => IExecOracleFactory**
+- [Create oracle](#create-oracle)
+- [Update oracle](#update-oracle)
+- [Read oracle](#read-oracle)
+
+**new IExecOracleFactory(ethProvider: Web3|Signer \[, { ipfsGateway: String, oracleApp: String, oracleContract: String, providerOptions: Object, iexecOptions: Object }\]) => IExecOracleFactory**
 
 _Options:_
 
 - ipfsGateway: URL of a custom gateway to retrieve IPFS content (used to check data availability locally and to download the data during computation)
 - oracleApp: address of a custom oracle application
 - oracleContract: address of custom oracle smart contract
+- providerOptions: custom options for ethers provider (see [ethers documentation](https://docs.ethers.io/v5/api/providers/#providers-getDefaultProvider))
 - iexecOptions: custom options for iExec SDK (see [SDK documentation](https://github.com/iExecBlockchainComputing/iexec-sdk#instanciate-the-iexec-sdk))
 
 _Browser Example:_
@@ -33,7 +38,7 @@ const getOracleFactory = async () => {
 };
 ```
 
-_NodeJS Exemple:_
+_NodeJS Example:_
 
 ```js
 const {
@@ -43,6 +48,26 @@ const {
 
 const signer = utils.getSignerFromPrivateKey('goerli', process.env.PRIVATE_KEY);
 const factory = new IExecOracleFactory(signer);
+```
+
+### IExecOracleReader
+
+- [Read oracle](#read-oracle)
+
+**new IExecOracleReader(ethProvider: Web3|String \[, { ipfsGateway: String, oracleContract: String, providerOptions: Object }\]) => IExecOracleReader**
+
+_Options:_
+
+- ipfsGateway: URL of a custom gateway to retrieve IPFS content (used to check data availability locally and to download the data during computation)
+- oracleContract: address of custom oracle smart contract
+- providerOptions: custom options for ethers provider (see [ethers documentation](https://docs.ethers.io/v5/api/providers/#providers-getDefaultProvider))
+
+_Example:_
+
+```js
+import { IExecOracleReader } from '@iexec/iexec-oracle-factory-wrapper';
+
+const oracleReader = new IExecOracleReader('mainnet');
 ```
 
 #### Create Oracle
@@ -91,7 +116,7 @@ factory.**createOracle(rawParams)** => Observable < **{ subscribe: Function({ ne
 | PARAM_SET_UPLOADED                   | once                 | cid: String                                 |
 | COMPLETED                            | once                 |                                             |
 
-_Exemple:_
+_Example:_
 
 ```js
 let paramSet;
@@ -132,7 +157,7 @@ factory
 
 > Read the oracle smart contract current value
 
-factory.**readOracle(paramSet|ipfsCid|oracleId [, { dataType:String }])** => Promise < **{ value: String|Number|Boolean, date: Number }** >
+readerOrFactory.**readOracle(paramSet|ipfsCid|oracleId [, { dataType:String }])** => Promise < **{ value: String|Number|Boolean, date: Number }** >
 
 _Options:_
 
@@ -172,7 +197,7 @@ factory.**updateOracle(paramSet|ipfsCid [, { workerpool }])** => Observable < **
 | TASK_UPDATED                         | once per task update  | dealid: String<br/> taskid: String<br/> status: 'UNSET' \| 'ACTIVE' \| 'REVEALING' \| 'COMPLETED' \| 'TIMEOUT' \| 'FAILED' |
 | TASK_COMPLETED                       | once                  | dealid: String<br/> taskid: String<br/> status: String                                                                     |
 
-_Exemple:_
+_Example:_
 
 ```js
 factory
@@ -231,7 +256,9 @@ console.log(`call test returned: ${result} (${typeof result})`);
 
 > Get the default addresses of oracle app and contract for a given chain
 
-utils.**getChainDefaults(chainId: Int)** => **{ ORACLE_APP_ADDRESS: String, ORACLE_CONTRACT_ADDRES: String }** >
+utils.**getChainDefaults(chainId: Int)** => **{ ORACLE_APP_ADDRESS?: String, ORACLE_CONTRACT_ADDRESS: String }** >
+
+> _NB_: `ORACLE_APP_ADDRESS` is available for cross-chain source chains only
 
 #### computeOracleId
 
@@ -271,9 +298,9 @@ const { errors } = require('@iexec/iexec-oracle-factory-wrapper');
 
 > A `NoValueError` is thrown when attempting to read an oracle with no stored value (ie: never updated)
 
-## Test in the browser:
+## Test in the browser
 
-```
+```sh
 # build the lib
 npm i
 npm run build
@@ -284,13 +311,13 @@ npm i
 npm start
 ```
 
-browse http://localhost:1234
+browse [http://localhost:1234]
 
 ## Development
 
 ### Run Tests
 
-```
+```sh
 npm i
 npm test
 ```

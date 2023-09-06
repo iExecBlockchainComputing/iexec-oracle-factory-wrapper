@@ -1,9 +1,6 @@
-const IExecOracleFactory = require('./OracleFactory');
-const utils = require('./utils');
-const errors = require('./errors');
+import IExecOracleFactory from './OracleFactory.js';
+import IExecOracleReader from './OracleReader.js';
+import * as utils from './utils.js';
+import * as errors from './errors.js';
 
-module.exports = {
-  IExecOracleFactory,
-  utils,
-  errors,
-};
+export { IExecOracleFactory, IExecOracleReader, utils, errors };

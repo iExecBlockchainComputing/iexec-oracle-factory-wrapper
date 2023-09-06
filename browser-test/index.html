@@ -320,6 +320,57 @@
       </div>
     </div>
 
+    <div>
+      <h3>Read x-chain oracle (using oracleId)</h3>
+      <div>
+        <label for="read-x-chain-oracle-from-oracleid-provider-input"
+          >provider:</label
+        >
+        <input
+          id="read-x-chain-oracle-from-oracleid-provider-input"
+          type="text"
+          placeholder="chain id | chain name | RPC endpoint | blank for injected provider"
+          value=""
+        />
+      </div>
+      <div>
+        <label for="read-x-chain-oracle-from-oracleid-oracleid-input"
+          >oracleId:</label
+        >
+        <input
+          id="read-x-chain-oracle-from-oracleid-oracleid-input"
+          type="text"
+          value="0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491"
+        />
+      </div>
+      <div>
+        <label for="read-x-chain-oracle-from-oracleid-datatype-input"
+          >dataType:</label
+        >
+        <input
+          id="read-x-chain-oracle-from-oracleid-datatype-input"
+          type="text"
+          value="number"
+        />
+      </div>
+      <div>
+        <button
+          id="read-x-chain-oracle-from-oracleid-button"
+          type="button"
+          name="button"
+        >
+          READ X-CHAIN ORACLE USING ORACLEID
+        </button>
+      </div>
+      <div>
+        <textarea
+          id="read-x-chain-oracle-from-oracleid-out"
+          class="out"
+          disabled
+        ></textarea>
+      </div>
+    </div>
+
     <script src="./src/index.js" type="module"></script>
   </body>
 </html>

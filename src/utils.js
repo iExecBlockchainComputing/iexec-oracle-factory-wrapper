@@ -1,8 +1,8 @@
-const { getSignerFromPrivateKey } = require('iexec').utils;
-const { getParamSet } = require('./oracle');
-const hashComputeOracleId = require('./hash').computeOracleId;
-const callTesterTestRawParams = require('./callTester').testRawParams;
-const { getDefaults, DEFAULT_IPFS_GATEWAY } = require('./conf');
+import { getSignerFromPrivateKey } from 'iexec/utils';
+import { getParamSet } from './oracle.js';
+import { computeOracleId as hashComputeOracleId } from './hash.js';
+import testRawParams from './callTester.js';
+import { getDefaults, DEFAULT_IPFS_GATEWAY } from './conf.js';
 
 const computeOracleId = async (
   paramSetOrCid,
@@ -13,9 +13,9 @@ const computeOracleId = async (
   return oracleId;
 };
 
-module.exports = {
+export {
   computeOracleId,
-  testRawParams: callTesterTestRawParams,
+  testRawParams,
   getSignerFromPrivateKey,
-  getChainDefaults: getDefaults,
+  getDefaults as getChainDefaults,
 };

@@ -3,6 +3,19 @@
   "rules": {
     "max-classes-per-file": ["error", 2],
     "no-template-curly-in-string": "off",
-    "no-underscore-dangle": ["error", { "allow": ["_subscribe"] }]
+    "no-underscore-dangle": ["error", { "allow": ["_subscribe"] }],
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts"]
+      }
+    },
+    "import/extensions": [
+      "error",
+      "always",
+      { "ignorePackages": true, "pattern": { ".js": "never" } }
+    ]
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020
   }
 }

@@ -1,26 +1,78 @@
+import { getDefaultProvider as getEthersDefaultProvider } from 'ethers';
+
 const API_KEY_PLACEHOLDER = '%API_KEY%';
 
-const confMap = {
-  133: {
-    ORACLE_APP_ADDRESS: '0xE7Da3c01BbC71daCB05C30b7832214d82a045e70',
-    ORACLE_CONTRACT_ADDRESS: '0x8ecEDdd1377E52d23A46E2bd3dF0aFE35B526D5F',
-  },
+const factoryConfMap = {
   134: {
-    ORACLE_APP_ADDRESS: '0x05A2915F4C5A87fd3084C59E1A379449A54985f5',
-    ORACLE_CONTRACT_ADDRESS: '0x456891C78077d31F70Ca027a46D68F84a2b814D4',
+    ORACLE_APP_ADDRESS: 'oracle-factory.apps.iexec.eth',
+    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
   },
 };
 
-const DEFAULT_IPFS_GATEWAY = 'https://ipfs.io';
+const readerConfMap = {
+  1: {
+    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+  },
+  5: {
+    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+  },
+  134: {
+    ORACLE_CONTRACT_ADDRESS: factoryConfMap[134].ORACLE_CONTRACT_ADDRESS,
+  },
+  137: {
+    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+  },
+  80001: {
+    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+  },
+};
 
-const getDefaults = (chainId) => {
-  const conf = confMap[chainId];
+const networkMap = {
+  1: 'homestead',
+  5: 'goerli',
+  134: 'https://bellecour.iex.ec',
+  137: 'matic',
+  80001: 'https://matic-mumbai.chainstacklabs.com',
+  mainnet: 'homestead',
+  goerli: 'goerli',
+  bellecour: 'https://bellecour.iex.ec',
+  polygon: 'matic',
+  mumbai: 'https://matic-mumbai.chainstacklabs.com',
+};
+
+const DEFAULT_IPFS_GATEWAY = 'https://ipfs-gateway.v8-bellecour.iex.ec';
+const IPFS_UPLOAD_URL = '/dns4/ipfs-upload.v8-bellecour.iex.ec/https';
+const getDefaultProvider = (network, options) => {
+  const resolvedNetwork = networkMap[network] || network;
+  return getEthersDefaultProvider(resolvedNetwork, options);
+};
+
+const getFactoryDefaults = (chainId) => {
+  const conf = factoryConfMap[chainId];
   if (!conf) throw Error(`Unsupported chain ${chainId}`);
   return conf;
 };
 
-module.exports = {
+const getReaderDefaults = (chainId) => {
+  const conf = readerConfMap[chainId];
+  if (!conf) throw Error(`Unsupported chain ${chainId}`);
+  return conf;
+};
+
+const getDefaults = (chainId) => {
+  const factoryConf = factoryConfMap[chainId];
+  const readerConf = readerConfMap[chainId];
+  const conf = { ...factoryConf, ...readerConf };
+  if (!factoryConf && !readerConf) throw Error(`Unsupported chain ${chainId}`);
+  return conf;
+};
+
+export {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
+  IPFS_UPLOAD_URL,
+  getReaderDefaults,
+  getFactoryDefaults,
   getDefaults,
+  getDefaultProvider,
 };
