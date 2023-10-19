@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "plugins": ["import", "sonarjs"],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "extends": ["airbnb-base", "plugin:sonarjs/recommended", "prettier"],
+  "rules": {
+    "sonarjs/cognitive-complexity": "warn",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "always"
+      }
+    ]
+  },
+  "env": {
+    "jest": true
+  },
+  "overrides": [
+    {
+      "files": ["./test/**/*.js"],
+      "rules": {
+        "sonarjs/no-duplicate-string": "off"
+      }
+    }
+  ]
+}
