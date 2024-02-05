@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
-    "build": "./node_modules/.bin/babel src --out-dir dist --copy-files",
+    "build": "",
     "lint": "eslint ."
   },
   "repository": {
@@ -42,9 +42,6 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.0",
-    "@babel/core": "^7.21.4",
-    "@babel/preset-env": "^7.21.4",
     "eslint": "^8.51.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.0.0",
