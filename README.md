@@ -332,7 +332,6 @@ npm test
 
 - install issue with npm@7.6.0 https://github.com/ipfs/js-ipfs/issues/3562
 - build issue with webpack 5 (Webpack 5 no longer provide polyfills for nodejs modules) https://github.com/facebook/create-react-app/issues/11756
-- an issue occurs with babel BigInt polyfill in browsers, use the following browserslist to excludes browsers without native BigInt support
 
 ```json
 {
