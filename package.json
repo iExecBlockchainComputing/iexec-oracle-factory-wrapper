@@ -19,7 +19,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"(src|tests)/**/*.ts\"",
-    "check-format": "prettier --check \"(src|tests)/**/*.ts|tests/**/*.ts\""
+    "check-format": "prettier --check \"(src|tests)/**/*.ts|tests/**/*.ts\"",
+    "generate-lib-doc": "./node_modules/typedoc/bin/typedoc --tsconfig tsconfig.json --disableSources"
   },
   "repository": {
     "type": "git",
@@ -65,6 +66,10 @@
     "prettier": "^3.2.5",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.25.8",
+    "typedoc-plugin-markdown": "^3.17.1",
+    "typedoc-plugin-missing-exports": "^2.2.0",
+    "typedoc-plugin-rename-defaults": "^0.7.0",
     "typescript": "^5.3.3"
   }
 }
