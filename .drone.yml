@@ -19,7 +19,7 @@ steps:
   - name: test
     image: node:18
     commands:
-      - npm test
+      - npm run test
 
   - name: build
     image: node:18

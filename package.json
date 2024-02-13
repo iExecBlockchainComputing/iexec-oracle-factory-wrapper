@@ -13,14 +13,14 @@
     }
   },
   "scripts": {
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && tsc && npm run generate-doc",
     "check-types": "tsc --noEmit",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
+    "test": "npm run build && NODE_OPTIONS=--experimental-vm-modules npx jest --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"(src|tests)/**/*.ts\"",
     "check-format": "prettier --check \"(src|tests)/**/*.ts|tests/**/*.ts\"",
-    "generate-lib-doc": "./node_modules/typedoc/bin/typedoc --tsconfig tsconfig.json --disableSources"
+    "generate-doc": "./node_modules/typedoc/bin/typedoc --tsconfig tsconfig.json --disableSources"
   },
   "repository": {
     "type": "git",
