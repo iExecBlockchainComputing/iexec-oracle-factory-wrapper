@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "nodenext",
-    "target": "es6",
+    "target": "es2017",
     "declaration": true,
     "sourceMap": true,
     "outDir": "dist",
@@ -9,6 +9,6 @@
     "moduleResolution": "nodenext",
     "skipLibCheck": true
   },
-  "include": ["src/", "tests/"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

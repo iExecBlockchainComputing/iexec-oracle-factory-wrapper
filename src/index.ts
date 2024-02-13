@@ -1,6 +1,7 @@
-import IExecOracleFactory from './OracleFactory.js';
-import IExecOracleReader from './OracleReader.js';
-import * as utils from './utils.js';
-import * as errors from './errors.js';
+export * from './oracleFactory/types.js';
+export { IExecOracleFactory } from './oracleFactory/OracleFactory.js';
+export { IExecOracleReader } from './oracleFactory/OracleReader.js';
+export * as utils from './utils/utils.js';
+export * as errors from './utils/errors.js';
 
-export { IExecOracleFactory, IExecOracleReader, utils, errors };
+export { getWeb3Provider } from './utils/getWeb3Provider.js';
