@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { strictParamSetSchema, strictCallParamsSchema } from './validators.js';
-import { sortObjKeys } from './format.js';
 import { ParamSet } from '../../src/oracleFactory/types.js';
+import { sortObjKeys } from './format.js';
+import { strictParamSetSchema, strictCallParamsSchema } from './validators.js';
 
 const bytes32Regex = /^(0x)([0-9a-f]{2}){32}$/;
 

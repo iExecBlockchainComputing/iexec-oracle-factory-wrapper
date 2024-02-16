@@ -1,16 +1,16 @@
+import { ethers } from 'ethers';
 import { DEFAULT_IPFS_GATEWAY, getReaderDefaults } from '../config/config.js';
+import { READ_ABI } from '../config/contract.js';
 import {
   NoValueError,
   ValidationError,
   WorkflowError,
 } from '../utils/errors.js';
-import { computeOracleId, isOracleId } from '../utils/hash.js';
-import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
 import { formatOracleGetInt } from '../utils/format.js';
-import { READ_ABI } from '../config/contract.js';
-import { Oracle, ReadOracleParams } from './types.js';
+import { computeOracleId, isOracleId } from '../utils/hash.js';
 import { getParamSet } from '../utils/utils.js';
-import { ethers } from 'ethers';
+import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
+import { Oracle, ReadOracleParams } from './types.js';
 /**
  * Reads data from an oracle based on the provided parameters.
  * @param paramSetOrCidOrOracleId Param set, CID, or oracle ID.

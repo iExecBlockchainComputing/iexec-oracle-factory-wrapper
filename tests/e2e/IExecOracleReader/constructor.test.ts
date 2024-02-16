@@ -1,16 +1,11 @@
 import { describe, it, expect } from '@jest/globals';
-import { Provider, Wallet, ethers } from 'ethers';
+import { Wallet, ethers } from 'ethers';
 import {
-  IExecOracleFactory,
   IExecOracleReader,
-  getWeb3Provider,
 } from '../../../dist/index.js';
 import {
-  DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
-  DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
-  DEFAULT_WORKERPOOL_ADDRESS,
 } from '../../../src/config/config';
 
 describe('IExecOracleFactory()', () => {
@@ -25,10 +20,10 @@ describe('IExecOracleFactory()', () => {
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
 
-  it('should use default config ', async () => {
+  it('should use default config', async () => {
     const oracleReader = new IExecOracleReader();
-    const oracleContract = oracleReader['oracleContract'];
-    const ipfsGateway = oracleReader['ipfsGateway'];
+    const oracleContract = oracleReader.oracleContract;
+    const ipfsGateway = oracleReader.ipfsGateway;
 
     expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -40,7 +35,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       ipfsGateway: customIpfsGateway,
     });
-    const ipfsGateway = oracleReader['ipfsGateway'];
+    const ipfsGateway = oracleReader.ipfsGateway;
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
   });
 
@@ -50,7 +45,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
     });
-    const oracleContract = oracleReader['oracleContract'];
+    const oracleContract = oracleReader.oracleContract;
     expect(oracleContract).toStrictEqual(customSContractAddress);
   });
 
@@ -64,8 +59,8 @@ describe('IExecOracleFactory()', () => {
       ipfsGateway: customIpfsGateway,
     });
 
-    const ipfsGateway = oracleReader['ipfsGateway'];
-    const oracleContract = oracleReader['oracleContract'];
+    const ipfsGateway = oracleReader.ipfsGateway;
+    const oracleContract = oracleReader.oracleContract;
 
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
     expect(oracleContract).toStrictEqual(customSContractAddress);

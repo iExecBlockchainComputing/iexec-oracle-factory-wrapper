@@ -23,8 +23,7 @@ const formatOracleGetInt = (resultBn: any): number => {
   const resultBig = new Big(resultBn.toString()).times(new Big('1e-18'));
   try {
     resultBig.constructor.strict = true;
-    const resultNumber = resultBig.toNumber();
-    return resultNumber;
+    return resultBig.toNumber();
   } catch (e) {
     throw Error(
       `Converting ${resultBig.toString()} to number will result in loosing precision`

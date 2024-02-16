@@ -1,5 +1,5 @@
-import fetch from 'cross-fetch';
 import { Buffer } from 'buffer';
+import fetch from 'cross-fetch';
 import { DEFAULT_IPFS_GATEWAY } from '../../config/config.js';
 
 const get = async (

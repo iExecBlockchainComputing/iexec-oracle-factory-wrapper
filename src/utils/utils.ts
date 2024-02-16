@@ -1,12 +1,12 @@
-import { getSignerFromPrivateKey } from 'iexec/utils';
-import { computeOracleId as hashComputeOracleId } from './hash.js';
-import testRawParams from './callTester.js';
-import { getDefaults, DEFAULT_IPFS_GATEWAY } from '../config/config.js';
-import * as ipfs from './../services/ipfs/index.js';
 import CID from 'cids';
-import { jsonParamSetSchema, paramSetSchema } from './validators.js';
-import { formatParamsJson } from './format.js';
+import { getSignerFromPrivateKey } from 'iexec/utils';
+import { getDefaults, DEFAULT_IPFS_GATEWAY } from '../config/config.js';
 import { ParamSet } from '../index.js';
+import * as ipfs from './../services/ipfs/index.js';
+import testRawParams from './callTester.js';
+import { formatParamsJson } from './format.js';
+import { computeOracleId as hashComputeOracleId } from './hash.js';
+import { jsonParamSetSchema, paramSetSchema } from './validators.js';
 
 interface GetParamSetOptions {
   paramSetOrCid: ParamSet | string;
@@ -56,8 +56,7 @@ const computeOracleId = async (
     paramSetOrCid,
     ipfsGateway,
   });
-  const oracleId = await hashComputeOracleId(paramSet);
-  return oracleId;
+  return hashComputeOracleId(paramSet);
 };
 
 export {

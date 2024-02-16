@@ -1,5 +1,5 @@
-import { utils } from 'iexec';
 import { Wallet } from 'ethers';
+import { utils } from 'iexec';
 import { IExecOracleFactory } from '../../../dist/oracleFactory/OracleFactory.js';
 
 test.skip('update oracle - standard from paramSet - no dataset', async () => {

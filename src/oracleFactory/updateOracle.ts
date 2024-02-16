@@ -1,9 +1,12 @@
+import CID from 'cids';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_TARGET_BLOCKCHAIN,
   getFactoryDefaults,
 } from '../config/config.js';
+import * as ipfs from '../services/ipfs/index.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
+import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
   jsonParamSetSchema,
@@ -11,9 +14,6 @@ import {
   throwIfMissing,
   updateTargetBlockchainsSchema,
 } from '../utils/validators.js';
-import * as ipfs from '../services/ipfs/index.js';
-import CID from 'cids';
-import { formatParamsJson } from '../utils/format.js';
 import {
   ParamSet,
   TaskExecutionMessage,
@@ -89,7 +89,7 @@ const updateOracle = ({
     const safeObserver = new SafeObserver(observer);
     const start = async () => {
       try {
-        let targetBlockchainsArray =
+        const targetBlockchainsArray =
           typeof paramSetOrCid === 'object'
             ? await updateTargetBlockchainsSchema().validate(
                 paramSetOrCid.targetBlockchains

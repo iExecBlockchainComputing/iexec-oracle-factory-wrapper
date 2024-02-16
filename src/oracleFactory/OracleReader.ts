@@ -1,17 +1,17 @@
+import { Provider } from 'ethers';
 import { IExec } from 'iexec';
-import {
-  AddressOrENS,
-  ParamSet,
-  Oracle,
-  OracleReaderOptions,
-} from './types.js';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   getDefaultProvider,
 } from '../config/config.js';
 import { readOracle } from './readOracle.js';
-import { Provider } from 'ethers';
+import {
+  AddressOrENS,
+  ParamSet,
+  Oracle,
+  OracleReaderOptions,
+} from './types.js';
 
 /**
  * Oracle Reader that interacts with iExec Oracle.

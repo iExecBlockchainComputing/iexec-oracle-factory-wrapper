@@ -1,14 +1,5 @@
+import { Eip1193Provider , Provider } from 'ethers';
 import { IExec } from 'iexec';
-import { Eip1193Provider } from 'ethers';
-import {
-  AddressOrENS,
-  OracleFactoryOptions,
-  ParamSet,
-  Oracle,
-  Web3SignerProvider,
-  CreateOracleMessage,
-  UpdateOracleMessage,
-} from './types.js';
 import {
   DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
@@ -18,21 +9,35 @@ import {
   getDefaultProvider,
 } from '../config/config.js';
 import { Observable } from '../utils/reactive.js';
-import { updateOracle } from './updateOracle.js';
-import { readOracle } from './readOracle.js';
 import { createOracle } from './createOracle.js';
-import { Provider } from 'ethers';
+import { readOracle } from './readOracle.js';
+import {
+  AddressOrENS,
+  OracleFactoryOptions,
+  ParamSet,
+  Oracle,
+  Web3SignerProvider,
+  CreateOracleMessage,
+  UpdateOracleMessage,
+} from './types.js';
+import { updateOracle } from './updateOracle.js';
 
 /**
  * IExecOracleFactory, used to interact with oracle creation, update, and read operations.
  */
 class IExecOracleFactory {
   private oracleContract: AddressOrENS;
+
   private oracleApp: AddressOrENS;
+
   private workerpool: AddressOrENS;
+
   private ipfsUploadUrl: string;
+
   private ipfsGateway: string;
+
   private iexec: IExec;
+
   private ethersProvider: Provider;
 
   /**

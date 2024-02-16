@@ -5,6 +5,7 @@ import {
   DEFAULT_IPFS_UPLOAD_URL,
   getFactoryDefaults,
 } from '../config/config.js';
+import * as ipfs from '../services/ipfs/index.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
@@ -22,7 +23,6 @@ import {
   CreateOracleOptions,
   ParamSet,
 } from './types.js';
-import * as ipfs from '../services/ipfs/index.js';
 
 /**
  * Creates a dataset containing an API key.

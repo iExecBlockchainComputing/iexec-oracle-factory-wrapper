@@ -1,5 +1,5 @@
-import { utils } from 'iexec';
 import { Wallet } from 'ethers';
+import { utils } from 'iexec';
 import { IExecOracleReader } from '../../../dist/oracleFactory/OracleReader.js';
 
 describe('readOracle', () => {

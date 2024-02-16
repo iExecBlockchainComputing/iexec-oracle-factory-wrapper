@@ -1,5 +1,4 @@
 import { jest } from '@jest/globals';
-import { Mock } from 'node:test';
 
 const fetchMock = jest.fn() as jest.Mock<any>;
 jest.unstable_mockModule('cross-fetch', () => {

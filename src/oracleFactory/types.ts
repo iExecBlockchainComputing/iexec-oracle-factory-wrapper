@@ -173,7 +173,7 @@ export type Oracle = {
   /**
    * Value returned by the oracle.
    */
-  value: Boolean | string | number;
+  value: boolean | string | number;
 
   /**
    * Timestamp indicating when the oracle was created.

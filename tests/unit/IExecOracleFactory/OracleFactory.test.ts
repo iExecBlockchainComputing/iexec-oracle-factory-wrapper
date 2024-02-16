@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import { IExec, utils } from 'iexec';
 import { Wallet } from 'ethers';
+import { IExec, utils } from 'iexec';
 import {
   DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,

@@ -1,10 +1,10 @@
 import { create } from 'kubo-rpc-client';
 
-import get from './get.js';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
 } from '../../config/config.js';
+import get from './get.js';
 
 const add = async (
   content,

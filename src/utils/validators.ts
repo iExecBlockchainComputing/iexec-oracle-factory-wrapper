@@ -1,3 +1,5 @@
+import { ethers } from 'ethers';
+import jp from 'jsonpath';
 import {
   string,
   number,
@@ -6,8 +8,6 @@ import {
   ValidationError,
   ObjectSchema,
 } from 'yup';
-import { ethers } from 'ethers';
-import jp from 'jsonpath';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
 import { ParamSet } from '../oracleFactory/types.js';
 

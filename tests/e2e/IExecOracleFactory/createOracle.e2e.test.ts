@@ -1,7 +1,6 @@
-import { IExec, utils } from 'iexec';
 import { Wallet } from 'ethers';
+import { utils } from 'iexec';
 import { IExecOracleFactory } from '../../../dist/oracleFactory/OracleFactory.js';
-import { createOracle } from '../../../dist/oracleFactory/createOracle.js';
 
 test('create oracle - without dataset', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
