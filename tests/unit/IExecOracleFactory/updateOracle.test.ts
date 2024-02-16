@@ -1,28 +1,28 @@
 import { beforeEach, jest } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { IExec, utils } from 'iexec';
-import { ValidationError, WorkflowError } from '../../../dist/utils/errors.js';
+import { ValidationError, WorkflowError } from '../../../src/utils/errors.js';
 
 const mockAdd = jest.fn() as jest.Mock<any>;
 const mockGet = jest.fn() as jest.Mock<any>;
 const mockIsCid = jest.fn() as jest.Mock<any>;
 
-jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd,
   get: mockGet,
   isCid: mockIsCid,
 }));
 
-const ipfs = await import('../../../dist/services/ipfs');
+const ipfs = await import('../../../src/services/ipfs/index.js');
 
 // dynamically import tested module after all mock are loaded
 const { updateOracle } = await import(
-  '../../../dist/oracleFactory/updateOracle.js'
+  '../../../src/oracleFactory/updateOracle.js'
 );
 
 beforeEach(() => {
   // use ipfs real implementation as default mock
-  jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+  jest.unstable_mockModule('../../../src/services/ipfs', () => ({
     add: mockAdd as (
       content: any,
       options?: { ipfsGateway?: string }

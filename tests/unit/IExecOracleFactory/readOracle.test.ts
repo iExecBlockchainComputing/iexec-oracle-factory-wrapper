@@ -5,13 +5,13 @@ import {
   NoValueError,
   ValidationError,
   WorkflowError,
-} from '../../../dist/utils/errors.js';
+} from '../../../src/utils/errors.js';
 const mockAdd = jest.fn() as jest.Mock<any>;
 const mockGet = jest.fn() as jest.Mock<any>;
 const mockIsCid = jest.fn() as jest.Mock<any>;
-import { getDefaultProvider } from '../../../dist/config/config.js';
+import { getDefaultProvider } from '../../../src/config/config.js';
 
-jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd,
   get: mockGet,
   isCid: mockIsCid,
@@ -19,12 +19,12 @@ jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
 
 // dynamically import tested module after all mock are loaded
 const { readOracle } = await import(
-  '../../../dist/oracleFactory/readOracle.js'
+  '../../../src/oracleFactory/readOracle.js'
 );
 
 beforeEach(() => {
   // use ipfs real implementation as default mock
-  jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+  jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
     add: mockAdd as (
       content: any,
       options?: { ipfsGateway?: string }
@@ -37,7 +37,7 @@ beforeEach(() => {
   }));
 });
 
-jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd as (
     content: any,
     options?: { ipfsGateway?: string }
@@ -242,7 +242,7 @@ describe('readOracle', () => {
     );
   });
 
-  test.only('error - invalid dataset', async () => {
+  test('error - invalid dataset', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec', {});
     await expect(
       readOracle({

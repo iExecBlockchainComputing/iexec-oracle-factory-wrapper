@@ -2,7 +2,7 @@ import {
   isOracleId,
   computeCallId,
   computeOracleId,
-} from '../../../dist/utils/hash.js';
+} from '../../../src/utils/hash.js';
 
 describe('isOracleId', () => {
   test('true with matching bytes32', () => {

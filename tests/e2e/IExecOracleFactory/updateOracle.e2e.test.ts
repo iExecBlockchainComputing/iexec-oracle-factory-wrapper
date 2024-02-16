@@ -1,6 +1,6 @@
 import { Wallet } from 'ethers';
 import { utils } from 'iexec';
-import { IExecOracleFactory } from '../../../dist/oracleFactory/OracleFactory.js';
+import { IExecOracleFactory } from '../../../src/index.js';
 
 test.skip('update oracle - standard from paramSet - no dataset', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(

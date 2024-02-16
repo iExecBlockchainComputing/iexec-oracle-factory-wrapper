@@ -10,7 +10,7 @@ jest.unstable_mockModule('cross-fetch', () => {
 const { default: fetch } = await import('cross-fetch');
 // dynamically import tested module after all mocks are loaded
 const { default: testRawParams } = await import(
-  '../../../dist/utils/callTester.js'
+  '../../../src/utils/callTester.js'
 );
 
 afterEach(() => {
@@ -103,7 +103,7 @@ describe('testRawParams', () => {
     expect(res).toBe('1.23456789');
   });
 
-  test.only('error - throw when fetch throws', async () => {
+  test('error - throw when fetch throws', async () => {
     fetchMock.mockRejectedValueOnce(Error('fetch error'));
 
     await expect(
@@ -206,7 +206,7 @@ describe('testRawParams', () => {
       })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, wich is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean'
+        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, which is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean'
       )
     );
     await expect(
@@ -218,7 +218,7 @@ describe('testRawParams', () => {
       })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, wich is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number'
+        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, which is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number'
       )
     );
     await expect(
@@ -230,7 +230,7 @@ describe('testRawParams', () => {
       })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, wich is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string'
+        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, which is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string'
       )
     );
   });

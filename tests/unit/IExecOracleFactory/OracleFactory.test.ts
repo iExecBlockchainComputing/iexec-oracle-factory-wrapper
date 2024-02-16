@@ -7,39 +7,39 @@ import {
   DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_WORKERPOOL_ADDRESS,
-} from '../../../dist/config/config.js';
+} from '../../../src/config/config.js';
 
-jest.unstable_mockModule('../../../dist/oracleFactory/createOracle.js', () => ({
+jest.unstable_mockModule('../../../src/oracleFactory/createOracle.js', () => ({
   createOracle: jest.fn(),
 }));
-jest.unstable_mockModule('../../../dist/oracleFactory/updateOracle.js', () => ({
+jest.unstable_mockModule('../../../src/oracleFactory/updateOracle.js', () => ({
   updateOracle: jest.fn(),
 }));
-jest.unstable_mockModule('../../../dist/oracleFactory/readOracle.js', () => ({
+jest.unstable_mockModule('../../../src/oracleFactory/readOracle.js', () => ({
   readOracle: jest.fn(),
 }));
 
 // dynamically import tested module after all mocks are loaded
 const { createOracle } = await import(
-  '../../../dist/oracleFactory/createOracle.js'
+  '../../../src/oracleFactory/createOracle.js'
 );
 const { updateOracle } = await import(
-  '../../../dist/oracleFactory/updateOracle.js'
+  '../../../src/oracleFactory/updateOracle.js'
 );
 const { readOracle } = await import(
-  '../../../dist/oracleFactory/readOracle.js'
+  '../../../src/oracleFactory/readOracle.js'
 );
 
 // this will use the already loaded mock of oracle.js
 const { IExecOracleFactory } = await import(
-  '../../../dist/oracleFactory/OracleFactory.js'
+  '../../../src/oracleFactory/OracleFactory.js'
 );
 
 afterEach(() => {
   jest.resetAllMocks();
 });
 
-test.only('standard - instantiation', async () => {
+test('standard - instantiation', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
     Wallet.createRandom().privateKey

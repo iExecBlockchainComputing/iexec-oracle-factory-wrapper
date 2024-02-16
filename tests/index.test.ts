@@ -1,7 +1,7 @@
-import * as exportedModule from '../dist/index.js';
-import { IExecOracleFactory } from '../dist/oracleFactory/OracleFactory.js';
-import * as errors from '../dist/utils/errors.js';
-import * as utils from '../dist/utils/utils.js';
+import * as exportedModule from '../src/index.js';
+import { IExecOracleFactory } from '../src/index.js';
+import * as errors from '../src/utils/errors.js';
+import * as utils from '../src/utils/utils.js';
 
 test('exports { IExecOracleFactory, utils, errors }', () => {
   expect(Object.entries(exportedModule).length).toBe(5);

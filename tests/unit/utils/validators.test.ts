@@ -8,7 +8,7 @@ import {
   jsonParamSetSchema,
   throwIfMissing,
   updateTargetBlockchainsSchema,
-} from '../../../dist/utils/validators';
+} from '../../../src/utils/validators.js';
 
 describe('callParamsSchema', () => {
   test('validate only required keys add default optional keys', async () => {

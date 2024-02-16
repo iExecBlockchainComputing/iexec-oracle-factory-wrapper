@@ -3,7 +3,7 @@ import {
   sortObjKeys,
   formatParamsJson,
   formatOracleGetInt,
-} from '../../../dist/utils/format';
+} from '../../../src/utils/format.js';
 
 describe('sortObjKeys', () => {
   test('sort nested keys', () => {

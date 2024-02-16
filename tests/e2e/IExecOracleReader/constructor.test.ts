@@ -2,11 +2,11 @@ import { describe, it, expect } from '@jest/globals';
 import { Wallet, ethers } from 'ethers';
 import {
   IExecOracleReader,
-} from '../../../dist/index.js';
+} from '../../../src/index.js';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
-} from '../../../src/config/config';
+} from '../../../src/config/config.js';
 
 describe('IExecOracleFactory()', () => {
   it('instantiates with a valid ethProvider', async () => {
@@ -22,8 +22,8 @@ describe('IExecOracleFactory()', () => {
 
   it('should use default config', async () => {
     const oracleReader = new IExecOracleReader();
-    const oracleContract = oracleReader.oracleContract;
-    const ipfsGateway = oracleReader.ipfsGateway;
+    const oracleContract = oracleReader['oracleContract'];
+    const ipfsGateway = oracleReader['ipfsGateway'];
 
     expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -35,7 +35,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       ipfsGateway: customIpfsGateway,
     });
-    const ipfsGateway = oracleReader.ipfsGateway;
+    const ipfsGateway = oracleReader['ipfsGateway'];
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
   });
 
@@ -45,7 +45,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
     });
-    const oracleContract = oracleReader.oracleContract;
+    const oracleContract = oracleReader['oracleContract'];
     expect(oracleContract).toStrictEqual(customSContractAddress);
   });
 
@@ -59,8 +59,8 @@ describe('IExecOracleFactory()', () => {
       ipfsGateway: customIpfsGateway,
     });
 
-    const ipfsGateway = oracleReader.ipfsGateway;
-    const oracleContract = oracleReader.oracleContract;
+    const ipfsGateway = oracleReader['ipfsGateway'];
+    const oracleContract = oracleReader['oracleContract'];
 
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
     expect(oracleContract).toStrictEqual(customSContractAddress);

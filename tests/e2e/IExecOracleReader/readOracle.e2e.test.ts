@@ -1,6 +1,6 @@
 import { Wallet } from 'ethers';
 import { utils } from 'iexec';
-import { IExecOracleReader } from '../../../dist/oracleFactory/OracleReader.js';
+import { IExecOracleReader } from '../../../src/index.js';
 
 describe('readOracle', () => {
   test('standard - from paramSet dataType: "boolean"', async () => {
