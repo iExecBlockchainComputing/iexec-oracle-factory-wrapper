@@ -42,12 +42,12 @@ const readOracle = async ({
   if (isOracleId(paramSetOrCidOrOracleId)) {
     oracleId = paramSetOrCidOrOracleId;
     readDataType = await readDataTypeSchema().validate(
-      dataType === undefined || dataType === '' ? 'raw' : dataType,
+      dataType === undefined || dataType === '' ? 'raw' : dataType
     );
   } else {
     if (dataType) {
       throw Error(
-        'dataType option is only allowed when reading oracle from oracleId',
+        'dataType option is only allowed when reading oracle from oracleId'
       );
     }
     const { paramSet } = await getParamSet({
@@ -67,7 +67,7 @@ const readOracle = async ({
   const oracleSmartContract = new ethers.Contract(
     ORACLE_CONTRACT_ADDRESS,
     READ_ABI,
-    ethersProvider,
+    ethersProvider
   );
   const [rawValue, rawDateBn] = await oracleSmartContract
     .getRaw(oracleId)
@@ -87,7 +87,7 @@ const readOracle = async ({
         .getBool(oracleId)
         .catch(() => {
           throw Error(
-            `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not boolean dataType`,
+            `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not boolean dataType`
           );
         });
       const rawDateNumber = parseInt(dateBn.toString());
@@ -98,7 +98,7 @@ const readOracle = async ({
         .getInt(oracleId)
         .catch(() => {
           throw Error(
-            `Failed to read number from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not number dataType`,
+            `Failed to read number from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not number dataType`
           );
         });
       const resultNumber = formatOracleGetInt(resultBn);
@@ -109,7 +109,7 @@ const readOracle = async ({
         .getString(oracleId)
         .catch(() => {
           throw Error(
-            `Failed to read string from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not string dataType`,
+            `Failed to read string from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not string dataType`
           );
         });
       return { value: resultString, date: formatOracleGetInt(dateBn) };

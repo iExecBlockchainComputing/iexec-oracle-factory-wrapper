@@ -23,11 +23,11 @@ beforeEach(() => {
   jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
     add: mockAdd as (
       content: any,
-      options?: { ipfsGateway?: string },
+      options?: { ipfsGateway?: string }
     ) => Promise<string>,
     get: mockGet as (
       cid: string,
-      options?: { ipfsGateway?: string },
+      options?: { ipfsGateway?: string }
     ) => Promise<any>,
     isCid: mockIsCid as (cid: string) => boolean,
   }));
@@ -36,11 +36,11 @@ beforeEach(() => {
 jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
   add: mockAdd as (
     content: any,
-    options?: { ipfsGateway?: string },
+    options?: { ipfsGateway?: string }
   ) => Promise<string>,
   get: mockGet as (
     cid: string,
-    options?: { ipfsGateway?: string },
+    options?: { ipfsGateway?: string }
   ) => Promise<any>,
   isCid: mockIsCid as (cid: string) => boolean,
 }));
@@ -52,12 +52,12 @@ afterEach(() => {
 describe('createOracle', () => {
   test('standard - without apiKey', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const messages: any = [];
@@ -111,7 +111,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const mockGenerateEncryptionKey: any = jest
@@ -188,7 +188,7 @@ describe('createOracle', () => {
       .fn()
       .mockImplementationOnce(() => {
         return Promise.resolve(
-          '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
+          '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1'
         );
       });
     iexec.order.publishDatasetorder = mockPublishDatasetorder;
@@ -317,13 +317,13 @@ describe('createOracle', () => {
 
   test('cancel - without apiKey', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
 
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const messages: any = [];
@@ -370,7 +370,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const mockGenerateEncryptionKey: any = jest
@@ -447,7 +447,7 @@ describe('createOracle', () => {
       .fn()
       .mockImplementationOnce(() => {
         return Promise.resolve(
-          '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1',
+          '0xa0c976bf6cf2a6c5d152fa9e3af95b1e9feedd27838eb0dbf5a5e4f77115cfe1'
         );
       });
     iexec.order.publishDatasetorder = mockPublishDatasetorder;
@@ -488,7 +488,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const messages: any = [];
@@ -526,7 +526,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const messages: any = [];
@@ -561,7 +561,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const mockEncrypt: any = jest
@@ -600,7 +600,7 @@ describe('createOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to encrypt API key');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.dataset.encrypt failed'),
+      Error('iexec.dataset.encrypt failed')
     );
   }, 10000);
 
@@ -608,14 +608,14 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
 
     const mockComputeEncryptedFileChecksum: any = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.dataset.computeEncryptedFileChecksum failed') as never,
+        Error('iexec.dataset.computeEncryptedFileChecksum failed') as never
       );
 
     iexec.dataset.computeEncryptedFileChecksum =
@@ -649,10 +649,10 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe(
-      'Failed to compute encrypted API key checksum',
+      'Failed to compute encrypted API key checksum'
     );
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.dataset.computeEncryptedFileChecksum failed'),
+      Error('iexec.dataset.computeEncryptedFileChecksum failed')
     );
   }, 10000);
 
@@ -661,7 +661,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const messages: any = [];
@@ -697,18 +697,18 @@ describe('createOracle', () => {
 
   test('error - with apiKey failed to deploy dataset', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const mockDeployDataset: any = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.dataset.deployDataset failed') as never,
+        Error('iexec.dataset.deployDataset failed') as never
       );
 
     iexec.dataset.deployDataset = mockDeployDataset;
@@ -742,18 +742,18 @@ describe('createOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to deploy API key dataset');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.dataset.deployDataset failed'),
+      Error('iexec.dataset.deployDataset failed')
     );
   }, 10000);
 
   test('error - with apiKey failed to push encryption key', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
 
@@ -770,7 +770,7 @@ describe('createOracle', () => {
     const mockPushDatasetSecret: any = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.dataset.pushDatasetSecret failed') as never,
+        Error('iexec.dataset.pushDatasetSecret failed') as never
       );
     iexec.dataset.pushDatasetSecret = mockPushDatasetSecret;
 
@@ -803,21 +803,21 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe(
-      "Failed to push API key dataset's encryption key",
+      "Failed to push API key dataset's encryption key"
     );
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.dataset.pushDatasetSecret failed'),
+      Error('iexec.dataset.pushDatasetSecret failed')
     );
   }, 10000);
 
   test('error - with apiKey failed to create datasetorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const deployedDataset = {
@@ -839,7 +839,7 @@ describe('createOracle', () => {
     const mockCreateDastasetOrder: any = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.order.createDatasetorder failed') as never,
+        Error('iexec.order.createDatasetorder failed') as never
       );
 
     iexec.order.createDatasetorder = mockCreateDastasetOrder;
@@ -874,18 +874,18 @@ describe('createOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to create API key datasetorder's");
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.order.createDatasetorder failed'),
+      Error('iexec.order.createDatasetorder failed')
     );
   }, 10000);
 
   test('error - with apiKey failed to sign datasetorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S',
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const deployedDataset = {
@@ -922,7 +922,7 @@ describe('createOracle', () => {
     const mockSignedDatasetorder: any = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.order.signDatasetorder failed') as never,
+        Error('iexec.order.signDatasetorder failed') as never
       );
 
     iexec.order.signDatasetorder = mockSignedDatasetorder;
@@ -956,7 +956,7 @@ describe('createOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to sign API key datasetorder's");
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.order.signDatasetorder failed'),
+      Error('iexec.order.signDatasetorder failed')
     );
   }, 10000);
 
@@ -964,7 +964,7 @@ describe('createOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const mockGenerateEncryptionKey: any = jest
@@ -1002,7 +1002,7 @@ describe('createOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('API key dataset creation unexpected error');
     expect(errors[0].originalError).toStrictEqual(
-      Error('something bad happened'),
+      Error('something bad happened')
     );
   }, 10000);
 });

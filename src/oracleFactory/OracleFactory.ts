@@ -42,7 +42,7 @@ class IExecOracleFactory {
    */
   constructor(
     ethProvider: Eip1193Provider | Web3SignerProvider,
-    options?: OracleFactoryOptions,
+    options?: OracleFactoryOptions
   ) {
     try {
       this.iexec = new IExec({ ethProvider }, options?.iexecOptions);
@@ -96,7 +96,7 @@ class IExecOracleFactory {
    */
   readOracle = (
     paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string,
+    dataType?: string
   ): Promise<Oracle> =>
     readOracle({
       paramSetOrCidOrOracleId,

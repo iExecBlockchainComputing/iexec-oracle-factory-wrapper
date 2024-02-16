@@ -59,7 +59,7 @@ const DEFAULT_TARGET_BLOCKCHAIN: number[] = [134];
 
 const getDefaultProvider = (
   network: string | number = 134,
-  options?: any,
+  options?: any
 ): AbstractProvider => {
   const resolvedNetwork: string | number =
     networkMap[network] || network || networkMap[134];
@@ -67,7 +67,7 @@ const getDefaultProvider = (
 };
 
 const getFactoryDefaults = (
-  chainId: number,
+  chainId: number
 ): { ORACLE_APP_ADDRESS: string; ORACLE_CONTRACT_ADDRESS: string } => {
   const conf = factoryConfMap[chainId];
   if (!conf) throw Error(`Unsupported chain ${chainId}`);
@@ -75,7 +75,7 @@ const getFactoryDefaults = (
 };
 
 const getReaderDefaults = (
-  chainId: number,
+  chainId: number
 ): { ORACLE_CONTRACT_ADDRESS: string } => {
   const conf = readerConfMap[chainId];
   if (!conf) throw Error(`Unsupported chain ${chainId}`);
@@ -83,7 +83,7 @@ const getReaderDefaults = (
 };
 
 const getDefaults = (
-  chainId: number,
+  chainId: number
 ): { ORACLE_APP_ADDRESS?: string; ORACLE_CONTRACT_ADDRESS?: string } => {
   const factoryConf = factoryConfMap[chainId];
   const readerConf = readerConfMap[chainId];

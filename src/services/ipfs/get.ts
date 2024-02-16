@@ -4,7 +4,7 @@ import { DEFAULT_IPFS_GATEWAY } from '../../config/config.js';
 
 const get = async (
   cid,
-  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {},
+  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}
 ): Promise<Buffer> => {
   const multiaddr = `/ipfs/${cid.toString()}`;
   const publicUrl = `${ipfsGateway}${multiaddr}`;

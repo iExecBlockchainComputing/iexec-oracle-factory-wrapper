@@ -21,7 +21,7 @@ const computeOracleId = async (paramSet): Promise<string> => {
 
   return ethers.solidityPackedKeccak256(
     ['string', 'string', 'string', 'address', 'string[][]', 'string', 'string'],
-    [JSONPath, body, dataType, dataset, formatedHeaders, method, url],
+    [JSONPath, body, dataType, dataset, formatedHeaders, method, url]
   );
 };
 
@@ -32,7 +32,7 @@ const computeCallId = async (callParams): Promise<string> => {
 
   return ethers.solidityPackedKeccak256(
     ['string', 'string[][]', 'string', 'string'],
-    [body, formatedHeaders, method, url],
+    [body, formatedHeaders, method, url]
   );
 };
 

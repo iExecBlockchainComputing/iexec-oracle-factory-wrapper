@@ -6,7 +6,7 @@ import { createOracle } from '../../../dist/oracleFactory/createOracle.js';
 test('create oracle - without dataset', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
@@ -38,7 +38,7 @@ test('create oracle - without dataset', async () => {
 test('create oracle - with dataset', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
@@ -71,7 +71,7 @@ test('create oracle - with dataset', async () => {
 test('cancel - without apiKey', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
@@ -102,7 +102,7 @@ test('cancel - without apiKey', async () => {
 test('cancel - with apiKey', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 

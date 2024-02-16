@@ -15,7 +15,7 @@ describe('computeOracleId', () => {
       dataType: 'string',
     });
     expect(oracleId).toBe(
-      '0xf240bfa4125f0c0fba0cd9dc9d93d30a97e8e98bf93c549bbb3df83a34dbebb8',
+      '0xf240bfa4125f0c0fba0cd9dc9d93d30a97e8e98bf93c549bbb3df83a34dbebb8'
     );
   });
 });

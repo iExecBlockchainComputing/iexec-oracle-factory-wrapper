@@ -43,7 +43,7 @@ class IExecOracleReader {
   constructor(
     ethProvider?: Provider,
     options?: OracleReaderOptions,
-    providerOptions?: any,
+    providerOptions?: any
   ) {
     this.ethersProvider =
       ethProvider ||
@@ -61,7 +61,7 @@ class IExecOracleReader {
    */
   readOracle(
     paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string,
+    dataType?: string
   ): Promise<Oracle> {
     return readOracle({
       paramSetOrCidOrOracleId,

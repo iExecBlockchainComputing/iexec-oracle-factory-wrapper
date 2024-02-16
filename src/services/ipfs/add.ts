@@ -11,7 +11,7 @@ const add = async (
   {
     ipfsGateway = DEFAULT_IPFS_GATEWAY,
     ipfsUploadUrl = DEFAULT_IPFS_UPLOAD_URL,
-  },
+  }
 ): Promise<string> => {
   const ipfsClient = create(ipfsUploadUrl);
   const { cid } = await ipfsClient.add(content);

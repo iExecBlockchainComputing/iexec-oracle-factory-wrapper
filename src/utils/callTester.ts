@@ -9,7 +9,7 @@ interface FinalHeaders {
 }
 
 const testRawParams = async (
-  rawParams: ParamSet,
+  rawParams: ParamSet
 ): Promise<boolean | string | number> => {
   const { url, method, headers, body, apiKey, JSONPath, dataType } =
     await rawParamsSchema().validate(rawParams);
@@ -29,7 +29,7 @@ const testRawParams = async (
     ...(body && { body }),
   }).catch((e) => {
     throw Error(
-      `Failed get a response from the API (${e})\nYou can:\n- check your connection\n- check the API url\n- check the HTTP method\n- check the API allows CORS`,
+      `Failed get a response from the API (${e})\nYou can:\n- check your connection\n- check the API url\n- check the HTTP method\n- check the API allows CORS`
     );
   });
 
@@ -39,7 +39,7 @@ const testRawParams = async (
 
   const json = await res.json().catch(() => {
     throw Error(
-      `${defaultMessage} but the response body format is not supported, it must be a JSON`,
+      `${defaultMessage} but the response body format is not supported, it must be a JSON`
     );
   });
 
@@ -50,8 +50,8 @@ const testRawParams = async (
       `${defaultMessage} but JSONPath selector "${JSONPath}" returned empty result, it must return a single value:\n${JSON.stringify(
         jsonPathResult,
         null,
-        2,
-      )}`,
+        2
+      )}`
     );
   }
   if (jsonPathResult.length > 1) {
@@ -59,8 +59,8 @@ const testRawParams = async (
       `${defaultMessage} but JSONPath selector "${JSONPath}" returned multiple results, it must return a single value:\n${JSON.stringify(
         jsonPathResult,
         null,
-        2,
-      )}`,
+        2
+      )}`
     );
   }
   const selected = jsonPathResult[0];
@@ -70,21 +70,21 @@ const testRawParams = async (
     case 'boolean':
       if (dataType !== 'boolean') {
         throw Error(
-          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, which is NOT compatible with \`dataType: "${dataType}"\`, use \`dataType: "boolean"\` to store ${typeofSelected}`,
+          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, which is NOT compatible with \`dataType: "${dataType}"\`, use \`dataType: "boolean"\` to store ${typeofSelected}`
         );
       }
       return selected;
     case 'string':
       if (dataType !== 'string') {
         throw Error(
-          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, which is NOT compatible with \`dataType: "${dataType}"\`, use \`dataType: "string"\` to store ${typeofSelected}`,
+          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, which is NOT compatible with \`dataType: "${dataType}"\`, use \`dataType: "string"\` to store ${typeofSelected}`
         );
       }
       return selected;
     case 'number':
       if (dataType !== 'number') {
         throw Error(
-          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, which is NOT compatible with \`dataType: "${dataType}"\`, use \`dataType: "number"\` to store ${typeofSelected}`,
+          `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, which is NOT compatible with \`dataType: "${dataType}"\`, use \`dataType: "number"\` to store ${typeofSelected}`
         );
       }
       return selected;
@@ -93,8 +93,8 @@ const testRawParams = async (
         `${defaultMessage} but JSONPath selector "${JSONPath}" returned a ${typeofSelected}, it must be string, number or boolean:\n${JSON.stringify(
           selected,
           null,
-          2,
-        )}`,
+          2
+        )}`
       );
   }
 };

@@ -59,7 +59,7 @@ const getParamSet = async ({
   } else {
     paramSet = await paramSetSchema().validate(paramSetOrCid);
     paramsJson = await jsonParamSetSchema().validate(
-      formatParamsJson(paramSet),
+      formatParamsJson(paramSet)
     );
   }
   return { paramSet, paramsJson, isUploaded };
@@ -92,7 +92,7 @@ const updateOracle = ({
         let targetBlockchainsArray =
           typeof paramSetOrCid === 'object'
             ? await updateTargetBlockchainsSchema().validate(
-                paramSetOrCid.targetBlockchains,
+                paramSetOrCid.targetBlockchains
               )
             : DEFAULT_TARGET_BLOCKCHAIN;
 
@@ -282,7 +282,7 @@ const updateOracle = ({
               workerpoolorder,
               requestorder,
             },
-            { checkRequest: false },
+            { checkRequest: false }
           )
           .catch((e) => {
             throw new WorkflowError('Failed to match orders', e);
@@ -309,8 +309,8 @@ const updateOracle = ({
                     reject(
                       new WorkflowError(
                         'Oracle update task timed out, update failed',
-                        Error(`Task ${taskid} from deal ${dealid} timed out`),
-                      ),
+                        Error(`Task ${taskid} from deal ${dealid} timed out`)
+                      )
                     );
                   }
                   if (message === 'TASK_COMPLETED') {
@@ -327,10 +327,7 @@ const updateOracle = ({
                 },
                 error: (e) =>
                   reject(
-                    new WorkflowError(
-                      'Failed to monitor oracle update task',
-                      e,
-                    ),
+                    new WorkflowError('Failed to monitor oracle update task', e)
                   ),
                 complete: () => {},
               });
@@ -348,7 +345,7 @@ const updateOracle = ({
           safeObserver.error(e);
         } else {
           safeObserver.error(
-            new WorkflowError('Update oracle unexpected error', e),
+            new WorkflowError('Update oracle unexpected error', e)
           );
         }
       }

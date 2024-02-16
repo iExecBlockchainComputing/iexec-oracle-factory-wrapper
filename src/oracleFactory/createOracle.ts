@@ -69,7 +69,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 'Failed to compute encrypted API key checksum',
-                e,
+                e
               );
             });
           if (abort) return;
@@ -120,7 +120,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to push API key dataset's encryption key",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -138,7 +138,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to create API key datasetorder's",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -151,7 +151,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to sign API key datasetorder's",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -169,7 +169,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to publish API key datasetorder's",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -185,7 +185,7 @@ const createApiKeyDataset = ({
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('API key dataset creation unexpected error', e),
+              new WorkflowError('API key dataset creation unexpected error', e)
             );
           }
         }
@@ -196,7 +196,7 @@ const createApiKeyDataset = ({
       };
       start();
       return safeObserver.unsubscribe.bind(safeObserver);
-    },
+    }
   );
 
 /**
@@ -221,7 +221,7 @@ const createOracle = ({
     (observer: SafeObserver<CreateOracleMessage>) => {
       let abort = false;
       const safeObserver: SafeObserver<CreateOracleMessage> = new SafeObserver(
-        observer,
+        observer
       );
       let stopCreateDataset: () => void;
       const start = async () => {
@@ -280,7 +280,7 @@ const createOracle = ({
           });
 
           const jsonParams = await jsonParamSetSchema().validate(
-            formatParamsJson(paramSet),
+            formatParamsJson(paramSet)
           );
           if (abort) return;
           safeObserver.next({
@@ -314,7 +314,7 @@ const createOracle = ({
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('Create oracle unexpected error', e),
+              new WorkflowError('Create oracle unexpected error', e)
             );
           }
         }
@@ -328,7 +328,7 @@ const createOracle = ({
       };
       start();
       return safeObserver.unsubscribe.bind(safeObserver);
-    },
+    }
   );
 };
 

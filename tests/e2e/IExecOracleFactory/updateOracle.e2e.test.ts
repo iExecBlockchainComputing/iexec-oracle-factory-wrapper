@@ -5,7 +5,7 @@ import { IExecOracleFactory } from '../../../dist/oracleFactory/OracleFactory.js
 test.skip('update oracle - standard from paramSet - no dataset', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
@@ -97,7 +97,7 @@ test.skip('update oracle - standard from paramSet - no dataset', async () => {
 test.skip('standard - from CID', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 

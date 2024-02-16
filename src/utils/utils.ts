@@ -42,7 +42,7 @@ const getParamSet = async ({
   } else {
     paramSet = await paramSetSchema().validate(paramSetOrCid);
     paramsJson = await jsonParamSetSchema().validate(
-      formatParamsJson(paramSet),
+      formatParamsJson(paramSet)
     );
   }
   return { paramSet, paramsJson, isUploaded };
@@ -50,7 +50,7 @@ const getParamSet = async ({
 
 const computeOracleId = async (
   paramSetOrCid,
-  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {},
+  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}
 ): Promise<string> => {
   const { paramSet }: ParamSetResult = await getParamSet({
     paramSetOrCid,

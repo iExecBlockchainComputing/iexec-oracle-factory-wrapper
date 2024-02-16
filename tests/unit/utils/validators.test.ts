@@ -63,7 +63,7 @@ describe('callParamsSchema', () => {
     await expect(
       callParamsSchema().validate({
         method: 'POST',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
@@ -71,7 +71,7 @@ describe('callParamsSchema', () => {
     await expect(
       callParamsSchema().validate({
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
@@ -81,9 +81,9 @@ describe('callParamsSchema', () => {
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         foo: 'bar',
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('this field has unspecified keys: foo'),
+      new ValidationError('this field has unspecified keys: foo')
     );
   });
 });
@@ -110,7 +110,7 @@ describe('strictCallParamsSchema', () => {
         method: 'POST',
         body: '',
         headers: {},
-      }),
+      })
     ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
@@ -120,7 +120,7 @@ describe('strictCallParamsSchema', () => {
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         body: '',
         headers: {},
-      }),
+      })
     ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
@@ -130,7 +130,7 @@ describe('strictCallParamsSchema', () => {
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         headers: {},
-      }),
+      })
     ).rejects.toThrow(new ValidationError('body is a required field'));
   });
 
@@ -140,7 +140,7 @@ describe('strictCallParamsSchema', () => {
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         body: '',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('headers is a required field'));
   });
 
@@ -150,9 +150,9 @@ describe('strictCallParamsSchema', () => {
         url: 'https://foo.com?query=bar&apiKey=%API_KEY%',
         method: 'POST',
         foo: 'bar',
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('this field has unspecified keys: foo'),
+      new ValidationError('this field has unspecified keys: foo')
     );
   });
 });
@@ -281,11 +281,11 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         headers: {},
         apiKey: 'abcdef1234567890',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
-      ),
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+      )
     );
     await expect(
       rawParamsSchema().validate({
@@ -295,11 +295,11 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
         apiKey: 'abcdef1234567890',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
-      ),
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+      )
     );
   });
 
@@ -311,9 +311,9 @@ describe('rawParamsSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('Using %API_KEY% placeholder but no apiKey provided'),
+      new ValidationError('Using %API_KEY% placeholder but no apiKey provided')
     );
 
     await expect(
@@ -323,9 +323,9 @@ describe('rawParamsSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('Using %API_KEY% placeholder but no apiKey provided'),
+      new ValidationError('Using %API_KEY% placeholder but no apiKey provided')
     );
   });
 
@@ -338,11 +338,11 @@ describe('rawParamsSchema', () => {
         dataType: 'string',
         headers: {},
         apiKey: 'abcdef1234567890',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Provided apiKey but no %API_KEY% placeholder found in url or headers',
-      ),
+        'Provided apiKey but no %API_KEY% placeholder found in url or headers'
+      )
     );
   });
 
@@ -352,7 +352,7 @@ describe('rawParamsSchema', () => {
         method: 'POST',
         JSONPath: '$.foo',
         dataType: 'string',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
@@ -362,7 +362,7 @@ describe('rawParamsSchema', () => {
         url: 'https://foo.com?query=bar',
         JSONPath: '$.foo',
         dataType: 'string',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
@@ -372,7 +372,7 @@ describe('rawParamsSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         dataType: 'string',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('JSONPath is a required field'));
   });
 
@@ -382,7 +382,7 @@ describe('rawParamsSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
 
@@ -394,9 +394,9 @@ describe('rawParamsSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         foo: 'bar',
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('this field has unspecified keys: foo'),
+      new ValidationError('this field has unspecified keys: foo')
     );
   });
 });
@@ -550,11 +550,11 @@ describe('paramSetSchema', () => {
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
-      ),
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+      )
     );
     await expect(
       paramSetSchema().validate({
@@ -564,11 +564,11 @@ describe('paramSetSchema', () => {
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
-      ),
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+      )
     );
   });
 
@@ -580,11 +580,9 @@ describe('paramSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError(
-        'Using %API_KEY% placeholder but no dataset provided',
-      ),
+      new ValidationError('Using %API_KEY% placeholder but no dataset provided')
     );
 
     await expect(
@@ -594,11 +592,9 @@ describe('paramSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError(
-        'Using %API_KEY% placeholder but no dataset provided',
-      ),
+      new ValidationError('Using %API_KEY% placeholder but no dataset provided')
     );
   });
 
@@ -611,11 +607,11 @@ describe('paramSetSchema', () => {
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Provided dataset but no %API_KEY% placeholder found in url or headers',
-      ),
+        'Provided dataset but no %API_KEY% placeholder found in url or headers'
+      )
     );
   });
 
@@ -625,7 +621,7 @@ describe('paramSetSchema', () => {
         method: 'POST',
         JSONPath: '$.foo',
         dataType: 'string',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
@@ -635,7 +631,7 @@ describe('paramSetSchema', () => {
         url: 'https://foo.com?query=bar',
         JSONPath: '$.foo',
         dataType: 'string',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
@@ -645,7 +641,7 @@ describe('paramSetSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         dataType: 'string',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('JSONPath is a required field'));
   });
 
@@ -655,7 +651,7 @@ describe('paramSetSchema', () => {
         url: 'https://foo.com?query=bar',
         method: 'POST',
         JSONPath: '$.foo',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
 
@@ -667,9 +663,9 @@ describe('paramSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         foo: 'bar',
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('this field has unspecified keys: foo'),
+      new ValidationError('this field has unspecified keys: foo')
     );
   });
 });
@@ -780,11 +776,11 @@ describe('strictParamSetSchema', () => {
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
-      ),
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+      )
     );
     await expect(
       strictParamSetSchema().validate({
@@ -794,11 +790,11 @@ describe('strictParamSetSchema', () => {
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence',
-      ),
+        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+      )
     );
   });
 
@@ -810,11 +806,9 @@ describe('strictParamSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         headers: {},
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError(
-        'Using %API_KEY% placeholder but no dataset provided',
-      ),
+      new ValidationError('Using %API_KEY% placeholder but no dataset provided')
     );
 
     await expect(
@@ -824,11 +818,9 @@ describe('strictParamSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         headers: { authorization: '%API_KEY%' },
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError(
-        'Using %API_KEY% placeholder but no dataset provided',
-      ),
+      new ValidationError('Using %API_KEY% placeholder but no dataset provided')
     );
   });
 
@@ -841,11 +833,11 @@ describe('strictParamSetSchema', () => {
         dataType: 'string',
         headers: {},
         dataset: '0xF048eF3d7E3B33A465E0599E641BB29421f7Df92',
-      }),
+      })
     ).rejects.toThrow(
       new ValidationError(
-        'Provided dataset but no %API_KEY% placeholder found in url or headers',
-      ),
+        'Provided dataset but no %API_KEY% placeholder found in url or headers'
+      )
     );
   });
 
@@ -860,7 +852,7 @@ describe('strictParamSetSchema', () => {
           'content-type': 'application/json',
         },
         dataset: '0x0000000000000000000000000000000000000000',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('url is a required field'));
   });
 
@@ -875,7 +867,7 @@ describe('strictParamSetSchema', () => {
           'content-type': 'application/json',
         },
         dataset: '0x0000000000000000000000000000000000000000',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('method is a required field'));
   });
 
@@ -890,7 +882,7 @@ describe('strictParamSetSchema', () => {
           'content-type': 'application/json',
         },
         dataset: '0x0000000000000000000000000000000000000000',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('body is a required field'));
   });
 
@@ -905,7 +897,7 @@ describe('strictParamSetSchema', () => {
           'content-type': 'application/json',
         },
         dataset: '0x0000000000000000000000000000000000000000',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('JSONPath is a required field'));
   });
 
@@ -920,7 +912,7 @@ describe('strictParamSetSchema', () => {
           'content-type': 'application/json',
         },
         dataset: '0x0000000000000000000000000000000000000000',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('dataType is a required field'));
   });
 
@@ -933,7 +925,7 @@ describe('strictParamSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         dataset: '0x0000000000000000000000000000000000000000',
-      }),
+      })
     ).rejects.toThrow(new ValidationError('headers is a required field'));
   });
 
@@ -948,7 +940,7 @@ describe('strictParamSetSchema', () => {
         headers: {
           'content-type': 'application/json',
         },
-      }),
+      })
     ).rejects.toThrow(new ValidationError('dataset is a required field'));
   });
 
@@ -960,9 +952,9 @@ describe('strictParamSetSchema', () => {
         JSONPath: '$.foo',
         dataType: 'string',
         foo: 'bar',
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('this field has unspecified keys: foo'),
+      new ValidationError('this field has unspecified keys: foo')
     );
   });
 });
@@ -971,7 +963,7 @@ describe('jsonParamSetSchema', () => {
   test('throw on invalid JSON', async () => {
     const json = 'foo';
     await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
-      new ValidationError('foo is not a valid JSON'),
+      new ValidationError('foo is not a valid JSON')
     );
   });
 
@@ -1023,8 +1015,8 @@ describe('jsonParamSetSchema', () => {
     });
     await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"}} is not a valid paramSet (Using %API_KEY% placeholder but no dataset provided)',
-      ),
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"}} is not a valid paramSet (Using %API_KEY% placeholder but no dataset provided)'
+      )
     );
   });
 
@@ -1042,8 +1034,8 @@ describe('jsonParamSetSchema', () => {
     });
     await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramSet (body is a required field)',
-      ),
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92"} is not a valid paramSet (body is a required field)'
+      )
     );
   });
 
@@ -1063,8 +1055,8 @@ describe('jsonParamSetSchema', () => {
     });
     await expect(jsonParamSetSchema().validate(json)).rejects.toThrow(
       new ValidationError(
-        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramSet (this field has unspecified keys: foo)',
-      ),
+        '{"url":"https://foo.com?query=bar&apiKey=%API_KEY%","method":"POST","body":"body","JSONPath":"$.foo","dataType":"string","headers":{"content-type":"application/json","authorization":"foo"},"dataset":"0xF048eF3d7E3B33A465E0599E641BB29421f7Df92","foo":"bar"} is not a valid paramSet (this field has unspecified keys: foo)'
+      )
     );
   });
 });
@@ -1072,36 +1064,36 @@ describe('jsonParamSetSchema', () => {
 describe('updateTargetBlockchainsSchema', () => {
   test('valid undefined', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate([]),
+      updateTargetBlockchainsSchema().validate([])
     ).resolves.toStrictEqual([]);
   });
   test('valid array of number', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate([1, 5]),
+      updateTargetBlockchainsSchema().validate([1, 5])
     ).resolves.toStrictEqual([1, 5]);
   });
   test('valid array of string number', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate(['1', '5']),
+      updateTargetBlockchainsSchema().validate(['1', '5'])
     ).resolves.toStrictEqual([1, 5]);
   });
   test('valid empty array', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate([]),
+      updateTargetBlockchainsSchema().validate([])
     ).resolves.toStrictEqual([]);
   });
   test('invalid object', async () => {
     await expect(updateTargetBlockchainsSchema().validate({})).rejects.toThrow(
-      'this must be a `array` type, but the final value was: `{}`',
+      'this must be a `array` type, but the final value was: `{}`'
     );
   });
   test('invalid array of string', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate(['foo', 'bar']),
+      updateTargetBlockchainsSchema().validate(['foo', 'bar'])
     ).rejects.toThrow(
       new ValidationError(
-        '["0"] must be a `number` type, but the final value was: `NaN` (cast from the value `"foo"`).',
-      ),
+        '["0"] must be a `number` type, but the final value was: `NaN` (cast from the value `"foo"`).'
+      )
     );
   });
 });
@@ -1116,9 +1108,9 @@ describe('internal schema', () => {
           JSONPath: '$.foo',
           dataType: 'string',
           dataset: 'foo',
-        }),
+        })
       ).rejects.toThrow(
-        new ValidationError('dataset is not a valid ethereum address'),
+        new ValidationError('dataset is not a valid ethereum address')
       );
     });
   });
@@ -1132,9 +1124,9 @@ describe('internal schema', () => {
           headers: {
             authorization: '',
           },
-        }),
+        })
       ).rejects.toThrow(
-        new ValidationError('headers is not a valid header list'),
+        new ValidationError('headers is not a valid header list')
       );
     });
   });
@@ -1147,7 +1139,7 @@ describe('internal schema', () => {
           method: 'POST',
           JSONPath: '$[foo]',
           dataType: 'string',
-        }),
+        })
       ).rejects.toThrow(new ValidationError('$[foo] is not a valid JSONPath'));
     });
   });

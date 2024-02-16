@@ -42,7 +42,7 @@ afterEach(() => {
 test.only('standard - instantiation', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithOptions = new IExecOracleFactory(ethProvider, {
     ipfsGateway: 'ipfsGateway',
@@ -226,7 +226,7 @@ test.only('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    'number',
+    'number'
   );
 
   expect(readOracle).toHaveBeenNthCalledWith(2, {

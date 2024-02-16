@@ -72,10 +72,10 @@ class Observable<DataMessageType> {
   subscribe(
     observerOrNext: Observer<DataMessageType> | ObservableNext<DataMessageType>,
     error?: ObservableError,
-    complete?: ObservableComplete,
+    complete?: ObservableComplete
   ) {
     const safeObserver: SafeObserver<DataMessageType> = new SafeObserver(
-      observerOrNext,
+      observerOrNext
     );
     if (typeof observerOrNext === 'function') {
       safeObserver.destination = {

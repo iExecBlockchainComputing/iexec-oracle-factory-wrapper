@@ -27,7 +27,7 @@ const formatOracleGetInt = (resultBn: any): number => {
     return resultNumber;
   } catch (e) {
     throw Error(
-      `Converting ${resultBig.toString()} to number will result in loosing precision`,
+      `Converting ${resultBig.toString()} to number will result in loosing precision`
     );
   }
 };

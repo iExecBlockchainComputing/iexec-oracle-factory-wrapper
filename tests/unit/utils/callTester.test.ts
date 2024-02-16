@@ -38,7 +38,7 @@ describe('testRawParams', () => {
         body: '%API_KEY%',
         headers: {},
         method: 'PUT',
-      },
+      }
     );
     fetchMock.mockClear();
     await testRawParams({
@@ -113,11 +113,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'boolean',
         JSONPath: '$.bar',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'Failed get a response from the API (Error: fetch error)\nYou can:\n- check your connection\n- check the API url\n- check the HTTP method\n- check the API allows CORS',
-      ),
+        'Failed get a response from the API (Error: fetch error)\nYou can:\n- check your connection\n- check the API url\n- check the HTTP method\n- check the API allows CORS'
+      )
     );
   });
 
@@ -131,11 +131,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'boolean',
         JSONPath: '$.bar',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but the response body format is not supported, it must be a JSON',
-      ),
+        'The API answered with status undefined but the response body format is not supported, it must be a JSON'
+      )
     );
   });
 
@@ -149,11 +149,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'boolean',
         JSONPath: '$.bar',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.bar" returned empty result, it must return a single value:\n[]',
-      ),
+        'The API answered with status undefined but JSONPath selector "$.bar" returned empty result, it must return a single value:\n[]'
+      )
     );
   });
 
@@ -168,11 +168,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'boolean',
         JSONPath: '$..target',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$..target" returned multiple results, it must return a single value:\n[\n  "foo",\n  "bar"\n]',
-      ),
+        'The API answered with status undefined but JSONPath selector "$..target" returned multiple results, it must return a single value:\n[\n  "foo",\n  "bar"\n]'
+      )
     );
   });
 
@@ -186,11 +186,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'boolean',
         JSONPath: '$.foo',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.foo" returned a object, it must be string, number or boolean:\n[]',
-      ),
+        'The API answered with status undefined but JSONPath selector "$.foo" returned a object, it must be string, number or boolean:\n[]'
+      )
     );
   });
 
@@ -204,11 +204,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'string',
         JSONPath: '$.foo',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, wich is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean',
-      ),
+        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, wich is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean'
+      )
     );
     await expect(
       testRawParams({
@@ -216,11 +216,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'boolean',
         JSONPath: '$.bar',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, wich is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number',
-      ),
+        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, wich is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number'
+      )
     );
     await expect(
       testRawParams({
@@ -228,11 +228,11 @@ describe('testRawParams', () => {
         method: 'GET',
         dataType: 'number',
         JSONPath: '$.baz',
-      }),
+      })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, wich is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string',
-      ),
+        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, wich is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string'
+      )
     );
   });
 });
