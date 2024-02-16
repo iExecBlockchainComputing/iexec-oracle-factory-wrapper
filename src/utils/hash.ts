@@ -1,5 +1,4 @@
 import { ethers } from 'ethers';
-import { ParamSet } from '../../src/oracleFactory/types.js';
 import { sortObjKeys } from './format.js';
 import { strictParamSetSchema, strictCallParamsSchema } from './validators.js';
 
