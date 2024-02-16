@@ -104,7 +104,7 @@ export type ParamSet = {
   /**
    * Additional headers to include in the request (optional).
    */
-  headers?: Object;
+  headers?: object;
 
   /**
    * Body of the request (optional).
