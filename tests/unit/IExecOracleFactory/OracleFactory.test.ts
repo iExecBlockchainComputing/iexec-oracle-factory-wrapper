@@ -26,9 +26,7 @@ const { createOracle } = await import(
 const { updateOracle } = await import(
   '../../../src/oracleFactory/updateOracle.js'
 );
-const { readOracle } = await import(
-  '../../../src/oracleFactory/readOracle.js'
-);
+const { readOracle } = await import('../../../src/oracleFactory/readOracle.js');
 
 // this will use the already loaded mock of oracle.js
 const { IExecOracleFactory } = await import(

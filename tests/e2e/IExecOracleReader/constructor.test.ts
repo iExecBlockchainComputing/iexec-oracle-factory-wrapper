@@ -1,8 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
 import { Wallet, ethers } from 'ethers';
-import {
-  IExecOracleReader,
-} from '../../../src/index.js';
+import { IExecOracleReader } from '../../../src/index.js';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,

@@ -18,9 +18,7 @@ jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
 }));
 
 // dynamically import tested module after all mock are loaded
-const { readOracle } = await import(
-  '../../../src/oracleFactory/readOracle.js'
-);
+const { readOracle } = await import('../../../src/oracleFactory/readOracle.js');
 
 beforeEach(() => {
   // use ipfs real implementation as default mock

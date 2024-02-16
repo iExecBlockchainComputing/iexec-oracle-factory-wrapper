@@ -1,4 +1,4 @@
-import { Eip1193Provider , Provider } from 'ethers';
+import { Eip1193Provider, Provider } from 'ethers';
 import { IExec } from 'iexec';
 import {
   DEFAULT_APP_ADDRESS,
