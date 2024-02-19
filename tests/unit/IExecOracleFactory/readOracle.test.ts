@@ -1,6 +1,7 @@
 import { beforeEach, jest } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { utils } from 'iexec';
+import { getDefaultProvider } from '../../../src/config/config.js';
 import {
   NoValueError,
   ValidationError,
@@ -9,7 +10,6 @@ import {
 const mockAdd = jest.fn() as jest.Mock<any>;
 const mockGet = jest.fn() as jest.Mock<any>;
 const mockIsCid = jest.fn() as jest.Mock<any>;
-import { getDefaultProvider } from '../../../src/config/config.js';
 
 jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd,

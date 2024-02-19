@@ -14,7 +14,7 @@ interface GetParamSetOptions {
 }
 
 interface ParamSetResult {
-  paramSet: any;
+  paramSet: ParamSet;
   paramsJson: string;
   isUploaded: boolean;
 }

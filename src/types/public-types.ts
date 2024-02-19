@@ -35,7 +35,7 @@ export type OracleFactoryOptions = {
 export type OracleReaderOptions = {
   oracleContract?: AddressOrENS;
   ipfsGateway?: string;
-  providerOptions?: any;
+  providerOptions?: unknown;
 };
 
 export type Web3SignerProvider = EnhancedWallet;

@@ -40,6 +40,7 @@ const createApiKeyDataset = ({
   oracleApp,
 }: CreateApiKeyDatasetParams): Observable<CreateOracleMessage> =>
   new Observable<CreateOracleMessage>(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     (observer: SafeObserver<CreateOracleMessage>) => {
       let abort = false;
       const safeObserver = new SafeObserver(observer);
@@ -220,6 +221,7 @@ const createOracle = ({
   iexec = throwIfMissing(),
 }: ParamSet & CreateOracleOptions): Observable<CreateOracleMessage> => {
   return new Observable<CreateOracleMessage>(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     (observer: SafeObserver<CreateOracleMessage>) => {
       let abort = false;
       const safeObserver: SafeObserver<CreateOracleMessage> = new SafeObserver(

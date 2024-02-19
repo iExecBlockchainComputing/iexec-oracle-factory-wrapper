@@ -82,6 +82,7 @@ const updateOracle = ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleContract,
 }: UpdateOracleParams): Observable<UpdateOracleMessage> =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   new Observable((observer: SafeObserver<UpdateOracleMessage>) => {
     let abort = false;
     let stopWatcher;

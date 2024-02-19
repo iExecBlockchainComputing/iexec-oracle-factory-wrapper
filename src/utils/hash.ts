@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ethers } from 'ethers';
 import { sortObjKeys } from './format.js';
 import { strictParamSetSchema, strictCallParamsSchema } from './validators.js';
@@ -13,7 +14,7 @@ const formatMap = (obj: Record<string, any>): [string, any][] => {
 };
 
 const computeOracleId = async (paramSet): Promise<string> => {
-  const { JSONPath, body, dataType, dataset, headers, method, url } =
+  const { JSONPath, body, dataType, dataset, headers, method, url }: any =
     await strictParamSetSchema().validate(paramSet);
 
   const formatedHeaders = formatMap(headers);

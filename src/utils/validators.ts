@@ -121,7 +121,7 @@ const strictCallParamsSchema = () =>
   object().test(
     'is-call-params',
     '${originalValue} is not a valid callParams',
-    async (obj: any, context) => {
+    async (obj: ParamSet, context) => {
       try {
         if (obj && obj.body === '') {
           await object({
@@ -254,12 +254,12 @@ const paramSetSchema = () =>
     )
     .noUnknown(true);
 
-const strictParamSetSchema = (): ObjectSchema<any> =>
+const strictParamSetSchema = (): ObjectSchema<unknown> =>
   object()
     .test(
       'is-params-set',
       '${originalValue} is not a valid paramSet',
-      async (obj: ParamSet, context: any) => {
+      async (obj: ParamSet, context) => {
         try {
           if (obj && obj.body === '') {
             await object({
