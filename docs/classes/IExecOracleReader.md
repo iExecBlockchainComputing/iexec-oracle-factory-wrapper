@@ -26,17 +26,17 @@ Oracle Reader that interacts with iExec Oracle.
 
 ### constructor
 
-• **new IExecOracleReader**(`ethProvider?`, `options?`, `providerOptions?`): [`IExecOracleReader`](IExecOracleReader.md)
+• **new IExecOracleReader**(`ethProviderOrNetwork?`, `options?`, `providerOptions?`): [`IExecOracleReader`](IExecOracleReader.md)
 
 Creates an instance of IExecOracleReader.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `ethProvider?` | `Provider` | Ethereum provider. |
-| `options?` | [`OracleReaderOptions`](../modules.md#oraclereaderoptions) | Options for the Oracle Reader. |
-| `providerOptions?` | `any` | Options for the provider. |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `ethProviderOrNetwork?` | `string` \| `number` \| `EnhancedWallet` \| `AbstractProvider` \| `Eip1193Provider` | `134` | Ethereum provider, chainId or network name. |
+| `options?` | [`OracleReaderOptions`](../modules.md#oraclereaderoptions) | `undefined` | Options for the Oracle Reader. |
+| `providerOptions?` | `any` | `undefined` | Options for the provider. |
 
 #### Returns
 

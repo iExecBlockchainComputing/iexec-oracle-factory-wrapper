@@ -12,7 +12,7 @@ IExecOracleFactory, used to interact with oracle creation, update, and read oper
 
 ### Properties
 
-- [ethersProvider](IExecOracleFactory.md#ethersprovider)
+- [ethersProviderPromise](IExecOracleFactory.md#ethersproviderpromise)
 - [iexec](IExecOracleFactory.md#iexec)
 - [ipfsGateway](IExecOracleFactory.md#ipfsgateway)
 - [ipfsUploadUrl](IExecOracleFactory.md#ipfsuploadurl)
@@ -48,9 +48,9 @@ Creates an instance of IExecOracleFactory.
 
 ## Properties
 
-### ethersProvider
+### ethersProviderPromise
 
-• `Private` **ethersProvider**: `Provider`
+• `Private` **ethersProviderPromise**: `Promise`\<`Provider`\>
 
 ___
 

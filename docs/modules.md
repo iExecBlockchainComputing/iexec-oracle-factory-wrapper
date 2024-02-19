@@ -34,6 +34,7 @@
 - [UpdateOracleMessage](modules.md#updateoraclemessage)
 - [UpdateOracleOptions](modules.md#updateoracleoptions)
 - [UpdateOracleParams](modules.md#updateoracleparams)
+- [Web3ReadOnlyProvider](modules.md#web3readonlyprovider)
 - [Web3SignerProvider](modules.md#web3signerprovider)
 
 ### Functions
@@ -111,7 +112,7 @@ Response from an oracle query.
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `date` | `number` | Timestamp indicating when the oracle was created. |
-| `value` | `Boolean` \| `string` \| `number` | Value returned by the oracle. |
+| `value` | `boolean` \| `string` \| `number` | Value returned by the oracle. |
 
 ___
 
@@ -164,7 +165,7 @@ Set of parameters for an oracle request.
 | `body?` | `string` | Body of the request (optional). |
 | `dataType?` | `NonNullable`\<``"string"`` \| ``"number"`` \| ``"boolean"``\> | The expected data type of the response. Must be one of 'string', 'number', or 'boolean'. |
 | `dataset?` | [`Address`](modules.md#address) | Address of the dataset associated with the request (optional). |
-| `headers?` | `Object` | Additional headers to include in the request (optional). |
+| `headers?` | `object` | Additional headers to include in the request (optional). |
 | `method` | `NonNullable`\<``"GET"`` \| ``"POST"`` \| ``"PUT"`` \| ``"DELETE"``\> | The HTTP method to use for the request. Must be one of 'GET', 'POST', 'PUT', or 'DELETE'. |
 | `targetBlockchains?` | `number`[] | Array of blockchain IDs specifying the target blockchains for the oracle request (optional). |
 | `url` | `string` | The URL of the endpoint to query for data. |
@@ -236,6 +237,12 @@ Parameters required to update an oracle.
 | `oracleContract?` | `any` | (Optional) Address of oracleFactory contract. |
 | `paramSetOrCid` | [`ParamSet`](modules.md#paramset) \| `string` | Parameter set or CID (Content Identifier) identifying the oracle to be updated. |
 | `workerpool?` | `any` | (Optional) Address or ENS (Ethereum Name Service) name of the workerpool. |
+
+___
+
+### Web3ReadOnlyProvider
+
+Ƭ **Web3ReadOnlyProvider**: `AbstractProvider`
 
 ___
 
