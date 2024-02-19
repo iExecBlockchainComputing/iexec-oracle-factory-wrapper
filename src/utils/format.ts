@@ -19,16 +19,16 @@ const sortObjKeys = (obj: AnyObject): AnyObject =>
 const formatParamsJson = (obj: AnyObject): string =>
   JSON.stringify(sortObjKeys(obj));
 
-const formatOracleGetInt = (resultBn: any): number => {
-  const resultBig = new Big(resultBn.toString()).times(new Big('1e-18'));
+const formatOracleGetNumber = (resultBn: string): number => {
+  const resultBig: Big = new Big(resultBn.toString()).times(new Big('1e-18'));
   try {
     resultBig.constructor.strict = true;
     return resultBig.toNumber();
   } catch (e) {
-    throw Error(
-      `Converting ${resultBig.toString()} to number will result in loosing precision`
+    throw new Error(
+      `Converting ${resultBig.toString()} to number will result in losing precision`
     );
   }
 };
 
-export { sortObjKeys, formatParamsJson, formatOracleGetInt };
+export { sortObjKeys, formatParamsJson, formatOracleGetNumber };

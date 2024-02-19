@@ -6,7 +6,7 @@ import {
   ValidationError,
   WorkflowError,
 } from '../utils/errors.js';
-import { formatOracleGetInt } from '../utils/format.js';
+import { formatOracleGetNumber } from '../utils/format.js';
 import { computeOracleId, isOracleId } from '../utils/hash.js';
 import { getParamSet } from '../utils/utils.js';
 import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
@@ -100,8 +100,8 @@ const readOracle = async ({
             `Failed to read number from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not number dataType`
           );
         });
-      const resultNumber = formatOracleGetInt(resultBn);
-      return { value: resultNumber, date: formatOracleGetInt(dateBn) };
+      const resultNumber = formatOracleGetNumber(resultBn);
+      return { value: resultNumber, date: formatOracleGetNumber(dateBn) };
     }
     case 'string': {
       const [resultString, dateBn] = await oracleSmartContract
@@ -111,12 +111,12 @@ const readOracle = async ({
             `Failed to read string from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not string dataType`
           );
         });
-      return { value: resultString, date: formatOracleGetInt(dateBn) };
+      return { value: resultString, date: parseInt(dateBn.toString()) };
     }
     default: {
       return {
         value: rawValue,
-        date: formatOracleGetInt(rawDateBn),
+        date: rawDateNumber,
       };
     }
   }
