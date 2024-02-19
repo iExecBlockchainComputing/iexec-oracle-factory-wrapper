@@ -1,4 +1,10 @@
-import { Provider } from 'ethers';
+import {
+  AbstractProvider,
+  Provider,
+  Eip1193Provider,
+  BrowserProvider,
+  Wallet,
+} from 'ethers';
 import { IExec } from 'iexec';
 import {
   DEFAULT_IPFS_GATEWAY,
@@ -11,6 +17,8 @@ import {
   ParamSet,
   Oracle,
   OracleReaderOptions,
+  Web3SignerProvider,
+  Web3ReadOnlyProvider,
 } from './types.js';
 
 /**
@@ -36,18 +44,39 @@ class IExecOracleReader {
 
   /**
    * Creates an instance of IExecOracleReader.
-   * @param {Provider} [ethProvider] Ethereum provider.
+   * @param {Provider} [ethProviderOrNetwork] Ethereum provider, chainId or network name.
    * @param {OracleReaderOptions} [options] Options for the Oracle Reader.
    * @param {any} [providerOptions] Options for the provider.
    */
   constructor(
-    ethProvider?: Provider,
+    ethProviderOrNetwork:
+      | Web3ReadOnlyProvider
+      | Web3SignerProvider
+      | Eip1193Provider
+      | string
+      | number = 134,
     options?: OracleReaderOptions,
     providerOptions?: any
   ) {
-    this.ethersProvider =
-      ethProvider ||
-      getDefaultProvider('https://bellecour.iex.ec', providerOptions);
+    if (
+      typeof ethProviderOrNetwork === 'string' ||
+      typeof ethProviderOrNetwork === 'number'
+    ) {
+      // case chainId
+      this.ethersProvider = getDefaultProvider(
+        ethProviderOrNetwork,
+        providerOptions
+      );
+    } else if (ethProviderOrNetwork instanceof Wallet) {
+      // case getWeb3Provider
+      this.ethersProvider = ethProviderOrNetwork.provider;
+    } else if (ethProviderOrNetwork instanceof AbstractProvider) {
+      // case getWeb3ReadOnlyProvider
+      this.ethersProvider = ethProviderOrNetwork;
+    } else {
+      // case Eip1193Provider
+      this.ethersProvider = new BrowserProvider(ethProviderOrNetwork);
+    }
     this.oracleContract =
       options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
     this.ipfsGateway = options?.ipfsGateway || DEFAULT_IPFS_GATEWAY;

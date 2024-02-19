@@ -1,4 +1,4 @@
-import { Provider } from 'ethers';
+import { AbstractProvider, Provider } from 'ethers';
 import { EnhancedWallet, IExec } from 'iexec';
 import { IExecConfigOptions } from 'iexec/IExecConfig';
 /**
@@ -80,6 +80,8 @@ export type OracleReaderOptions = {
 };
 
 export type Web3SignerProvider = EnhancedWallet;
+
+export type Web3ReadOnlyProvider = AbstractProvider;
 
 /**
  * Set of parameters for an oracle request.
