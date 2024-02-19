@@ -6,7 +6,6 @@ import {
   DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_WORKERPOOL_ADDRESS,
-  getDefaultProvider,
 } from '../config/config.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
@@ -38,7 +37,7 @@ class IExecOracleFactory {
 
   private iexec: IExec;
 
-  private ethersProvider: Provider;
+  private ethersProviderPromise: Promise<Provider>;
 
   /**
    * Creates an instance of IExecOracleFactory.
@@ -54,7 +53,10 @@ class IExecOracleFactory {
     } catch (e) {
       throw new Error(`Unsupported ethProvider, ${e.message}`);
     }
-    this.ethersProvider = getDefaultProvider('https://bellecour.iex.ec', {});
+    this.ethersProviderPromise = this.iexec.config
+      .resolveContractsClient()
+      .then((client) => client.provider);
+    this.ethersProviderPromise.catch(() => {});
     this.oracleContract =
       options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
     this.ipfsUploadUrl = options?.ipfsUploadUrl || DEFAULT_IPFS_UPLOAD_URL;
@@ -99,14 +101,14 @@ class IExecOracleFactory {
    * @param dataType Optional data type for reading the oracle.
    * @returns Promise resolving to the oracle data.
    */
-  readOracle = (
+  readOracle = async (
     paramSetOrCidOrOracleId: ParamSet | string,
     dataType?: string
   ): Promise<Oracle> =>
     readOracle({
       paramSetOrCidOrOracleId,
       dataType,
-      ethersProvider: this.ethersProvider,
+      ethersProvider: await this.ethersProviderPromise,
       ipfsGateway: this.ipfsGateway,
       oracleContract: this.oracleContract,
     });
