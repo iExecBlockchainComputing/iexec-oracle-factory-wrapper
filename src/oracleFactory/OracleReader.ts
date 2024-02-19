@@ -46,7 +46,6 @@ class IExecOracleReader {
    * Creates an instance of IExecOracleReader.
    * @param {Provider} [ethProviderOrNetwork] Ethereum provider, chainId or network name.
    * @param {OracleReaderOptions} [options] Options for the Oracle Reader.
-   * @param {any} [providerOptions] Options for the provider.
    */
   constructor(
     ethProviderOrNetwork:
@@ -55,8 +54,7 @@ class IExecOracleReader {
       | Eip1193Provider
       | string
       | number = 134,
-    options?: OracleReaderOptions,
-    providerOptions?: any
+    options?: OracleReaderOptions
   ) {
     if (
       typeof ethProviderOrNetwork === 'string' ||
@@ -65,7 +63,7 @@ class IExecOracleReader {
       // case chainId
       this.ethersProvider = getDefaultProvider(
         ethProviderOrNetwork,
-        providerOptions
+        options.providerOptions
       );
     } else if (ethProviderOrNetwork instanceof Wallet) {
       // case getWeb3Provider

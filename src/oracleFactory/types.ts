@@ -77,6 +77,11 @@ export type OracleReaderOptions = {
    * @default{@link DEFAULT_IPFS_GATEWAY}
    */
   ipfsGateway?: string;
+
+  /**
+   * Options for the provider.
+   */
+  providerOptions?: any;
 };
 
 export type Web3SignerProvider = EnhancedWallet;
