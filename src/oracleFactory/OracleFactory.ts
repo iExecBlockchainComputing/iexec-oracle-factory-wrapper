@@ -31,7 +31,7 @@ class IExecOracleFactory {
 
   private workerpool: AddressOrENS;
 
-  private ipfsUploadUrl: string;
+  private ipfsNode: string;
 
   private ipfsGateway: string;
 
@@ -59,7 +59,7 @@ class IExecOracleFactory {
     this.ethersProviderPromise.catch(() => {});
     this.oracleContract =
       options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
-    this.ipfsUploadUrl = options?.ipfsUploadUrl || DEFAULT_IPFS_UPLOAD_URL;
+    this.ipfsNode = options?.ipfsNode || DEFAULT_IPFS_UPLOAD_URL;
     this.ipfsGateway = options?.ipfsGateway || DEFAULT_IPFS_GATEWAY;
     this.oracleApp = options?.oracleApp || DEFAULT_APP_ADDRESS;
     this.workerpool = options?.workerpool || DEFAULT_WORKERPOOL_ADDRESS;
@@ -74,7 +74,7 @@ class IExecOracleFactory {
     createOracle({
       ...args,
       ipfsGateway: this.ipfsGateway,
-      ipfsUploadUrl: this.ipfsUploadUrl,
+      ipfsNode: this.ipfsNode,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
     });
@@ -91,7 +91,7 @@ class IExecOracleFactory {
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
-      ipfsUploadUrl: this.ipfsUploadUrl,
+      ipfsNode: this.ipfsNode,
       workerpool: this.workerpool,
     });
 

@@ -34,7 +34,7 @@ const createApiKeyDataset = ({
   apiKey = throwIfMissing(),
   callId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
-  ipfsUploadUrl = DEFAULT_IPFS_UPLOAD_URL,
+  ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
   oracleApp,
 }: CreateApiKeyDatasetParams): Observable<CreateOracleMessage> =>
   new Observable<CreateOracleMessage>(
@@ -80,7 +80,7 @@ const createApiKeyDataset = ({
           });
 
           const cid = await ipfs
-            .add(encryptedFile, { ipfsGateway, ipfsUploadUrl })
+            .add(encryptedFile, { ipfsGateway, ipfsNode })
             .catch((e) => {
               throw new WorkflowError('Failed to upload encrypted API key', e);
             });
@@ -213,7 +213,7 @@ const createOracle = ({
   dataType,
   apiKey,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
-  ipfsUploadUrl = DEFAULT_IPFS_UPLOAD_URL,
+  ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
   oracleApp = DEFAULT_APP_ADDRESS,
   iexec = throwIfMissing(),
 }: ParamSet & CreateOracleOptions): Observable<CreateOracleMessage> => {
@@ -255,7 +255,7 @@ const createOracle = ({
                 apiKey,
                 callId,
                 ipfsGateway,
-                ipfsUploadUrl,
+                ipfsNode,
                 oracleApp,
               }).subscribe({
                 error: (e) => reject(e),
@@ -295,7 +295,7 @@ const createOracle = ({
             oracleId,
           });
           const cid = await ipfs
-            .add(jsonParams, { ipfsGateway, ipfsUploadUrl })
+            .add(jsonParams, { ipfsGateway, ipfsNode })
             .catch((e) => {
               throw new WorkflowError('Failed to upload paramSet', e);
             });

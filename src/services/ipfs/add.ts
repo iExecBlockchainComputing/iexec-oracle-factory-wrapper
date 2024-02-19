@@ -8,12 +8,9 @@ import get from './get.js';
 
 const add = async (
   content,
-  {
-    ipfsGateway = DEFAULT_IPFS_GATEWAY,
-    ipfsUploadUrl = DEFAULT_IPFS_UPLOAD_URL,
-  }
+  { ipfsGateway = DEFAULT_IPFS_GATEWAY, ipfsNode = DEFAULT_IPFS_UPLOAD_URL }
 ): Promise<string> => {
-  const ipfsClient = create(ipfsUploadUrl);
+  const ipfsClient = create(ipfsNode);
   const { cid } = await ipfsClient.add(content);
   await get(cid.toString(), { ipfsGateway });
   return cid.toString();

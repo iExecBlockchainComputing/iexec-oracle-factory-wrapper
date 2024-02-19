@@ -44,7 +44,7 @@ test('standard - instantiation', async () => {
   );
   const factoryWithOptions = new IExecOracleFactory(ethProvider, {
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
+    ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
   });
@@ -72,7 +72,7 @@ test('standard - instantiation', async () => {
   expect(createOracle).toHaveBeenNthCalledWith(1, {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
+    ipfsNode: 'ipfsNode',
     oracleApp: 'oracleApp',
     JSONPath: '$.ok',
     body: '',
@@ -103,7 +103,7 @@ test('standard - instantiation', async () => {
     method: 'GET',
     url: 'https://api.market.iex.ec/version',
     ipfsGateway: DEFAULT_IPFS_GATEWAY,
-    ipfsUploadUrl: DEFAULT_IPFS_UPLOAD_URL,
+    ipfsNode: DEFAULT_IPFS_UPLOAD_URL,
     oracleApp: DEFAULT_APP_ADDRESS,
   });
 
@@ -119,7 +119,7 @@ test('standard - instantiation', async () => {
   expect(updateOracle).toHaveBeenNthCalledWith(1, {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
+    ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
@@ -147,7 +147,7 @@ test('standard - instantiation', async () => {
   expect(updateOracle).toHaveBeenNthCalledWith(2, {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
+    ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
@@ -177,7 +177,7 @@ test('standard - instantiation', async () => {
     oracleApp: DEFAULT_APP_ADDRESS,
     oracleContract: DEFAULT_ORACLE_CONTRACT_ADDRESS,
     workerpool: DEFAULT_WORKERPOOL_ADDRESS,
-    ipfsUploadUrl: DEFAULT_IPFS_UPLOAD_URL,
+    ipfsNode: DEFAULT_IPFS_UPLOAD_URL,
     paramSetOrCid: {
       JSONPath: '$.ok',
       body: '',

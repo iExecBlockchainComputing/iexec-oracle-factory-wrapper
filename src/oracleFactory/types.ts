@@ -38,7 +38,7 @@ export type OracleFactoryOptions = {
    * If not provided, the default OracleFactory IPFS node URL will be used.
    * @default DEFAULT_IPFS_UPLOAD_URL
    */
-  ipfsUploadUrl?: string;
+  ipfsNode?: string;
 
   /**
    * IPFS gateway URL.
@@ -212,7 +212,7 @@ export type UpdateOracleParams = {
   /**
    * (Optional) IPFS upload URL used for the update operation.
    */
-  ipfsUploadUrl?: string;
+  ipfsNode?: string;
 
   /**
    * (Optional) Address of oracleFactory contract.
@@ -242,7 +242,7 @@ export type CreateOracleOptions = {
   /**
    * (Optional) The IPFS upload URL used for oracle creation.
    */
-  ipfsUploadUrl?: string;
+  ipfsNode?: string;
 };
 
 /**
@@ -302,7 +302,7 @@ export type CreateApiKeyDatasetParams = {
   /**
    * (Optional) IPFS upload URL used for oracle creation.
    */
-  ipfsUploadUrl?: string;
+  ipfsNode?: string;
 
   /**
    * (Optional) Address or ENS (Ethereum Name Service) name of oracleFactory application.
