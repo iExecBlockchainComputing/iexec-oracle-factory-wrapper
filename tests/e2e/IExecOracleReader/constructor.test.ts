@@ -1,19 +1,42 @@
 import { describe, it, expect } from '@jest/globals';
 import { Wallet, ethers } from 'ethers';
-import { IExecOracleReader } from '../../../src/index.js';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
 } from '../../../src/config/config.js';
+import { IExecOracleReader, getWeb3Provider } from '../../../src/index.js';
+import { getWeb3ReadOnlyProvider } from '../../../src/utils/getWeb3Provider.js';
 
 describe('IExecOracleFactory()', () => {
-  it('instantiates with a valid ethProvider', async () => {
+  it('instantiates with a chainId as ethProviderOrNetwork', async () => {
+    const oracleReader = new IExecOracleReader(1);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a network name as ethProviderOrNetwork', async () => {
+    const oracleReader = new IExecOracleReader('mainnet');
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a Web3SignerProvider as ethProviderOrNetwork', async () => {
+    const provider = getWeb3Provider(Wallet.createRandom().privateKey);
+    const oracleReader = new IExecOracleReader(provider);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a Web3ReadOnlyProvider as ethProviderOrNetwork', async () => {
+    const provider = getWeb3ReadOnlyProvider(134);
+    const oracleReader = new IExecOracleReader(provider);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a valid ethProviderOrNetwork', async () => {
     const provider = ethers.getDefaultProvider('mainnet');
     const oracleReader = new IExecOracleReader(provider);
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
 
-  it('instantiates without ethProvider', async () => {
+  it('instantiates without ethProviderOrNetwork', async () => {
     const oracleReader = new IExecOracleReader();
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
