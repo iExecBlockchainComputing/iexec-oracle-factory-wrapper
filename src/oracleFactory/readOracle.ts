@@ -90,8 +90,7 @@ const readOracle = async ({
             `Failed to read boolean from oracle with oracleId ${oracleId}\nThis may occur when:\n- No value is stored\n- Stored value is not boolean dataType`
           );
         });
-      const rawDateNumber = parseInt(dateBn.toString());
-      return { value: result, date: rawDateNumber };
+      return { value: result, date: parseInt(dateBn.toString()) };
     }
     case 'number': {
       const [resultBn, dateBn] = await oracleSmartContract
