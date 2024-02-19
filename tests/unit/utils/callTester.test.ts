@@ -193,7 +193,7 @@ describe('testRawParams', () => {
     );
   });
 
-  test('error - throw when dataType mismatch retruned value', async () => {
+  test('error - throw when dataType mismatch returned value', async () => {
     fetchMock.mockImplementation(async () => ({
       json: () => Promise.resolve({ foo: true, bar: 1.23456789, baz: 'foo' }),
     }));
@@ -206,7 +206,7 @@ describe('testRawParams', () => {
       })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, which is NOT compatible with `dataType: "string"`,  use `dataType: "boolean"` to store boolean'
+        'The API answered with status undefined but JSONPath selector "$.foo" returned a boolean, which is NOT compatible with `dataType: "string"`, use `dataType: "boolean"` to store boolean'
       )
     );
     await expect(
@@ -218,7 +218,7 @@ describe('testRawParams', () => {
       })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, which is NOT compatible with `dataType: "boolean"`,  use `dataType: "number"` to store number'
+        'The API answered with status undefined but JSONPath selector "$.bar" returned a number, which is NOT compatible with `dataType: "boolean"`, use `dataType: "number"` to store number'
       )
     );
     await expect(
@@ -230,7 +230,7 @@ describe('testRawParams', () => {
       })
     ).rejects.toThrow(
       Error(
-        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, which is NOT compatible with `dataType: "number"`,  use `dataType: "string"` to store string'
+        'The API answered with status undefined but JSONPath selector "$.baz" returned a string, which is NOT compatible with `dataType: "number"`, use `dataType: "string"` to store string'
       )
     );
   });

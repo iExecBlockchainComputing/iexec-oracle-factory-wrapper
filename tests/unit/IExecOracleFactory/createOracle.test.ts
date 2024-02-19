@@ -343,7 +343,7 @@ describe('createOracle', () => {
         next: (value) => {
           messages.push(value);
           cancel();
-          setTimeout(resolve, 5000);
+          setTimeout(() => resolve(), 5000);
         },
       });
     });
@@ -472,7 +472,7 @@ describe('createOracle', () => {
         next: (value) => {
           messages.push(value);
           cancel();
-          setTimeout(resolve, 5000);
+          setTimeout(() => resolve(), 5000);
         },
       });
     });

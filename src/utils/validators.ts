@@ -161,8 +161,9 @@ const rawParamsSchema = () =>
       apiKey: apiKeySchema(),
     })
     .test(
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       'no-multiple-apikey',
-      `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+      `Found multiple ${API_KEY_PLACEHOLDER} occurrences in API call parameters, it must have at most one occurrence`,
       (obj, context) => {
         const { url, headers } = context.originalValue;
         return (
@@ -211,7 +212,7 @@ const paramSetSchema = () =>
     })
     .test(
       'no-multiple-apikey',
-      `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+      `Found multiple ${API_KEY_PLACEHOLDER} occurrences in API call parameters, it must have at most one occurrence`,
       (obj, context) => {
         const { url, headers } = context.originalValue;
         return (
@@ -297,7 +298,7 @@ const strictParamSetSchema = (): ObjectSchema<any> =>
     )
     .test(
       'no-multiple-apikey',
-      `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+      `Found multiple ${API_KEY_PLACEHOLDER} occurrences in API call parameters, it must have at most one occurrence`,
       (obj, context) => {
         const { url, headers } = context.originalValue;
         return (

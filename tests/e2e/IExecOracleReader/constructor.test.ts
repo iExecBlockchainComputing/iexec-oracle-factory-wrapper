@@ -43,8 +43,8 @@ describe('IExecOracleFactory()', () => {
 
   it('should use default config', async () => {
     const oracleReader = new IExecOracleReader();
-    const oracleContract = oracleReader['oracleContract'];
-    const ipfsGateway = oracleReader['ipfsGateway'];
+    const oracleContract = oracleReader.getOracleContract();
+    const ipfsGateway = oracleReader.getIpfsGateway();
 
     expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -56,7 +56,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       ipfsGateway: customIpfsGateway,
     });
-    const ipfsGateway = oracleReader['ipfsGateway'];
+    const ipfsGateway = oracleReader.getIpfsGateway();
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
   });
 
@@ -66,7 +66,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
     });
-    const oracleContract = oracleReader['oracleContract'];
+    const oracleContract = oracleReader.getOracleContract();
     expect(oracleContract).toStrictEqual(customSContractAddress);
   });
 
@@ -80,8 +80,8 @@ describe('IExecOracleFactory()', () => {
       ipfsGateway: customIpfsGateway,
     });
 
-    const ipfsGateway = oracleReader['ipfsGateway'];
-    const oracleContract = oracleReader['oracleContract'];
+    const ipfsGateway = oracleReader.getIpfsGateway();
+    const oracleContract = oracleReader.getOracleContract();
 
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
     expect(oracleContract).toStrictEqual(customSContractAddress);

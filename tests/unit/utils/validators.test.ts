@@ -284,7 +284,7 @@ describe('rawParamsSchema', () => {
       })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+        'Found multiple %API_KEY% occurrences in API call parameters, it must have at most one occurrence'
       )
     );
     await expect(
@@ -298,7 +298,7 @@ describe('rawParamsSchema', () => {
       })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+        'Found multiple %API_KEY% occurrences in API call parameters, it must have at most one occurrence'
       )
     );
   });
@@ -553,7 +553,7 @@ describe('paramSetSchema', () => {
       })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+        'Found multiple %API_KEY% occurrences in API call parameters, it must have at most one occurrence'
       )
     );
     await expect(
@@ -567,7 +567,7 @@ describe('paramSetSchema', () => {
       })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+        'Found multiple %API_KEY% occurrences in API call parameters, it must have at most one occurrence'
       )
     );
   });
@@ -779,7 +779,7 @@ describe('strictParamSetSchema', () => {
       })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+        'Found multiple %API_KEY% occurrences in API call parameters, it must have at most one occurrence'
       )
     );
     await expect(
@@ -793,7 +793,7 @@ describe('strictParamSetSchema', () => {
       })
     ).rejects.toThrow(
       new ValidationError(
-        'Found multiple %API_KEY% occurences in API call parameters, it must have at most one occurrence'
+        'Found multiple %API_KEY% occurrences in API call parameters, it must have at most one occurrence'
       )
     );
   });

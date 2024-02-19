@@ -13,8 +13,6 @@ jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   isCid: mockIsCid,
 }));
 
-const ipfs = await import('../../../src/services/ipfs/index.js');
-
 // dynamically import tested module after all mock are loaded
 const { updateOracle } = await import(
   '../../../src/oracleFactory/updateOracle.js'
@@ -537,7 +535,7 @@ describe('updateOracle', () => {
           messages.push(value);
           if (count >= 11) {
             cancel();
-            setTimeout(resolve, 5000);
+            setTimeout(() => resolve(), 5000);
           }
           count += 1;
         },
@@ -648,7 +646,7 @@ describe('updateOracle', () => {
 
     const messages: any = [];
     const errors: any = [];
-    const res = await new Promise((resolve: any, reject) => {
+    await new Promise((resolve: any, reject) => {
       updateOracle({
         iexec,
         paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDNxxxh',

@@ -63,7 +63,7 @@ class IExecOracleReader {
       // case chainId
       this.ethersProvider = getDefaultProvider(
         ethProviderOrNetwork,
-        options.providerOptions
+        options?.providerOptions
       );
     } else if (ethProviderOrNetwork instanceof Wallet) {
       // case getWeb3Provider
@@ -104,6 +104,18 @@ class IExecOracleReader {
    * @returns {IExec}
    */
   getIExec = () => this.iexec;
+
+  /**
+   * Gets the Ethereum contract address or ENS name for the oracle contract.
+   * @returns {AddressOrENS}
+   */
+  getOracleContract = (): AddressOrENS => this.oracleContract;
+
+  /**
+   * Gets the IPFS gateway URL.
+   * @returns {string}
+   */
+  getIpfsGateway = (): string => this.ipfsGateway;
 }
 
 export { IExecOracleReader };

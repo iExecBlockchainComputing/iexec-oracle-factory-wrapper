@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import {
   sortObjKeys,
   formatParamsJson,
-  formatOracleGetInt,
+  formatOracleGetNumber,
 } from '../../../src/utils/format.js';
 
 describe('sortObjKeys', () => {
@@ -43,19 +43,19 @@ describe('formatParamsJson', () => {
   });
 });
 
-describe('formatOracleGetInt', () => {
+describe('formatOracleGetNumber', () => {
   test('standard - multiply by 1e-18 to convert getInt int result to number', () => {
-    expect(formatOracleGetInt(ethers.getBigInt('-1234567890'))).toBe(
+    expect(formatOracleGetNumber(ethers.getBigInt('-1234567890'))).toBe(
       -1.23456789e-9
     );
   });
 
   test('error - precision loss', () => {
     expect(() =>
-      formatOracleGetInt(ethers.getBigInt('12345678901234567890123456789'))
+      formatOracleGetNumber(ethers.getBigInt('12345678901234567890123456789'))
     ).toThrow(
       Error(
-        'Converting 12345678901.234567890123456789 to number will result in loosing precision'
+        'Converting 12345678901.234567890123456789 to number will result in losing precision'
       )
     );
   });

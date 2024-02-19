@@ -74,7 +74,7 @@ test('cancel - without apiKey', async () => {
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
-  const messages: any = [];
+  const messages: any[] = [];
   await new Promise((resolve: any, reject) => {
     const cancel = factoryWithoutOption
       .createOracle({
@@ -91,7 +91,7 @@ test('cancel - without apiKey', async () => {
         next: (value) => {
           messages.push(value);
           cancel();
-          setTimeout(resolve, 5000);
+          setTimeout(() => resolve(), 5000);
         },
       });
   });
@@ -105,7 +105,7 @@ test('cancel - with apiKey', async () => {
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
-  const messages: any = [];
+  const messages: any[] = [];
   await new Promise((resolve: any, reject) => {
     const cancel = factoryWithoutOption
       .createOracle({
@@ -126,7 +126,7 @@ test('cancel - with apiKey', async () => {
         next: (value) => {
           messages.push(value);
           cancel();
-          setTimeout(resolve, 5000);
+          setTimeout(() => resolve(), 5000);
         },
       });
   });
