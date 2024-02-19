@@ -16,6 +16,21 @@ steps:
       - npm -v
       - npm ci
 
+  - name: format
+    image: node:18.19
+    commands:
+      - npm run check-format
+
+  - name: lint
+    image: node:18
+    commands:
+      - npm run lint
+
+  - name: check-types
+    image: node:18
+    commands:
+      - npm run check-types
+
   - name: test
     image: node:18
     commands:
@@ -25,11 +40,6 @@ steps:
     image: node:18
     commands:
       - npm run build
-
-  # - name: lint
-  #   image: node:18
-  #   commands:
-  #     - npm run lint
 
   - name: npm-publish-dry-run
     image: node:18
@@ -59,15 +69,30 @@ steps:
       - npm -v
       - npm ci
 
+  - name: format
+    image: node:18
+    commands:
+      - npm run check-format
+
+  - name: lint
+    image: node:18
+    commands:
+      - npm run lint
+
+  - name: check-types
+    image: node:18
+    commands:
+      - npm run check-types
+
+  - name: test
+    image: node:18
+    commands:
+      - npm run test
+
   - name: build
     image: node:18
     commands:
       - npm run build
-
-  # - name: lint
-  #   image: node:18
-  #   commands:
-  #     - npm run lint
 
   - name: set-version-nightly
     image: node:18
@@ -108,15 +133,30 @@ steps:
       - npm -v
       - npm ci
 
+  - name: format
+    image: node:18
+    commands:
+      - npm run check-format
+
+  - name: lint
+    image: node:18
+    commands:
+      - npm run lint
+
+  - name: check-types
+    image: node:18
+    commands:
+      - npm run check-types
+
+  - name: test
+    image: node:18
+    commands:
+      - npm run test
+
   - name: build
     image: node:18
     commands:
       - npm run build
-
-  # - name: lint
-  #   image: node:18
-  #   commands:
-  #     - npm run lint
 
   - name: publish
     image: plugins/npm
