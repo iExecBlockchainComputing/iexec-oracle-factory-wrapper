@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 import jp from 'jsonpath';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
-import { ParamSet } from '../oracleFactory/types.js';
+import { ParamSet } from '../types/public-types.js';
 import { rawParamsSchema } from './validators.js';
 
 interface FinalHeaders {

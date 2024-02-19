@@ -9,7 +9,7 @@ import {
   ObjectSchema,
 } from 'yup';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
-import { ParamSet } from '../oracleFactory/types.js';
+import { ParamSet } from '../types/public-types.js';
 
 const countSubstrAllowOverlap = (str, substr) => {
   if (substr.length <= 0) return str.length + 1;

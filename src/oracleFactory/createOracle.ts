@@ -6,6 +6,15 @@ import {
   getFactoryDefaults,
 } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
+import {
+  CreateApiKeyDatasetParams,
+  CreateOracleMessage,
+} from '../types/internal-types.js';
+import {
+  Address,
+  CreateOracleOptions,
+  ParamSet,
+} from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
@@ -16,13 +25,6 @@ import {
   rawParamsSchema,
   throwIfMissing,
 } from '../utils/validators.js';
-import {
-  Address,
-  CreateApiKeyDatasetParams,
-  CreateOracleMessage,
-  CreateOracleOptions,
-  ParamSet,
-} from './types.js';
 
 /**
  * Creates a dataset containing an API key.

@@ -5,6 +5,11 @@ import {
   getFactoryDefaults,
 } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
+import {
+  TaskExecutionMessage,
+  UpdateOracleMessage,
+} from '../types/internal-types.js';
+import { ParamSet, UpdateOracleParams } from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
@@ -14,12 +19,6 @@ import {
   throwIfMissing,
   updateTargetBlockchainsSchema,
 } from '../utils/validators.js';
-import {
-  ParamSet,
-  TaskExecutionMessage,
-  UpdateOracleMessage,
-  UpdateOracleParams,
-} from './types.js';
 
 /**
  * Retrieves parameter set information from IPFS.

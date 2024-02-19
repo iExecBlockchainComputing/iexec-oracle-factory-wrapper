@@ -1,7 +1,7 @@
 import CID from 'cids';
 import { getSignerFromPrivateKey } from 'iexec/utils';
 import { getDefaults, DEFAULT_IPFS_GATEWAY } from '../config/config.js';
-import { ParamSet } from '../index.js';
+import { ParamSet } from '../types/public-types.js';
 import * as ipfs from './../services/ipfs/index.js';
 import testRawParams from './callTester.js';
 import { formatParamsJson } from './format.js';

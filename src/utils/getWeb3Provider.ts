@@ -3,7 +3,7 @@ import { getDefaultProvider } from '../config/config.js';
 import {
   Web3ReadOnlyProvider,
   Web3SignerProvider,
-} from '../oracleFactory/types.js';
+} from '../types/public-types.js';
 
 export const getWeb3Provider = (privateKey: string): Web3SignerProvider =>
   getSignerFromPrivateKey('bellecour', privateKey);

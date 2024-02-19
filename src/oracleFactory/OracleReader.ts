@@ -11,15 +11,15 @@ import {
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   getDefaultProvider,
 } from '../config/config.js';
-import { readOracle } from './readOracle.js';
 import {
   AddressOrENS,
-  ParamSet,
   Oracle,
   OracleReaderOptions,
-  Web3SignerProvider,
+  ParamSet,
   Web3ReadOnlyProvider,
-} from './types.js';
+  Web3SignerProvider,
+} from '../types/public-types.js';
+import { readOracle } from './readOracle.js';
 
 /**
  * Oracle Reader that interacts with iExec Oracle.
