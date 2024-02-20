@@ -240,7 +240,8 @@ const updateOracle = ({
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
               iexec_developer_logger: true,
             },
-          })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any)
           .catch((e) => {
             throw new WorkflowError('Failed to create requestorder', e);
           });
@@ -252,7 +253,7 @@ const updateOracle = ({
 
         // Sign and publish request order
         const requestorder = await iexec.order
-          .signRequestorder(requestorderToSign, { checkRequest: false })
+          .signRequestorder(requestorderToSign, { preflightCheck: false })
           .catch((e) => {
             throw new WorkflowError('Failed to sign requestorder', e);
           });
@@ -278,7 +279,7 @@ const updateOracle = ({
               workerpoolorder,
               requestorder,
             },
-            { checkRequest: false }
+            { preflightCheck: false }
           )
           .catch((e) => {
             throw new WorkflowError('Failed to match orders', e);
@@ -299,7 +300,8 @@ const updateOracle = ({
           new Promise<TaskExecutionMessage | void>((resolve, reject) => {
             iexec.task.obsTask(taskid, { dealid }).then((obs) => {
               stopWatcher = obs.subscribe({
-                next: (value) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                next: (value: any) => {
                   const { message } = value;
                   if (message === 'TASK_TIMEDOUT') {
                     reject(
