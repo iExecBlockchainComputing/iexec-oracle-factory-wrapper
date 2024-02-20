@@ -20,6 +20,6 @@
     "readme": "typedoc_template.md",
     "excludeExternals": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/**/*"],
   "exclude": ["node_modules"]
 }

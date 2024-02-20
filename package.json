@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && npm run generate-doc",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json && npm run generate-doc",
     "check-types": "tsc --noEmit",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest tests",
     "lint": "eslint .",
