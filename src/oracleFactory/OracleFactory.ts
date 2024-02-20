@@ -106,7 +106,7 @@ class IExecOracleFactory {
 
   /**
    * Reads an oracle with the provided ID CID or Oracle ID.
-   * @param paramSetOrCidOrOracleId The ID CID or Oracle ID to read.
+   * @param paramSetOrCidOrOracleId Parameters, CID or Oracle ID to read.
    * @param dataType Optional data type for reading the oracle.
    * @returns Promise resolving to the oracle data.
    */

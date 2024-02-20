@@ -20,13 +20,15 @@ Oracle Reader that interacts with iExec Oracle.
 ### Methods
 
 - [getIExec](IExecOracleReader.md#getiexec)
+- [getIpfsGateway](IExecOracleReader.md#getipfsgateway)
+- [getOracleContract](IExecOracleReader.md#getoraclecontract)
 - [readOracle](IExecOracleReader.md#readoracle)
 
 ## Constructors
 
 ### constructor
 
-• **new IExecOracleReader**(`ethProviderOrNetwork?`, `options?`, `providerOptions?`): [`IExecOracleReader`](IExecOracleReader.md)
+• **new IExecOracleReader**(`ethProviderOrNetwork?`, `options?`): [`IExecOracleReader`](IExecOracleReader.md)
 
 Creates an instance of IExecOracleReader.
 
@@ -36,7 +38,6 @@ Creates an instance of IExecOracleReader.
 | :------ | :------ | :------ | :------ |
 | `ethProviderOrNetwork?` | `string` \| `number` \| `EnhancedWallet` \| `AbstractProvider` \| `Eip1193Provider` | `134` | Ethereum provider, chainId or network name. |
 | `options?` | [`OracleReaderOptions`](../modules.md#oraclereaderoptions) | `undefined` | Options for the Oracle Reader. |
-| `providerOptions?` | `any` | `undefined` | Options for the provider. |
 
 #### Returns
 
@@ -83,6 +84,30 @@ Gets the instance of IExec.
 #### Returns
 
 `default`
+
+___
+
+### getIpfsGateway
+
+▸ **getIpfsGateway**(): `string`
+
+Gets the IPFS gateway URL.
+
+#### Returns
+
+`string`
+
+___
+
+### getOracleContract
+
+▸ **getOracleContract**(): `string`
+
+Gets the Ethereum contract address or ENS name for the oracle contract.
+
+#### Returns
+
+`string`
 
 ___
 

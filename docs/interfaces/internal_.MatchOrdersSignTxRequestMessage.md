@@ -18,13 +18,13 @@
 
 ### apporder
 
-• **apporder**: `any`
+• **apporder**: `PublishedApporder`
 
 ___
 
 ### datasetorder
 
-• **datasetorder**: `any`
+• **datasetorder**: `PublishedDatasetorder`
 
 ___
 
@@ -36,10 +36,10 @@ ___
 
 ### requestorder
 
-• **requestorder**: `any`
+• **requestorder**: `PublishedRequestorder`
 
 ___
 
 ### workerpoolorder
 
-• **workerpoolorder**: `any`
+• **workerpoolorder**: `PublishedWorkerpoolorder`
