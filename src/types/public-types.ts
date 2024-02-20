@@ -54,7 +54,6 @@ export type ParamSet = {
   dataType?: NonNullable<'string' | 'number' | 'boolean'>;
   apiKey?: string;
   dataset?: Address;
-  targetBlockchains?: number[];
 };
 
 /**
@@ -63,6 +62,12 @@ export type ParamSet = {
 export type ReadOracleParams = {
   paramSetOrCidOrOracleId: ParamSet | string;
   dataType?: string;
+};
+
+/**
+ * Parameters for reading data from an oracle.
+ */
+export type ReadOracleOptions = {
   ethersProvider: Provider;
   ipfsGateway?: string;
   oracleContract?: Address;
@@ -77,19 +82,6 @@ export type Oracle = {
 };
 
 /**
- * Parameters required to update an oracle.
- */
-export type UpdateOracleParams = {
-  paramSetOrCid: ParamSet | string;
-  iexec: IExec;
-  oracleApp?: AddressOrENS;
-  workerpool?: AddressOrENS;
-  ipfsGateway?: string;
-  ipfsNode?: string;
-  oracleContract?: AddressOrENS;
-};
-
-/**
  * Options for creating an oracle.
  */
 export type CreateOracleOptions = {
@@ -100,12 +92,20 @@ export type CreateOracleOptions = {
 };
 
 /**
+ * Parameters required to update an oracle.
+ */
+export type UpdateOracleParams = {
+  paramSetOrCid: ParamSet | string;
+  targetBlockchains?: number[];
+};
+
+/**
  * Options for updating an oracle.
  */
 export type UpdateOracleOptions = {
   iexec?: IExec;
   oracleApp?: AddressOrENS;
-  oracleContract: Address;
+  oracleContract?: Address;
   workerpool?: AddressOrENS;
   ipfsGateway?: string;
 };

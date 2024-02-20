@@ -15,7 +15,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc && npm run generate-doc",
     "check-types": "tsc --noEmit",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest tests/e2e",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest tests",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"(src|tests)/**/*.ts\"",

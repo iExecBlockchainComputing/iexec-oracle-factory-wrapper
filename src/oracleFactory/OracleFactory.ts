@@ -5,6 +5,7 @@ import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
+  DEFAULT_TARGET_BLOCKCHAIN,
   DEFAULT_WORKERPOOL_ADDRESS,
 } from '../config/config.js';
 import {
@@ -16,6 +17,7 @@ import {
   Oracle,
   OracleFactoryOptions,
   ParamSet,
+  UpdateOracleParams,
   Web3SignerProvider,
 } from '../types/public-types.js';
 import { Observable } from '../utils/reactive.js';
@@ -84,17 +86,21 @@ class IExecOracleFactory {
 
   /**
    * Updates an existing oracle with new parameters or a new CID.
-   * @param args {@link ParamSet} or CID for updating the oracle.
+   * @param paramSetOrCid Parameters or CID for updating the oracle.
+   * @param targetBlockchains Optional array of target blockchains.
    * @returns Observable result of the update operation.
    */
-  updateOracle = (args: ParamSet | string): Observable<UpdateOracleMessage> =>
+  updateOracle = ({
+    paramSetOrCid,
+    targetBlockchains = DEFAULT_TARGET_BLOCKCHAIN,
+  }: UpdateOracleParams): Observable<UpdateOracleMessage> =>
     updateOracle({
-      paramSetOrCid: args,
+      paramSetOrCid,
+      targetBlockchains,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
-      ipfsNode: this.ipfsNode,
       workerpool: this.workerpool,
     });
 

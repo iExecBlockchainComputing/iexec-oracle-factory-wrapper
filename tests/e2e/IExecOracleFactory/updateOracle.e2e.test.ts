@@ -2,6 +2,7 @@ import { Wallet } from 'ethers';
 import { utils } from 'iexec';
 import { IExecOracleFactory } from '../../../src/index.js';
 
+// eslint-disable-next-line jest/no-disabled-tests
 test.skip('update oracle - standard from paramSet - no dataset', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
@@ -13,11 +14,13 @@ test.skip('update oracle - standard from paramSet - no dataset', async () => {
   await new Promise((resolve: any, reject) => {
     factoryWithoutOption
       .updateOracle({
-        JSONPath: '$.data',
-        body: '',
-        dataType: 'string',
-        method: 'GET',
-        url: 'https://foo.io',
+        paramSetOrCid: {
+          JSONPath: '$.data',
+          body: '',
+          dataType: 'string',
+          method: 'GET',
+          url: 'https://foo.io',
+        },
       })
       .subscribe({
         complete: resolve,
@@ -94,6 +97,7 @@ test.skip('update oracle - standard from paramSet - no dataset', async () => {
   expect(messages[15]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
 }, 10000);
 
+// eslint-disable-next-line jest/no-disabled-tests
 test.skip('standard - from CID', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
@@ -104,7 +108,10 @@ test.skip('standard - from CID', async () => {
   const messages: any = [];
   await new Promise((resolve: any, reject) => {
     factoryWithoutOption
-      .updateOracle('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh')
+      .updateOracle({
+        paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        targetBlockchains: [137],
+      })
       .subscribe({
         complete: resolve,
         error: (e) => {

@@ -1,6 +1,5 @@
 import {
   API_KEY_PLACEHOLDER,
-  DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
   getFactoryDefaults,
@@ -215,10 +214,10 @@ const createOracle = ({
   JSONPath = throwIfMissing(),
   dataType,
   apiKey,
-  ipfsGateway = DEFAULT_IPFS_GATEWAY,
-  ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
-  oracleApp = DEFAULT_APP_ADDRESS,
   iexec = throwIfMissing(),
+  oracleApp,
+  ipfsGateway,
+  ipfsNode,
 }: ParamSet & CreateOracleOptions): Observable<CreateOracleMessage> => {
   return new Observable<CreateOracleMessage>(
     // eslint-disable-next-line sonarjs/cognitive-complexity

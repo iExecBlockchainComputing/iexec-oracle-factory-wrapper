@@ -1,15 +1,15 @@
 import CID from 'cids';
-import {
-  DEFAULT_IPFS_GATEWAY,
-  DEFAULT_TARGET_BLOCKCHAIN,
-  getFactoryDefaults,
-} from '../config/config.js';
+import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
 import {
   TaskExecutionMessage,
   UpdateOracleMessage,
 } from '../types/internal-types.js';
-import { ParamSet, UpdateOracleParams } from '../types/public-types.js';
+import {
+  ParamSet,
+  UpdateOracleOptions,
+  UpdateOracleParams,
+} from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
@@ -76,12 +76,13 @@ const getParamSet = async ({
  */
 const updateOracle = ({
   paramSetOrCid,
+  targetBlockchains,
   iexec = throwIfMissing(),
   oracleApp,
+  ipfsGateway,
   workerpool,
-  ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleContract,
-}: UpdateOracleParams): Observable<UpdateOracleMessage> =>
+}: UpdateOracleParams & UpdateOracleOptions): Observable<UpdateOracleMessage> =>
   // eslint-disable-next-line sonarjs/cognitive-complexity
   new Observable((observer: SafeObserver<UpdateOracleMessage>) => {
     let abort = false;
@@ -90,12 +91,7 @@ const updateOracle = ({
     const start = async () => {
       try {
         const targetBlockchainsArray =
-          typeof paramSetOrCid === 'object'
-            ? await updateTargetBlockchainsSchema().validate(
-                paramSetOrCid.targetBlockchains
-              )
-            : DEFAULT_TARGET_BLOCKCHAIN;
-
+          await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
         const ORACLE_APP_ADDRESS =

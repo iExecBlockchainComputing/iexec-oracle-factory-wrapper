@@ -1,7 +1,11 @@
 import { ethers } from 'ethers';
-import { DEFAULT_IPFS_GATEWAY, getReaderDefaults } from '../config/config.js';
+import { getReaderDefaults } from '../config/config.js';
 import { READ_ABI } from '../config/contract.js';
-import { Oracle, ReadOracleParams } from '../types/public-types.js';
+import {
+  Oracle,
+  ReadOracleOptions,
+  ReadOracleParams,
+} from '../types/public-types.js';
 import {
   NoValueError,
   ValidationError,
@@ -27,9 +31,9 @@ const readOracle = async ({
   paramSetOrCidOrOracleId = throwIfMissing(),
   dataType,
   ethersProvider,
-  ipfsGateway = DEFAULT_IPFS_GATEWAY,
+  ipfsGateway,
   oracleContract,
-}: ReadOracleParams): Promise<Oracle> => {
+}: ReadOracleParams & ReadOracleOptions): Promise<Oracle> => {
   const chainId = await ethersProvider
     .getNetwork()
     .then((res) => `${res.chainId}`);
