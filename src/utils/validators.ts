@@ -1,3 +1,5 @@
+import { ethers } from 'ethers';
+import jp from 'jsonpath';
 import {
   string,
   number,
@@ -6,10 +8,8 @@ import {
   ValidationError,
   ObjectSchema,
 } from 'yup';
-import { ethers } from 'ethers';
-import jp from 'jsonpath';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
-import { ParamSet } from '../oracleFactory/types.js';
+import { ParamSet } from '../types/public-types.js';
 
 const countSubstrAllowOverlap = (str, substr) => {
   if (substr.length <= 0) return str.length + 1;
@@ -36,18 +36,18 @@ const httpsUrlSchema = () =>
           await string()
             .url()
             .validate(
-              originalUrl.replace(API_KEY_PLACEHOLDER, 'API_KEY_PLACEHOLDER'),
+              originalUrl.replace(API_KEY_PLACEHOLDER, 'API_KEY_PLACEHOLDER')
             );
           return true;
         } catch (e) {
           return false;
         }
-      },
+      }
     )
     .test(
       'is-https',
       '${path} is not https',
-      (value) => !value || value.indexOf('https://') === 0,
+      (value) => !value || value.indexOf('https://') === 0
     );
 
 const httpMethodSchema = () => string().oneOf(['GET', 'POST', 'PUT', 'DELETE']);
@@ -72,7 +72,7 @@ const headersMapSchema = () =>
         } catch (e) {
           return false;
         }
-      },
+      }
     );
 
 const apiKeySchema = () => string();
@@ -104,7 +104,7 @@ const jsonPathSchema = () =>
         }
       }
       return true;
-    },
+    }
   );
 
 const dataTypeSchema = () => string().oneOf(['boolean', 'number', 'string']);
@@ -121,7 +121,7 @@ const strictCallParamsSchema = () =>
   object().test(
     'is-call-params',
     '${originalValue} is not a valid callParams',
-    async (obj: any, context) => {
+    async (obj: ParamSet, context) => {
       try {
         if (obj && obj.body === '') {
           await object({
@@ -150,7 +150,7 @@ const strictCallParamsSchema = () =>
       } catch (e) {
         return context.createError({ message: e.message });
       }
-    },
+    }
   );
 
 const rawParamsSchema = () =>
@@ -161,17 +161,18 @@ const rawParamsSchema = () =>
       apiKey: apiKeySchema(),
     })
     .test(
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       'no-multiple-apikey',
-      `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+      `Found multiple ${API_KEY_PLACEHOLDER} occurrences in API call parameters, it must have at most one occurrence`,
       (obj, context) => {
         const { url, headers } = context.originalValue;
         return (
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) <= 1
         );
-      },
+      }
     )
     .test(
       'apikey-provided-when-needed',
@@ -181,10 +182,10 @@ const rawParamsSchema = () =>
         return !(
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) >= 1 && !apiKey
         );
-      },
+      }
     )
     .test(
       'no-unused-apikey',
@@ -195,10 +196,10 @@ const rawParamsSchema = () =>
           apiKey &&
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) === 0
         );
-      },
+      }
     )
     .noUnknown(true);
 
@@ -211,16 +212,16 @@ const paramSetSchema = () =>
     })
     .test(
       'no-multiple-apikey',
-      `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+      `Found multiple ${API_KEY_PLACEHOLDER} occurrences in API call parameters, it must have at most one occurrence`,
       (obj, context) => {
         const { url, headers } = context.originalValue;
         return (
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) <= 1
         );
-      },
+      }
     )
     .test(
       'dataset-provided-when-needed',
@@ -230,11 +231,11 @@ const paramSetSchema = () =>
         return !(
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) >= 1 &&
           (!dataset || dataset === '0x0000000000000000000000000000000000000000')
         );
-      },
+      }
     )
     .test(
       'no-unused-dataset',
@@ -246,19 +247,20 @@ const paramSetSchema = () =>
           dataset !== '0x0000000000000000000000000000000000000000' &&
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) === 0
         );
-      },
+      }
     )
     .noUnknown(true);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const strictParamSetSchema = (): ObjectSchema<any> =>
   object()
     .test(
       'is-params-set',
       '${originalValue} is not a valid paramSet',
-      async (obj: ParamSet, context: any) => {
+      async (obj: ParamSet, context) => {
         try {
           if (obj && obj.body === '') {
             await object({
@@ -293,20 +295,20 @@ const strictParamSetSchema = (): ObjectSchema<any> =>
         } catch (e) {
           return context.createError({ message: e.message });
         }
-      },
+      }
     )
     .test(
       'no-multiple-apikey',
-      `Found multiple ${API_KEY_PLACEHOLDER} occurences in API call parameters, it must have at most one occurrence`,
+      `Found multiple ${API_KEY_PLACEHOLDER} occurrences in API call parameters, it must have at most one occurrence`,
       (obj, context) => {
         const { url, headers } = context.originalValue;
         return (
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) <= 1
         );
-      },
+      }
     )
     .test(
       'dataset-provided-when-needed',
@@ -316,11 +318,11 @@ const strictParamSetSchema = (): ObjectSchema<any> =>
         return !(
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) >= 1 &&
           (!dataset || dataset === '0x0000000000000000000000000000000000000000')
         );
-      },
+      }
     )
     .test(
       'no-unused-dataset',
@@ -332,10 +334,10 @@ const strictParamSetSchema = (): ObjectSchema<any> =>
           dataset !== '0x0000000000000000000000000000000000000000' &&
           countSubstrAllowOverlap(
             JSON.stringify({ url, headers }),
-            API_KEY_PLACEHOLDER,
+            API_KEY_PLACEHOLDER
           ) === 0
         );
-      },
+      }
     );
 
 const jsonParamSetSchema = () =>
@@ -363,14 +365,14 @@ const jsonParamSetSchema = () =>
             message: `${context.originalValue} is not a valid paramSet (${e.message})`,
           });
         }
-      },
+      }
     );
 
 const readDataTypeSchema = () =>
   string()
     .oneOf(
       ['boolean', 'number', 'string', 'raw'],
-      'dataType read option must be one of the following values: ${values}',
+      'dataType read option must be one of the following values: ${values}'
     )
     .required();
 

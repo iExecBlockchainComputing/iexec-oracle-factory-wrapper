@@ -1,9 +1,17 @@
+import CID from 'cids';
+import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
+import * as ipfs from '../services/ipfs/index.js';
 import {
-  DEFAULT_IPFS_GATEWAY,
-  DEFAULT_TARGET_BLOCKCHAIN,
-  getFactoryDefaults,
-} from '../config/config.js';
+  TaskExecutionMessage,
+  UpdateOracleMessage,
+} from '../types/internal-types.js';
+import {
+  ParamSet,
+  UpdateOracleOptions,
+  UpdateOracleParams,
+} from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
+import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
   jsonParamSetSchema,
@@ -11,15 +19,6 @@ import {
   throwIfMissing,
   updateTargetBlockchainsSchema,
 } from '../utils/validators.js';
-import * as ipfs from '../services/ipfs/index.js';
-import CID from 'cids';
-import { formatParamsJson } from '../utils/format.js';
-import {
-  ParamSet,
-  TaskExecutionMessage,
-  UpdateOracleMessage,
-  UpdateOracleParams,
-} from './types.js';
 
 /**
  * Retrieves parameter set information from IPFS.
@@ -59,7 +58,7 @@ const getParamSet = async ({
   } else {
     paramSet = await paramSetSchema().validate(paramSetOrCid);
     paramsJson = await jsonParamSetSchema().validate(
-      formatParamsJson(paramSet),
+      formatParamsJson(paramSet)
     );
   }
   return { paramSet, paramsJson, isUploaded };
@@ -77,25 +76,22 @@ const getParamSet = async ({
  */
 const updateOracle = ({
   paramSetOrCid,
+  targetBlockchains,
   iexec = throwIfMissing(),
   oracleApp,
+  ipfsGateway,
   workerpool,
-  ipfsGateway = DEFAULT_IPFS_GATEWAY,
   oracleContract,
-}: UpdateOracleParams): Observable<UpdateOracleMessage> =>
+}: UpdateOracleParams & UpdateOracleOptions): Observable<UpdateOracleMessage> =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   new Observable((observer: SafeObserver<UpdateOracleMessage>) => {
     let abort = false;
     let stopWatcher;
     const safeObserver = new SafeObserver(observer);
     const start = async () => {
       try {
-        let targetBlockchainsArray =
-          typeof paramSetOrCid === 'object'
-            ? await updateTargetBlockchainsSchema().validate(
-                paramSetOrCid.targetBlockchains,
-              )
-            : DEFAULT_TARGET_BLOCKCHAIN;
-
+        const targetBlockchainsArray =
+          await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
         const ORACLE_APP_ADDRESS =
@@ -244,7 +240,8 @@ const updateOracle = ({
               iexec_input_files: [`${ipfsGateway}/ipfs/${cid}`],
               iexec_developer_logger: true,
             },
-          })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } as any)
           .catch((e) => {
             throw new WorkflowError('Failed to create requestorder', e);
           });
@@ -256,7 +253,7 @@ const updateOracle = ({
 
         // Sign and publish request order
         const requestorder = await iexec.order
-          .signRequestorder(requestorderToSign, { checkRequest: false })
+          .signRequestorder(requestorderToSign, { preflightCheck: false })
           .catch((e) => {
             throw new WorkflowError('Failed to sign requestorder', e);
           });
@@ -282,7 +279,7 @@ const updateOracle = ({
               workerpoolorder,
               requestorder,
             },
-            { checkRequest: false },
+            { preflightCheck: false }
           )
           .catch((e) => {
             throw new WorkflowError('Failed to match orders', e);
@@ -303,14 +300,15 @@ const updateOracle = ({
           new Promise<TaskExecutionMessage | void>((resolve, reject) => {
             iexec.task.obsTask(taskid, { dealid }).then((obs) => {
               stopWatcher = obs.subscribe({
-                next: (value) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                next: (value: any) => {
                   const { message } = value;
                   if (message === 'TASK_TIMEDOUT') {
                     reject(
                       new WorkflowError(
                         'Oracle update task timed out, update failed',
-                        Error(`Task ${taskid} from deal ${dealid} timed out`),
-                      ),
+                        Error(`Task ${taskid} from deal ${dealid} timed out`)
+                      )
                     );
                   }
                   if (message === 'TASK_COMPLETED') {
@@ -327,10 +325,7 @@ const updateOracle = ({
                 },
                 error: (e) =>
                   reject(
-                    new WorkflowError(
-                      'Failed to monitor oracle update task',
-                      e,
-                    ),
+                    new WorkflowError('Failed to monitor oracle update task', e)
                   ),
                 complete: () => {},
               });
@@ -348,7 +343,7 @@ const updateOracle = ({
           safeObserver.error(e);
         } else {
           safeObserver.error(
-            new WorkflowError('Update oracle unexpected error', e),
+            new WorkflowError('Update oracle unexpected error', e)
           );
         }
       }

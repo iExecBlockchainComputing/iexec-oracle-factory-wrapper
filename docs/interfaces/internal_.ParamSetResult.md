@@ -22,7 +22,7 @@ ___
 
 ### paramSet
 
-• **paramSet**: `any`
+• **paramSet**: [`ParamSet`](../modules.md#paramset)
 
 ___
 

@@ -1,34 +1,36 @@
+/* eslint-disable @typescript-eslint/dot-notation */
+// needed to access and assert IExecDataProtector's private properties
 import { describe, it, expect } from '@jest/globals';
 import { Wallet } from 'ethers';
-import { IExecOracleFactory, getWeb3Provider } from '../../../dist/index.js';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
-} from '../../../src/config/config';
+} from '../../../src/config/config.js';
+import { IExecOracleFactory, getWeb3Provider } from '../../../src/index.js';
 
 describe('IExecOracleFactory()', () => {
-  it('should use default ipfs node url when ipfsUploadUrl is not provided', async () => {
+  it('should use default ipfs node url when ipfsNode is not provided', async () => {
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getWeb3Provider(Wallet.createRandom().privateKey)
     );
-    const ipfsUploadUrl = oracleFactory['ipfsUploadUrl'];
-    expect(ipfsUploadUrl).toStrictEqual(DEFAULT_IPFS_UPLOAD_URL);
+    const ipfsNode = oracleFactory['ipfsNode'];
+    expect(ipfsNode).toStrictEqual(DEFAULT_IPFS_UPLOAD_URL);
   });
-  it('should use provided ipfs node url when ipfsUploadUrl is provided', async () => {
+  it('should use provided ipfs node url when ipfsNode is provided', async () => {
     const customIpfsUploadUrl = 'https://example.com/node';
     const oracleFactory = new IExecOracleFactory(
       getWeb3Provider(Wallet.createRandom().privateKey),
       {
-        ipfsUploadUrl: customIpfsUploadUrl,
-      },
+        ipfsNode: customIpfsUploadUrl,
+      }
     );
-    const ipfsUploadUrl = oracleFactory['ipfsUploadUrl'];
-    expect(ipfsUploadUrl).toStrictEqual(customIpfsUploadUrl);
+    const ipfsNode = oracleFactory['ipfsNode'];
+    expect(ipfsNode).toStrictEqual(customIpfsUploadUrl);
   });
   it('should use default ipfs gateway url when ipfsGateway is not provided', async () => {
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getWeb3Provider(Wallet.createRandom().privateKey)
     );
     const ipfsGateway = oracleFactory['ipfsGateway'];
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -39,14 +41,14 @@ describe('IExecOracleFactory()', () => {
       getWeb3Provider(Wallet.createRandom().privateKey),
       {
         ipfsGateway: customIpfsGateway,
-      },
+      }
     );
     const ipfsGateway = oracleFactory['ipfsGateway'];
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
   });
   it('should use default smart contract address when contractAddress is not provided', async () => {
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getWeb3Provider(Wallet.createRandom().privateKey)
     );
     const oracleContract = oracleFactory['oracleContract'];
     expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
@@ -57,7 +59,7 @@ describe('IExecOracleFactory()', () => {
       getWeb3Provider(Wallet.createRandom().privateKey),
       {
         oracleContract: customSContractAddress,
-      },
+      }
     );
     const oracleContract = oracleFactory['oracleContract'];
     expect(oracleContract).toStrictEqual(customSContractAddress);
@@ -69,7 +71,7 @@ describe('IExecOracleFactory()', () => {
       getWeb3Provider(Wallet.createRandom().privateKey),
       {
         workerpool: customWorkerpoolAddress,
-      },
+      }
     );
     const oracleContract = oracleFactory['workerpool'];
     expect(oracleContract).toStrictEqual(customWorkerpoolAddress);
@@ -89,21 +91,21 @@ describe('IExecOracleFactory()', () => {
         oracleContract: customSContractAddress,
         oracleApp: customAppAddress,
         ipfsGateway: customIpfsGateway,
-        ipfsUploadUrl: customIpfsUploadUrl,
+        ipfsNode: customIpfsUploadUrl,
         workerpool: customWorkerpoolAddress,
         iexecOptions: {
           smsURL,
           iexecGatewayURL,
         },
-      },
+      }
     );
-    const ipfsUploadUrl = oracleFactory['ipfsUploadUrl'];
+    const ipfsNode = oracleFactory['ipfsNode'];
     const ipfsGateway = oracleFactory['ipfsGateway'];
     const oracleContract = oracleFactory['oracleContract'];
     const oracleApp = oracleFactory['oracleApp'];
     const workerpool = oracleFactory['workerpool'];
     const iexec = oracleFactory['iexec'];
-    expect(ipfsUploadUrl).toStrictEqual(customIpfsUploadUrl);
+    expect(ipfsNode).toStrictEqual(customIpfsUploadUrl);
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
     expect(oracleContract).toStrictEqual(customSContractAddress);
     expect(oracleApp).toStrictEqual(customAppAddress);
@@ -114,13 +116,13 @@ describe('IExecOracleFactory()', () => {
   it('throw when instantiated with an invalid ethProvider', async () => {
     const invalidProvider: any = null;
     expect(() => new IExecOracleFactory(invalidProvider)).toThrow(
-      Error('Unsupported ethProvider, Missing ethProvider'),
+      Error('Unsupported ethProvider, Missing ethProvider')
     );
   });
   it('instantiates with a valid ethProvider', async () => {
     const wallet = Wallet.createRandom();
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(wallet.privateKey),
+      getWeb3Provider(wallet.privateKey)
     );
     expect(oracleFactory).toBeInstanceOf(IExecOracleFactory);
   });
@@ -133,7 +135,7 @@ describe('IExecOracleFactory()', () => {
         iexecOptions: {
           smsURL,
         },
-      },
+      }
     );
     const iexec = oracleFactory['iexec'];
     expect(await iexec.config.resolveSmsURL()).toBe(smsURL);

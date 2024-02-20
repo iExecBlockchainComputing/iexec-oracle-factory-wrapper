@@ -1,52 +1,50 @@
 import { jest } from '@jest/globals';
-import { IExec, utils } from 'iexec';
 import { Wallet } from 'ethers';
+import { IExec, utils } from 'iexec';
 import {
   DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_WORKERPOOL_ADDRESS,
-} from '../../../dist/config/config.js';
+} from '../../../src/config/config.js';
 
-jest.unstable_mockModule('../../../dist/oracleFactory/createOracle.js', () => ({
+jest.unstable_mockModule('../../../src/oracleFactory/createOracle.js', () => ({
   createOracle: jest.fn(),
 }));
-jest.unstable_mockModule('../../../dist/oracleFactory/updateOracle.js', () => ({
+jest.unstable_mockModule('../../../src/oracleFactory/updateOracle.js', () => ({
   updateOracle: jest.fn(),
 }));
-jest.unstable_mockModule('../../../dist/oracleFactory/readOracle.js', () => ({
+jest.unstable_mockModule('../../../src/oracleFactory/readOracle.js', () => ({
   readOracle: jest.fn(),
 }));
 
 // dynamically import tested module after all mocks are loaded
 const { createOracle } = await import(
-  '../../../dist/oracleFactory/createOracle.js'
+  '../../../src/oracleFactory/createOracle.js'
 );
 const { updateOracle } = await import(
-  '../../../dist/oracleFactory/updateOracle.js'
+  '../../../src/oracleFactory/updateOracle.js'
 );
-const { readOracle } = await import(
-  '../../../dist/oracleFactory/readOracle.js'
-);
+const { readOracle } = await import('../../../src/oracleFactory/readOracle.js');
 
 // this will use the already loaded mock of oracle.js
 const { IExecOracleFactory } = await import(
-  '../../../dist/oracleFactory/OracleFactory.js'
+  '../../../src/oracleFactory/OracleFactory.js'
 );
 
 afterEach(() => {
   jest.resetAllMocks();
 });
 
-test.only('standard - instantiation', async () => {
+test('standard - instantiation', async () => {
   const ethProvider = utils.getSignerFromPrivateKey(
     'bellecour',
-    Wallet.createRandom().privateKey,
+    Wallet.createRandom().privateKey
   );
   const factoryWithOptions = new IExecOracleFactory(ethProvider, {
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
+    ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
   });
@@ -74,7 +72,7 @@ test.only('standard - instantiation', async () => {
   expect(createOracle).toHaveBeenNthCalledWith(1, {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
+    ipfsNode: 'ipfsNode',
     oracleApp: 'oracleApp',
     JSONPath: '$.ok',
     body: '',
@@ -89,39 +87,38 @@ test.only('standard - instantiation', async () => {
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
     headers: {},
     method: 'GET',
     url: 'https://api.market.iex.ec/version',
   });
 
   expect(createOracle).toHaveBeenNthCalledWith(2, {
-    iexec: iexecWithoutOption,
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
     headers: {},
     method: 'GET',
     url: 'https://api.market.iex.ec/version',
+    iexec: iexecWithoutOption,
     ipfsGateway: DEFAULT_IPFS_GATEWAY,
-    ipfsUploadUrl: DEFAULT_IPFS_UPLOAD_URL,
+    ipfsNode: DEFAULT_IPFS_UPLOAD_URL,
     oracleApp: DEFAULT_APP_ADDRESS,
   });
 
   await factoryWithOptions.updateOracle({
-    JSONPath: '$.ok',
-    body: '',
-    dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
-    headers: {},
-    method: 'GET',
-    url: 'https://api.market.iex.ec/version',
+    paramSetOrCid: {
+      JSONPath: '$.ok',
+      body: '',
+      dataType: 'boolean',
+      dataset: '0x0000000000000000000000000000000000000000',
+      headers: {},
+      method: 'GET',
+      url: 'https://api.market.iex.ec/version',
+    },
   });
   expect(updateOracle).toHaveBeenNthCalledWith(1, {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
@@ -134,25 +131,37 @@ test.only('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
+    targetBlockchains: [134],
   });
 
   await factoryWithOptions.updateOracle({
-    JSONPath: '$.ok',
-    body: '',
-    dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
-    headers: {},
-    method: 'GET',
-    url: 'https://api.market.iex.ec/version',
+    paramSetOrCid: {
+      JSONPath: '$.ok',
+      body: '',
+      dataType: 'boolean',
+      headers: {},
+      method: 'GET',
+      url: 'https://api.market.iex.ec/version',
+    },
     targetBlockchains: [80001, 137],
   });
   expect(updateOracle).toHaveBeenNthCalledWith(2, {
+    paramSetOrCid: {
+      JSONPath: '$.ok',
+      body: '',
+      dataType: 'boolean',
+      headers: {},
+      method: 'GET',
+      url: 'https://api.market.iex.ec/version',
+    },
+    targetBlockchains: [80001, 137],
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
-    ipfsUploadUrl: 'ipfsUploadUrl',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+  });
+  await factoryWithoutOption.updateOracle({
     paramSetOrCid: {
       JSONPath: '$.ok',
       body: '',
@@ -161,17 +170,7 @@ test.only('standard - instantiation', async () => {
       headers: {},
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
-      targetBlockchains: [80001, 137],
     },
-  });
-  await factoryWithoutOption.updateOracle({
-    JSONPath: '$.ok',
-    body: '',
-    dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
-    headers: {},
-    method: 'GET',
-    url: 'https://api.market.iex.ec/version',
   });
   expect(updateOracle).toHaveBeenNthCalledWith(3, {
     iexec: iexecWithoutOption,
@@ -179,7 +178,6 @@ test.only('standard - instantiation', async () => {
     oracleApp: DEFAULT_APP_ADDRESS,
     oracleContract: DEFAULT_ORACLE_CONTRACT_ADDRESS,
     workerpool: DEFAULT_WORKERPOOL_ADDRESS,
-    ipfsUploadUrl: DEFAULT_IPFS_UPLOAD_URL,
     paramSetOrCid: {
       JSONPath: '$.ok',
       body: '',
@@ -189,6 +187,7 @@ test.only('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
+    targetBlockchains: [134],
   });
 
   await factoryWithOptions.readOracle({
@@ -226,7 +225,7 @@ test.only('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    'number',
+    'number'
   );
 
   expect(readOracle).toHaveBeenNthCalledWith(2, {

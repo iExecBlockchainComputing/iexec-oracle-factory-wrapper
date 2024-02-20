@@ -1,12 +1,12 @@
-import { getSignerFromPrivateKey } from 'iexec/utils';
-import { computeOracleId as hashComputeOracleId } from './hash.js';
-import testRawParams from './callTester.js';
-import { getDefaults, DEFAULT_IPFS_GATEWAY } from '../config/config.js';
-import * as ipfs from './../services/ipfs/index.js';
 import CID from 'cids';
-import { jsonParamSetSchema, paramSetSchema } from './validators.js';
+import { getSignerFromPrivateKey } from 'iexec/utils';
+import { getDefaults, DEFAULT_IPFS_GATEWAY } from '../config/config.js';
+import { ParamSet } from '../types/public-types.js';
+import * as ipfs from './../services/ipfs/index.js';
+import testRawParams from './callTester.js';
 import { formatParamsJson } from './format.js';
-import { ParamSet } from '../index.js';
+import { computeOracleId as hashComputeOracleId } from './hash.js';
+import { jsonParamSetSchema, paramSetSchema } from './validators.js';
 
 interface GetParamSetOptions {
   paramSetOrCid: ParamSet | string;
@@ -14,7 +14,7 @@ interface GetParamSetOptions {
 }
 
 interface ParamSetResult {
-  paramSet: any;
+  paramSet: ParamSet;
   paramsJson: string;
   isUploaded: boolean;
 }
@@ -42,7 +42,7 @@ const getParamSet = async ({
   } else {
     paramSet = await paramSetSchema().validate(paramSetOrCid);
     paramsJson = await jsonParamSetSchema().validate(
-      formatParamsJson(paramSet),
+      formatParamsJson(paramSet)
     );
   }
   return { paramSet, paramsJson, isUploaded };
@@ -50,14 +50,13 @@ const getParamSet = async ({
 
 const computeOracleId = async (
   paramSetOrCid,
-  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {},
+  { ipfsGateway = DEFAULT_IPFS_GATEWAY } = {}
 ): Promise<string> => {
   const { paramSet }: ParamSetResult = await getParamSet({
     paramSetOrCid,
     ipfsGateway,
   });
-  const oracleId = await hashComputeOracleId(paramSet);
-  return oracleId;
+  return hashComputeOracleId(paramSet);
 };
 
 export {

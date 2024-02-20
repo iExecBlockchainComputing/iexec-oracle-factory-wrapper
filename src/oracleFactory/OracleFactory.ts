@@ -1,39 +1,48 @@
+import { Eip1193Provider, Provider } from 'ethers';
 import { IExec } from 'iexec';
-import { Eip1193Provider } from 'ethers';
-import {
-  AddressOrENS,
-  OracleFactoryOptions,
-  ParamSet,
-  Oracle,
-  Web3SignerProvider,
-  CreateOracleMessage,
-  UpdateOracleMessage,
-} from './types.js';
 import {
   DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
+  DEFAULT_TARGET_BLOCKCHAIN,
   DEFAULT_WORKERPOOL_ADDRESS,
-  getDefaultProvider,
 } from '../config/config.js';
+import {
+  CreateOracleMessage,
+  UpdateOracleMessage,
+} from '../types/internal-types.js';
+import {
+  AddressOrENS,
+  Oracle,
+  OracleFactoryOptions,
+  ParamSet,
+  UpdateOracleParams,
+  Web3SignerProvider,
+} from '../types/public-types.js';
 import { Observable } from '../utils/reactive.js';
-import { updateOracle } from './updateOracle.js';
-import { readOracle } from './readOracle.js';
 import { createOracle } from './createOracle.js';
-import { Provider } from 'ethers';
+import { readOracle } from './readOracle.js';
+
+import { updateOracle } from './updateOracle.js';
 
 /**
  * IExecOracleFactory, used to interact with oracle creation, update, and read operations.
  */
 class IExecOracleFactory {
   private oracleContract: AddressOrENS;
+
   private oracleApp: AddressOrENS;
+
   private workerpool: AddressOrENS;
-  private ipfsUploadUrl: string;
+
+  private ipfsNode: string;
+
   private ipfsGateway: string;
+
   private iexec: IExec;
-  private ethersProvider: Provider;
+
+  private ethersProviderPromise: Promise<Provider>;
 
   /**
    * Creates an instance of IExecOracleFactory.
@@ -42,17 +51,20 @@ class IExecOracleFactory {
    */
   constructor(
     ethProvider: Eip1193Provider | Web3SignerProvider,
-    options?: OracleFactoryOptions,
+    options?: OracleFactoryOptions
   ) {
     try {
       this.iexec = new IExec({ ethProvider }, options?.iexecOptions);
     } catch (e) {
       throw new Error(`Unsupported ethProvider, ${e.message}`);
     }
-    this.ethersProvider = getDefaultProvider('https://bellecour.iex.ec', {});
+    this.ethersProviderPromise = this.iexec.config
+      .resolveContractsClient()
+      .then((client) => client.provider);
+    this.ethersProviderPromise.catch(() => {});
     this.oracleContract =
       options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
-    this.ipfsUploadUrl = options?.ipfsUploadUrl || DEFAULT_IPFS_UPLOAD_URL;
+    this.ipfsNode = options?.ipfsNode || DEFAULT_IPFS_UPLOAD_URL;
     this.ipfsGateway = options?.ipfsGateway || DEFAULT_IPFS_GATEWAY;
     this.oracleApp = options?.oracleApp || DEFAULT_APP_ADDRESS;
     this.workerpool = options?.workerpool || DEFAULT_WORKERPOOL_ADDRESS;
@@ -67,41 +79,45 @@ class IExecOracleFactory {
     createOracle({
       ...args,
       ipfsGateway: this.ipfsGateway,
-      ipfsUploadUrl: this.ipfsUploadUrl,
+      ipfsNode: this.ipfsNode,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
     });
 
   /**
    * Updates an existing oracle with new parameters or a new CID.
-   * @param args {@link ParamSet} or CID for updating the oracle.
+   * @param paramSetOrCid Parameters or CID for updating the oracle.
+   * @param targetBlockchains Optional array of target blockchains.
    * @returns Observable result of the update operation.
    */
-  updateOracle = (args: ParamSet | string): Observable<UpdateOracleMessage> =>
+  updateOracle = ({
+    paramSetOrCid,
+    targetBlockchains = DEFAULT_TARGET_BLOCKCHAIN,
+  }: UpdateOracleParams): Observable<UpdateOracleMessage> =>
     updateOracle({
-      paramSetOrCid: args,
+      paramSetOrCid,
+      targetBlockchains,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
-      ipfsUploadUrl: this.ipfsUploadUrl,
       workerpool: this.workerpool,
     });
 
   /**
    * Reads an oracle with the provided ID CID or Oracle ID.
-   * @param paramSetOrCidOrOracleId The ID CID or Oracle ID to read.
+   * @param paramSetOrCidOrOracleId Parameters, CID or Oracle ID to read.
    * @param dataType Optional data type for reading the oracle.
    * @returns Promise resolving to the oracle data.
    */
-  readOracle = (
+  readOracle = async (
     paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string,
+    dataType?: string
   ): Promise<Oracle> =>
     readOracle({
       paramSetOrCidOrOracleId,
       dataType,
-      ethersProvider: this.ethersProvider,
+      ethersProvider: await this.ethersProviderPromise,
       ipfsGateway: this.ipfsGateway,
       oracleContract: this.oracleContract,
     });

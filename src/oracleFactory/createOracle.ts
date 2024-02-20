@@ -1,10 +1,19 @@
 import {
   API_KEY_PLACEHOLDER,
-  DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
   getFactoryDefaults,
 } from '../config/config.js';
+import * as ipfs from '../services/ipfs/index.js';
+import {
+  CreateApiKeyDatasetParams,
+  CreateOracleMessage,
+} from '../types/internal-types.js';
+import {
+  Address,
+  CreateOracleOptions,
+  ParamSet,
+} from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
@@ -15,14 +24,6 @@ import {
   rawParamsSchema,
   throwIfMissing,
 } from '../utils/validators.js';
-import {
-  Address,
-  CreateApiKeyDatasetParams,
-  CreateOracleMessage,
-  CreateOracleOptions,
-  ParamSet,
-} from './types.js';
-import * as ipfs from '../services/ipfs/index.js';
 
 /**
  * Creates a dataset containing an API key.
@@ -34,10 +35,11 @@ const createApiKeyDataset = ({
   apiKey = throwIfMissing(),
   callId = throwIfMissing(),
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
-  ipfsUploadUrl = DEFAULT_IPFS_UPLOAD_URL,
+  ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
   oracleApp,
 }: CreateApiKeyDatasetParams): Observable<CreateOracleMessage> =>
   new Observable<CreateOracleMessage>(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     (observer: SafeObserver<CreateOracleMessage>) => {
       let abort = false;
       const safeObserver = new SafeObserver(observer);
@@ -69,7 +71,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 'Failed to compute encrypted API key checksum',
-                e,
+                e
               );
             });
           if (abort) return;
@@ -80,7 +82,7 @@ const createApiKeyDataset = ({
           });
 
           const cid = await ipfs
-            .add(encryptedFile, { ipfsGateway, ipfsUploadUrl })
+            .add(encryptedFile, { ipfsGateway, ipfsNode })
             .catch((e) => {
               throw new WorkflowError('Failed to upload encrypted API key', e);
             });
@@ -120,7 +122,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to push API key dataset's encryption key",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -138,7 +140,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to create API key datasetorder's",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -151,7 +153,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to sign API key datasetorder's",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -169,7 +171,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError(
                 "Failed to publish API key datasetorder's",
-                e,
+                e
               );
             });
           if (abort) return;
@@ -185,7 +187,7 @@ const createApiKeyDataset = ({
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('API key dataset creation unexpected error', e),
+              new WorkflowError('API key dataset creation unexpected error', e)
             );
           }
         }
@@ -196,7 +198,7 @@ const createApiKeyDataset = ({
       };
       start();
       return safeObserver.unsubscribe.bind(safeObserver);
-    },
+    }
   );
 
 /**
@@ -212,16 +214,17 @@ const createOracle = ({
   JSONPath = throwIfMissing(),
   dataType,
   apiKey,
-  ipfsGateway = DEFAULT_IPFS_GATEWAY,
-  ipfsUploadUrl = DEFAULT_IPFS_UPLOAD_URL,
-  oracleApp = DEFAULT_APP_ADDRESS,
   iexec = throwIfMissing(),
+  oracleApp,
+  ipfsGateway,
+  ipfsNode,
 }: ParamSet & CreateOracleOptions): Observable<CreateOracleMessage> => {
   return new Observable<CreateOracleMessage>(
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     (observer: SafeObserver<CreateOracleMessage>) => {
       let abort = false;
       const safeObserver: SafeObserver<CreateOracleMessage> = new SafeObserver(
-        observer,
+        observer
       );
       let stopCreateDataset: () => void;
       const start = async () => {
@@ -255,7 +258,7 @@ const createOracle = ({
                 apiKey,
                 callId,
                 ipfsGateway,
-                ipfsUploadUrl,
+                ipfsNode,
                 oracleApp,
               }).subscribe({
                 error: (e) => reject(e),
@@ -280,7 +283,7 @@ const createOracle = ({
           });
 
           const jsonParams = await jsonParamSetSchema().validate(
-            formatParamsJson(paramSet),
+            formatParamsJson(paramSet)
           );
           if (abort) return;
           safeObserver.next({
@@ -295,7 +298,7 @@ const createOracle = ({
             oracleId,
           });
           const cid = await ipfs
-            .add(jsonParams, { ipfsGateway, ipfsUploadUrl })
+            .add(jsonParams, { ipfsGateway, ipfsNode })
             .catch((e) => {
               throw new WorkflowError('Failed to upload paramSet', e);
             });
@@ -314,7 +317,7 @@ const createOracle = ({
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('Create oracle unexpected error', e),
+              new WorkflowError('Create oracle unexpected error', e)
             );
           }
         }
@@ -328,7 +331,7 @@ const createOracle = ({
       };
       start();
       return safeObserver.unsubscribe.bind(safeObserver);
-    },
+    }
   );
 };
 

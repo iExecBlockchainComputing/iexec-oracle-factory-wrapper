@@ -2,8 +2,8 @@ import { ethers } from 'ethers';
 import {
   sortObjKeys,
   formatParamsJson,
-  formatOracleGetInt,
-} from '../../../dist/utils/format';
+  formatOracleGetNumber,
+} from '../../../src/utils/format.js';
 
 describe('sortObjKeys', () => {
   test('sort nested keys', () => {
@@ -19,7 +19,7 @@ describe('sortObjKeys', () => {
       apiKey: 'abcdef1234567890',
     });
     expect(JSON.stringify(res)).toBe(
-      '{"JSONPath":"$[foo]","apiKey":"abcdef1234567890","body":"body","headers":{"authorization":"%API_KEY%","content-type":"application/json"},"method":"POST","url":"https://foo.com?query=bar"}',
+      '{"JSONPath":"$[foo]","apiKey":"abcdef1234567890","body":"body","headers":{"authorization":"%API_KEY%","content-type":"application/json"},"method":"POST","url":"https://foo.com?query=bar"}'
     );
   });
 });
@@ -38,25 +38,25 @@ describe('formatParamsJson', () => {
       apiKey: 'abcdef1234567890',
     });
     expect(res).toBe(
-      '{"JSONPath":"$[foo]","apiKey":"abcdef1234567890","body":"body","headers":{"authorization":"%API_KEY%","content-type":"application/json"},"method":"POST","url":"https://foo.com?query=bar"}',
+      '{"JSONPath":"$[foo]","apiKey":"abcdef1234567890","body":"body","headers":{"authorization":"%API_KEY%","content-type":"application/json"},"method":"POST","url":"https://foo.com?query=bar"}'
     );
   });
 });
 
-describe('formatOracleGetInt', () => {
+describe('formatOracleGetNumber', () => {
   test('standard - multiply by 1e-18 to convert getInt int result to number', () => {
-    expect(formatOracleGetInt(ethers.getBigInt('-1234567890'))).toBe(
-      -1.23456789e-9,
+    expect(formatOracleGetNumber(ethers.getBigInt('-1234567890'))).toBe(
+      -1.23456789e-9
     );
   });
 
   test('error - precision loss', () => {
     expect(() =>
-      formatOracleGetInt(ethers.getBigInt('12345678901234567890123456789')),
+      formatOracleGetNumber(ethers.getBigInt('12345678901234567890123456789'))
     ).toThrow(
       Error(
-        'Converting 12345678901.234567890123456789 to number will result in loosing precision',
-      ),
+        'Converting 12345678901.234567890123456789 to number will result in losing precision'
+      )
     );
   });
 });

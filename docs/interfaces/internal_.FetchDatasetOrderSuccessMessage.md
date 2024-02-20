@@ -21,4 +21,4 @@ ___
 
 ### order
 
-• **order**: `any`
+• **order**: `PublishedApporder`

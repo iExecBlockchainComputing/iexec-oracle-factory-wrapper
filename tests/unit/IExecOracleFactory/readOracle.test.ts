@@ -1,50 +1,48 @@
 import { beforeEach, jest } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { utils } from 'iexec';
+import { getDefaultProvider } from '../../../src/config/config.js';
 import {
   NoValueError,
   ValidationError,
   WorkflowError,
-} from '../../../dist/utils/errors.js';
+} from '../../../src/utils/errors.js';
 const mockAdd = jest.fn() as jest.Mock<any>;
 const mockGet = jest.fn() as jest.Mock<any>;
 const mockIsCid = jest.fn() as jest.Mock<any>;
-import { getDefaultProvider } from '../../../dist/config/config.js';
 
-jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd,
   get: mockGet,
   isCid: mockIsCid,
 }));
 
 // dynamically import tested module after all mock are loaded
-const { readOracle } = await import(
-  '../../../dist/oracleFactory/readOracle.js'
-);
+const { readOracle } = await import('../../../src/oracleFactory/readOracle.js');
 
 beforeEach(() => {
   // use ipfs real implementation as default mock
-  jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+  jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
     add: mockAdd as (
       content: any,
-      options?: { ipfsGateway?: string },
+      options?: { ipfsGateway?: string }
     ) => Promise<string>,
     get: mockGet as (
       cid: string,
-      options?: { ipfsGateway?: string },
+      options?: { ipfsGateway?: string }
     ) => Promise<any>,
     isCid: mockIsCid as (cid: string) => boolean,
   }));
 });
 
-jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd as (
     content: any,
-    options?: { ipfsGateway?: string },
+    options?: { ipfsGateway?: string }
   ) => Promise<string>,
   get: mockGet as (
     cid: string,
-    options?: { ipfsGateway?: string },
+    options?: { ipfsGateway?: string }
   ) => Promise<any>,
   isCid: mockIsCid as (cid: string) => boolean,
 }));
@@ -121,7 +119,7 @@ describe('readOracle', () => {
         headers: {},
         method: 'GET',
         url: 'https://api.market.iex.ec/version',
-      }),
+      })
     );
     mockIsCid.mockResolvedValueOnce(true);
     mockGet.mockResolvedValueOnce(
@@ -133,11 +131,11 @@ describe('readOracle', () => {
         headers: {},
         method: 'GET',
         url: 'https://api.market.iex.ec/version',
-      }),
+      })
     );
     const signer = utils.getSignerFromPrivateKey(
       'https://bellecour.iex.ec',
-      Wallet.createRandom().privateKey,
+      Wallet.createRandom().privateKey
     );
     const res = await readOracle({
       ethersProvider: signer.provider!,
@@ -213,11 +211,11 @@ describe('readOracle', () => {
           method: 'GET',
           url: 'https://foo.io',
         },
-      }),
+      })
     ).rejects.toThrow(
       new NoValueError(
-        'No value stored for oracleId 0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d',
-      ),
+        'No value stored for oracleId 0xee1828a2a2393bf9501853d450429b52385e1ca9b26506b2996de715e2f3122d'
+      )
     );
   });
 
@@ -236,15 +234,13 @@ describe('readOracle', () => {
           url: 'https://foo.io',
         },
         dataType: 'boolean',
-      }),
+      })
     ).rejects.toThrow(
-      Error(
-        'dataType option is only allowed when reading oracle from oracleId',
-      ),
+      Error('dataType option is only allowed when reading oracle from oracleId')
     );
   });
 
-  test.only('error - invalid dataset', async () => {
+  test('error - invalid dataset', async () => {
     const provider = getDefaultProvider('https://bellecour.iex.ec', {});
     await expect(
       readOracle({
@@ -258,9 +254,9 @@ describe('readOracle', () => {
           method: 'GET',
           url: 'https://foo.io',
         },
-      }),
+      })
     ).rejects.toThrow(
-      new ValidationError('dataset is not a valid ethereum address'),
+      new ValidationError('dataset is not a valid ethereum address')
     );
   });
 
@@ -273,9 +269,9 @@ describe('readOracle', () => {
         ethersProvider: provider,
         paramSetOrCidOrOracleId:
           'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
-      }),
+      })
     ).rejects.toThrow(
-      new WorkflowError('Failed to load paramSet', Error('ipfs.get failed')),
+      new WorkflowError('Failed to load paramSet', Error('ipfs.get failed'))
     );
   });
 
@@ -293,7 +289,7 @@ describe('readOracle', () => {
           method: 'GET',
           url: 'https://foo.io',
         },
-      }),
+      })
     ).rejects.toThrow(Error('Unsupported chain 10'));
   });
 });

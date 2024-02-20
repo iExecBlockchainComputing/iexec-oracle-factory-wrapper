@@ -1,35 +1,33 @@
 import { beforeEach, jest } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { IExec, utils } from 'iexec';
-import { ValidationError, WorkflowError } from '../../../dist/utils/errors.js';
+import { ValidationError, WorkflowError } from '../../../src/utils/errors.js';
 
 const mockAdd = jest.fn() as jest.Mock<any>;
 const mockGet = jest.fn() as jest.Mock<any>;
 const mockIsCid = jest.fn() as jest.Mock<any>;
 
-jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+jest.unstable_mockModule('../../../src/services/ipfs/index.js', () => ({
   add: mockAdd,
   get: mockGet,
   isCid: mockIsCid,
 }));
 
-const ipfs = await import('../../../dist/services/ipfs');
-
 // dynamically import tested module after all mock are loaded
 const { updateOracle } = await import(
-  '../../../dist/oracleFactory/updateOracle.js'
+  '../../../src/oracleFactory/updateOracle.js'
 );
 
 beforeEach(() => {
   // use ipfs real implementation as default mock
-  jest.unstable_mockModule('../../../dist/services/ipfs', () => ({
+  jest.unstable_mockModule('../../../src/services/ipfs', () => ({
     add: mockAdd as (
       content: any,
-      options?: { ipfsGateway?: string },
+      options?: { ipfsGateway?: string }
     ) => Promise<string>,
     get: mockGet as (
       cid: string,
-      options?: { ipfsGateway?: string },
+      options?: { ipfsGateway?: string }
     ) => Promise<any>,
     isCid: mockIsCid as (cid: string) => boolean,
   }));
@@ -42,12 +40,12 @@ afterEach(() => {
 describe('updateOracle', () => {
   test('standard - from paramSet', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     const appOrderbook = {
@@ -204,7 +202,7 @@ describe('updateOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     mockGet.mockResolvedValueOnce(
@@ -216,7 +214,7 @@ describe('updateOracle', () => {
         headers: { authorization: '%API_KEY%' },
         method: 'GET',
         url: 'https://foo.io',
-      }),
+      })
     );
     mockIsCid.mockResolvedValueOnce(true);
 
@@ -338,12 +336,12 @@ describe('updateOracle', () => {
 
   test('standard - no dataset', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -466,12 +464,12 @@ describe('updateOracle', () => {
 
   test('cancel during watch', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -537,7 +535,7 @@ describe('updateOracle', () => {
           messages.push(value);
           if (count >= 11) {
             cancel();
-            setTimeout(resolve, 5000);
+            setTimeout(() => resolve(), 5000);
           }
           count += 1;
         },
@@ -601,7 +599,7 @@ describe('updateOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     mockIsCid.mockResolvedValueOnce(true);
@@ -631,8 +629,8 @@ describe('updateOracle', () => {
     expect(errors[0].message).toBe('Failed to load paramSet');
     expect(errors[0].originalError).toStrictEqual(
       Error(
-        'Failed to load paramSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
-      ),
+        'Failed to load paramSetSet from CID QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
+      )
     );
   }, 10000);
 
@@ -640,7 +638,7 @@ describe('updateOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     mockIsCid.mockResolvedValueOnce(true);
@@ -648,7 +646,7 @@ describe('updateOracle', () => {
 
     const messages: any = [];
     const errors: any = [];
-    const res = await new Promise((resolve: any, reject) => {
+    await new Promise((resolve: any, reject) => {
       updateOracle({
         iexec,
         paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDNxxxh',
@@ -679,7 +677,7 @@ describe('updateOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
 
@@ -711,7 +709,7 @@ describe('updateOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
 
@@ -749,18 +747,18 @@ describe('updateOracle', () => {
 
   test('error - fail to fetch apporder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.orderbook.fetchAppOrderbook failed') as never,
+        Error('iexec.orderbook.fetchAppOrderbook failed') as never
       ) as any;
 
     const messages: any = [];
@@ -793,18 +791,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to fetch apporder');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.orderbook.fetchAppOrderbook failed'),
+      Error('iexec.orderbook.fetchAppOrderbook failed')
     );
   }, 10000);
 
   test('error - no apporder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     ) as any;
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest
@@ -845,12 +843,12 @@ describe('updateOracle', () => {
 
   test('error - fail to fetch datasetorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     ) as any;
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -860,7 +858,7 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchDatasetOrderbook = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.orderbook.fetchDatasetOrderbook fail') as never,
+        Error('iexec.orderbook.fetchDatasetOrderbook fail') as never
       ) as any;
 
     const messages: any = [];
@@ -893,18 +891,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to fetch datasetorder');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.orderbook.fetchDatasetOrderbook fail'),
+      Error('iexec.orderbook.fetchDatasetOrderbook fail')
     );
   }, 10000);
 
   test('error - no datasetorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -949,12 +947,12 @@ describe('updateOracle', () => {
 
   test('error - fail to fetch workerppolorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     ) as any;
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -968,7 +966,7 @@ describe('updateOracle', () => {
     iexec.orderbook.fetchWorkerpoolOrderbook = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.orderbook.fetchWorkerpoolOrderbook fail') as never,
+        Error('iexec.orderbook.fetchWorkerpoolOrderbook fail') as never
       ) as any;
 
     const messages: any = [];
@@ -1001,18 +999,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to fetch workerpoolorder');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.orderbook.fetchWorkerpoolOrderbook fail'),
+      Error('iexec.orderbook.fetchWorkerpoolOrderbook fail')
     );
   }, 10000);
 
   test('error - no workerpoolorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -1061,12 +1059,12 @@ describe('updateOracle', () => {
 
   test('error - fail to create requestorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never,
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -1084,7 +1082,7 @@ describe('updateOracle', () => {
     iexec.order.createRequestorder = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.order.createRequestorder failed') as never,
+        Error('iexec.order.createRequestorder failed') as never
       ) as any;
 
     const messages: any = [];
@@ -1117,18 +1115,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to create requestorder');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.order.createRequestorder failed'),
+      Error('iexec.order.createRequestorder failed')
     );
   }, 10000);
 
   test('error - fail to sign requestorder', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never,
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -1149,7 +1147,7 @@ describe('updateOracle', () => {
     iexec.order.signRequestorder = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.order.signRequestorder failed') as never,
+        Error('iexec.order.signRequestorder failed') as never
       ) as any;
 
     const messages: any = [];
@@ -1182,18 +1180,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to sign requestorder');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.order.signRequestorder failed'),
+      Error('iexec.order.signRequestorder failed')
     );
   }, 10000);
 
   test('error - fail to match orders', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never,
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -1217,7 +1215,7 @@ describe('updateOracle', () => {
     iexec.order.matchOrders = jest
       .fn()
       .mockRejectedValueOnce(
-        Error('iexec.order.matchOrders failed') as never,
+        Error('iexec.order.matchOrders failed') as never
       ) as any;
 
     const messages: any = [];
@@ -1250,18 +1248,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to match orders');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.order.matchOrders failed'),
+      Error('iexec.order.matchOrders failed')
     );
   }, 10000);
 
   test('error - task observer error', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never,
+      'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh' as never
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -1325,18 +1323,18 @@ describe('updateOracle', () => {
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to monitor oracle update task');
     expect(errors[0].originalError).toStrictEqual(
-      Error('iexec.task.obsTask error'),
+      Error('iexec.task.obsTask error')
     );
   }, 10000);
 
   test('error - update task timedout', async () => {
     mockAdd.mockResolvedValueOnce(
-      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S' as never,
+      'QmUFfK7UXwLJNQFjdHFhoCGHiuovh9YagpJ3XtpXQL7N2S' as never
     );
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
     iexec.orderbook.fetchAppOrderbook = jest.fn().mockResolvedValueOnce({
@@ -1400,10 +1398,10 @@ describe('updateOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe(
-      'Oracle update task timed out, update failed',
+      'Oracle update task timed out, update failed'
     );
     expect(errors[0].originalError).toStrictEqual(
-      Error('Task taskid from deal dealid timed out'),
+      Error('Task taskid from deal dealid timed out')
     );
   }, 10000);
 
@@ -1414,7 +1412,7 @@ describe('updateOracle', () => {
     const iexec = new IExec({
       ethProvider: utils.getSignerFromPrivateKey(
         'https://bellecour.iex.ec',
-        Wallet.createRandom().privateKey,
+        Wallet.createRandom().privateKey
       ),
     });
 

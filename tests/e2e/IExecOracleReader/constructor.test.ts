@@ -1,34 +1,50 @@
 import { describe, it, expect } from '@jest/globals';
-import { Provider, Wallet, ethers } from 'ethers';
+import { Wallet, ethers } from 'ethers';
 import {
-  IExecOracleFactory,
-  IExecOracleReader,
-  getWeb3Provider,
-} from '../../../dist/index.js';
-import {
-  DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
-  DEFAULT_IPFS_UPLOAD_URL,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
-  DEFAULT_WORKERPOOL_ADDRESS,
-} from '../../../src/config/config';
+} from '../../../src/config/config.js';
+import { IExecOracleReader, getWeb3Provider } from '../../../src/index.js';
+import { getWeb3ReadOnlyProvider } from '../../../src/utils/getWeb3Provider.js';
 
 describe('IExecOracleFactory()', () => {
-  it('instantiates with a valid ethProvider', async () => {
+  it('instantiates with a chainId as ethProviderOrNetwork', async () => {
+    const oracleReader = new IExecOracleReader(1);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a network name as ethProviderOrNetwork', async () => {
+    const oracleReader = new IExecOracleReader('mainnet');
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a Web3SignerProvider as ethProviderOrNetwork', async () => {
+    const provider = getWeb3Provider(Wallet.createRandom().privateKey);
+    const oracleReader = new IExecOracleReader(provider);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a Web3ReadOnlyProvider as ethProviderOrNetwork', async () => {
+    const provider = getWeb3ReadOnlyProvider(134);
+    const oracleReader = new IExecOracleReader(provider);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with a valid ethProviderOrNetwork', async () => {
     const provider = ethers.getDefaultProvider('mainnet');
     const oracleReader = new IExecOracleReader(provider);
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
 
-  it('instantiates without ethProvider', async () => {
+  it('instantiates without ethProviderOrNetwork', async () => {
     const oracleReader = new IExecOracleReader();
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
 
-  it('should use default config ', async () => {
+  it('should use default config', async () => {
     const oracleReader = new IExecOracleReader();
-    const oracleContract = oracleReader['oracleContract'];
-    const ipfsGateway = oracleReader['ipfsGateway'];
+    const oracleContract = oracleReader.getOracleContract();
+    const ipfsGateway = oracleReader.getIpfsGateway();
 
     expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -40,7 +56,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       ipfsGateway: customIpfsGateway,
     });
-    const ipfsGateway = oracleReader['ipfsGateway'];
+    const ipfsGateway = oracleReader.getIpfsGateway();
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
   });
 
@@ -50,7 +66,7 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
     });
-    const oracleContract = oracleReader['oracleContract'];
+    const oracleContract = oracleReader.getOracleContract();
     expect(oracleContract).toStrictEqual(customSContractAddress);
   });
 
@@ -64,8 +80,8 @@ describe('IExecOracleFactory()', () => {
       ipfsGateway: customIpfsGateway,
     });
 
-    const ipfsGateway = oracleReader['ipfsGateway'];
-    const oracleContract = oracleReader['oracleContract'];
+    const ipfsGateway = oracleReader.getIpfsGateway();
+    const oracleContract = oracleReader.getOracleContract();
 
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
     expect(oracleContract).toStrictEqual(customSContractAddress);

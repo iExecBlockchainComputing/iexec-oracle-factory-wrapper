@@ -1,17 +1,25 @@
-import { IExec } from 'iexec';
 import {
-  AddressOrENS,
-  ParamSet,
-  Oracle,
-  OracleReaderOptions,
-} from './types.js';
+  AbstractProvider,
+  Provider,
+  Eip1193Provider,
+  BrowserProvider,
+  Wallet,
+} from 'ethers';
+import { IExec } from 'iexec';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   getDefaultProvider,
 } from '../config/config.js';
+import {
+  AddressOrENS,
+  Oracle,
+  OracleReaderOptions,
+  ParamSet,
+  Web3ReadOnlyProvider,
+  Web3SignerProvider,
+} from '../types/public-types.js';
 import { readOracle } from './readOracle.js';
-import { Provider } from 'ethers';
 
 /**
  * Oracle Reader that interacts with iExec Oracle.
@@ -36,18 +44,37 @@ class IExecOracleReader {
 
   /**
    * Creates an instance of IExecOracleReader.
-   * @param {Provider} [ethProvider] Ethereum provider.
+   * @param {Provider} [ethProviderOrNetwork] Ethereum provider, chainId or network name.
    * @param {OracleReaderOptions} [options] Options for the Oracle Reader.
-   * @param {any} [providerOptions] Options for the provider.
    */
   constructor(
-    ethProvider?: Provider,
-    options?: OracleReaderOptions,
-    providerOptions?: any,
+    ethProviderOrNetwork:
+      | Web3ReadOnlyProvider
+      | Web3SignerProvider
+      | Eip1193Provider
+      | string
+      | number = 134,
+    options?: OracleReaderOptions
   ) {
-    this.ethersProvider =
-      ethProvider ||
-      getDefaultProvider('https://bellecour.iex.ec', providerOptions);
+    if (
+      typeof ethProviderOrNetwork === 'string' ||
+      typeof ethProviderOrNetwork === 'number'
+    ) {
+      // case chainId
+      this.ethersProvider = getDefaultProvider(
+        ethProviderOrNetwork,
+        options?.providerOptions
+      );
+    } else if (ethProviderOrNetwork instanceof Wallet) {
+      // case getWeb3Provider
+      this.ethersProvider = ethProviderOrNetwork.provider;
+    } else if (ethProviderOrNetwork instanceof AbstractProvider) {
+      // case getWeb3ReadOnlyProvider
+      this.ethersProvider = ethProviderOrNetwork;
+    } else {
+      // case Eip1193Provider
+      this.ethersProvider = new BrowserProvider(ethProviderOrNetwork);
+    }
     this.oracleContract =
       options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
     this.ipfsGateway = options?.ipfsGateway || DEFAULT_IPFS_GATEWAY;
@@ -61,7 +88,7 @@ class IExecOracleReader {
    */
   readOracle(
     paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string,
+    dataType?: string
   ): Promise<Oracle> {
     return readOracle({
       paramSetOrCidOrOracleId,
@@ -77,6 +104,18 @@ class IExecOracleReader {
    * @returns {IExec}
    */
   getIExec = () => this.iexec;
+
+  /**
+   * Gets the Ethereum contract address or ENS name for the oracle contract.
+   * @returns {AddressOrENS}
+   */
+  getOracleContract = (): AddressOrENS => this.oracleContract;
+
+  /**
+   * Gets the IPFS gateway URL.
+   * @returns {string}
+   */
+  getIpfsGateway = (): string => this.ipfsGateway;
 }
 
 export { IExecOracleReader };

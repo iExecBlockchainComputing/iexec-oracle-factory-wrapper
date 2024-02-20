@@ -12,10 +12,10 @@ IExecOracleFactory, used to interact with oracle creation, update, and read oper
 
 ### Properties
 
-- [ethersProvider](IExecOracleFactory.md#ethersprovider)
+- [ethersProviderPromise](IExecOracleFactory.md#ethersproviderpromise)
 - [iexec](IExecOracleFactory.md#iexec)
 - [ipfsGateway](IExecOracleFactory.md#ipfsgateway)
-- [ipfsUploadUrl](IExecOracleFactory.md#ipfsuploadurl)
+- [ipfsNode](IExecOracleFactory.md#ipfsnode)
 - [oracleApp](IExecOracleFactory.md#oracleapp)
 - [oracleContract](IExecOracleFactory.md#oraclecontract)
 - [workerpool](IExecOracleFactory.md#workerpool)
@@ -48,9 +48,9 @@ Creates an instance of IExecOracleFactory.
 
 ## Properties
 
-### ethersProvider
+### ethersProviderPromise
 
-• `Private` **ethersProvider**: `Provider`
+• `Private` **ethersProviderPromise**: `Promise`\<`Provider`\>
 
 ___
 
@@ -66,9 +66,9 @@ ___
 
 ___
 
-### ipfsUploadUrl
+### ipfsNode
 
-• `Private` **ipfsUploadUrl**: `string`
+• `Private` **ipfsNode**: `string`
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 ### createOracle
 
-▸ **createOracle**(`args`): [`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules.md#createoraclemessage)\>
+▸ **createOracle**(`args`): [`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules/internal_.md#createoraclemessage)\>
 
 Creates a new oracle with the provided parameters.
 
@@ -104,9 +104,9 @@ Creates a new oracle with the provided parameters.
 
 #### Returns
 
-[`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules.md#createoraclemessage)\>
+[`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules/internal_.md#createoraclemessage)\>
 
-Observable [CreateOracleMessage](../modules.md#createoraclemessage) result of the creation operation.
+Observable [CreateOracleMessage](../modules/internal_.md#createoraclemessage) result of the creation operation.
 
 ___
 
@@ -147,18 +147,18 @@ ___
 
 ### updateOracle
 
-▸ **updateOracle**(`args`): [`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules.md#updateoraclemessage)\>
+▸ **updateOracle**(`«destructured»`): [`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules/internal_.md#updateoraclemessage)\>
 
 Updates an existing oracle with new parameters or a new CID.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `args` | `string` \| [`ParamSet`](../modules.md#paramset) | [ParamSet](../modules.md#paramset) or CID for updating the oracle. |
+| Name | Type |
+| :------ | :------ |
+| `«destructured»` | [`UpdateOracleParams`](../modules.md#updateoracleparams) |
 
 #### Returns
 
-[`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules.md#updateoraclemessage)\>
+[`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules/internal_.md#updateoraclemessage)\>
 
 Observable result of the update operation.
