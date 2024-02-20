@@ -254,7 +254,8 @@ const paramSetSchema = () =>
     )
     .noUnknown(true);
 
-const strictParamSetSchema = (): ObjectSchema<unknown> =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const strictParamSetSchema = (): ObjectSchema<any> =>
   object()
     .test(
       'is-params-set',

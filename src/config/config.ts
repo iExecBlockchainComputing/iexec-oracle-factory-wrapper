@@ -59,7 +59,8 @@ const DEFAULT_TARGET_BLOCKCHAIN: number[] = [134];
 
 const getDefaultProvider = (
   network: string | number = 134,
-  options?: unknown
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options?: any
 ): AbstractProvider => {
   const resolvedNetwork: string | number =
     networkMap[network] || network || networkMap[134];

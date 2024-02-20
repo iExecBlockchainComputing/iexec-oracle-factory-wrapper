@@ -20,7 +20,7 @@ const sortObjKeys = (obj: AnyObject): AnyObject =>
 const formatParamsJson = (obj: AnyObject): string =>
   JSON.stringify(sortObjKeys(obj));
 
-const formatOracleGetNumber = (resultBn: unknown): number => {
+const formatOracleGetNumber = (resultBn: any): number => {
   const resultBig: Big = new Big(resultBn.toString()).times(new Big('1e-18'));
   try {
     resultBig.constructor.strict = true;

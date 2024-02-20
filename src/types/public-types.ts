@@ -35,7 +35,8 @@ export type OracleFactoryOptions = {
 export type OracleReaderOptions = {
   oracleContract?: AddressOrENS;
   ipfsGateway?: string;
-  providerOptions?: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  providerOptions?: any;
 };
 
 export type Web3SignerProvider = EnhancedWallet;
