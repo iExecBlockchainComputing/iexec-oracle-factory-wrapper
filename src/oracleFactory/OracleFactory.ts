@@ -90,23 +90,31 @@ class IExecOracleFactory {
   /**
    * Updates an existing oracle with new parameters or a new CID.
    * @param paramSetOrCid Parameters or CID of the oracle to update.
-   * @param targetBlockchains Optional array of target blockchains.
+   * @param options Update options.
    * @returns Observable result of the update operation.
    */
   updateOracle = (
     paramSetOrCid: ParamSet | ParamSetCID,
-    options: { targetBlockchains: number[] } = {
-      targetBlockchains: DEFAULT_TARGET_BLOCKCHAIN,
+    options?: {
+      /**
+       * workerpool to use for the update
+       */
+      workerpool?: AddressOrENS;
+      /**
+       * Chain ID of target blockchains for cross-chain update.
+       */
+      targetBlockchains?: number[];
     }
   ): Observable<UpdateOracleMessage> =>
     updateOracle({
       paramSetOrCid,
-      targetBlockchains: options?.targetBlockchains,
+      targetBlockchains:
+        options?.targetBlockchains || DEFAULT_TARGET_BLOCKCHAIN,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
-      workerpool: this.workerpool,
+      workerpool: options?.workerpool || this.workerpool,
     });
 
   /**
