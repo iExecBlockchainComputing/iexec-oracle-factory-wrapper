@@ -5,7 +5,6 @@ import {
   BrowserProvider,
   Wallet,
 } from 'ethers';
-import { IExec } from 'iexec';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
@@ -37,8 +36,6 @@ class IExecOracleReader {
    * IPFS gateway URL.
    */
   private ipfsGateway: string;
-
-  private iexec: IExec;
 
   /**
    * Ethereum provider.
@@ -101,24 +98,6 @@ class IExecOracleReader {
       oracleContract: this.oracleContract,
     });
   }
-
-  /**
-   * Gets the instance of IExec.
-   * @returns {IExec}
-   */
-  getIExec = () => this.iexec;
-
-  /**
-   * Gets the Ethereum contract address or ENS name for the oracle contract.
-   * @returns {AddressOrENS}
-   */
-  getOracleContract = (): AddressOrENS => this.oracleContract;
-
-  /**
-   * Gets the IPFS gateway URL.
-   * @returns {string}
-   */
-  getIpfsGateway = (): string => this.ipfsGateway;
 }
 
 export { IExecOracleReader };
