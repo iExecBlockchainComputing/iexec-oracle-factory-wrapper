@@ -6,7 +6,6 @@ import {
   strictParamSetSchema,
   rawParamsSchema,
   jsonParamSetSchema,
-  throwIfMissing,
   updateTargetBlockchainsSchema,
 } from '../../../src/utils/validators.js';
 
@@ -1142,16 +1141,5 @@ describe('internal schema', () => {
         })
       ).rejects.toThrow(new ValidationError('$[foo] is not a valid JSONPath'));
     });
-  });
-});
-
-describe('throwIfMissing', () => {
-  test('throw', () => {
-    const foo: any = (bar = throwIfMissing()) => bar;
-    expect(foo(null)).toBe(null);
-    expect(foo('')).toBe('');
-    expect(foo(0)).toBe(0);
-    expect(() => foo(undefined)).toThrow(Error('Missing parameter'));
-    expect(() => foo()).toThrow(Error('Missing parameter'));
   });
 });

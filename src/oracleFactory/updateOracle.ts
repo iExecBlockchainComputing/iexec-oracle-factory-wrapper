@@ -16,7 +16,6 @@ import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
   jsonParamSetSchema,
   paramSetSchema,
-  throwIfMissing,
   updateTargetBlockchainsSchema,
 } from '../utils/validators.js';
 
@@ -77,7 +76,7 @@ const getParamSet = async ({
 const updateOracle = ({
   paramSetOrCid,
   targetBlockchains,
-  iexec = throwIfMissing(),
+  iexec,
   oracleApp,
   ipfsGateway,
   workerpool,

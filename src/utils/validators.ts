@@ -1,13 +1,6 @@
 import { ethers } from 'ethers';
 import jp from 'jsonpath';
-import {
-  string,
-  number,
-  object,
-  array,
-  ValidationError,
-  ObjectSchema,
-} from 'yup';
+import { string, number, object, array, ObjectSchema } from 'yup';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
 import { ParamSet } from '../types/public-types.js';
 
@@ -379,10 +372,6 @@ const readDataTypeSchema = () =>
 const updateTargetBlockchainsSchema = () =>
   array().of(number().integer().required()).default([]);
 
-const throwIfMissing = () => {
-  throw new ValidationError('Missing parameter');
-};
-
 export {
   callParamsSchema,
   rawParamsSchema,
@@ -392,5 +381,4 @@ export {
   jsonParamSetSchema,
   readDataTypeSchema,
   updateTargetBlockchainsSchema,
-  throwIfMissing,
 };

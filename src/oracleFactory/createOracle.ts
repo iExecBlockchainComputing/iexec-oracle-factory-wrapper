@@ -22,7 +22,6 @@ import {
   jsonParamSetSchema,
   paramSetSchema,
   rawParamsSchema,
-  throwIfMissing,
 } from '../utils/validators.js';
 
 /**
@@ -31,9 +30,9 @@ import {
  * @returns {Observable<CreateOracleMessage>} Observable regarding the creation process.
  */
 const createApiKeyDataset = ({
-  iexec = throwIfMissing(),
-  apiKey = throwIfMissing(),
-  callId = throwIfMissing(),
+  iexec,
+  apiKey,
+  callId,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
   oracleApp,
@@ -207,14 +206,14 @@ const createApiKeyDataset = ({
  * @returns {Observable<CreateOracleMessage>} Observable regarding the oracle creation process.
  */
 const createOracle = ({
-  url = throwIfMissing(),
-  method = throwIfMissing(),
+  url,
+  method,
   headers,
   body = '',
-  JSONPath = throwIfMissing(),
+  JSONPath,
   dataType,
   apiKey,
-  iexec = throwIfMissing(),
+  iexec,
   oracleApp,
   ipfsGateway,
   ipfsNode,

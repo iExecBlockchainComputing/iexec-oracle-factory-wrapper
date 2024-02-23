@@ -14,7 +14,7 @@ import {
 import { formatOracleGetNumber } from '../utils/format.js';
 import { computeOracleId, isOracleId } from '../utils/hash.js';
 import { getParamSet } from '../utils/utils.js';
-import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
+import { readDataTypeSchema } from '../utils/validators.js';
 /**
  * Reads data from an oracle based on the provided parameters.
  * @param paramSetOrCidOrOracleId Param set, CID, or oracle ID.
@@ -28,7 +28,7 @@ import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
  * @throws {WorkflowError} If there is an unexpected workflow error.
  */
 const readOracle = async ({
-  paramSetOrCidOrOracleId = throwIfMissing(),
+  paramSetOrCidOrOracleId,
   dataType,
   ethersProvider,
   ipfsGateway,
