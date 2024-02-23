@@ -8,12 +8,10 @@ import * as ipfs from '../services/ipfs/index.js';
 import {
   CreateApiKeyDatasetParams,
   CreateOracleMessage,
-} from '../types/internal-types.js';
-import {
-  Address,
+  IExecConsumer,
   CreateOracleOptions,
-  ParamSet,
-} from '../types/public-types.js';
+} from '../types/internal-types.js';
+import { Address, RawParams } from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
@@ -26,7 +24,7 @@ import {
 
 /**
  * Creates a dataset containing an API key.
- * @param {CreateApiKeyDatasetParams} params Parameters for creating the dataset.
+ * @param {CreateApiKeyDatasetParams & IExecConsumer} params Parameters for creating the dataset.
  * @returns {Observable<CreateOracleMessage>} Observable regarding the creation process.
  */
 const createApiKeyDataset = ({
@@ -36,7 +34,8 @@ const createApiKeyDataset = ({
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
   oracleApp,
-}: CreateApiKeyDatasetParams): Observable<CreateOracleMessage> =>
+}: CreateApiKeyDatasetParams &
+  IExecConsumer): Observable<CreateOracleMessage> =>
   new Observable<CreateOracleMessage>(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     (observer: SafeObserver<CreateOracleMessage>) => {
@@ -202,7 +201,7 @@ const createApiKeyDataset = ({
 
 /**
  * Creates a new oracle based on the provided parameters.
- * @param {ParamSet & CreateOracleOptions} options Options for creating the oracle.
+ * @param {RawParams & CreateOracleOptions & IExecConsumer} options Options for creating the oracle.
  * @returns {Observable<CreateOracleMessage>} Observable regarding the oracle creation process.
  */
 const createOracle = ({
@@ -217,7 +216,9 @@ const createOracle = ({
   oracleApp,
   ipfsGateway,
   ipfsNode,
-}: ParamSet & CreateOracleOptions): Observable<CreateOracleMessage> => {
+}: RawParams &
+  CreateOracleOptions &
+  IExecConsumer): Observable<CreateOracleMessage> => {
   return new Observable<CreateOracleMessage>(
     // eslint-disable-next-line sonarjs/cognitive-complexity
     (observer: SafeObserver<CreateOracleMessage>) => {

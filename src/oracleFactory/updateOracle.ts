@@ -2,14 +2,13 @@ import CID from 'cids';
 import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
 import {
+  IExecConsumer,
   TaskExecutionMessage,
   UpdateOracleMessage,
-} from '../types/internal-types.js';
-import {
-  ParamSet,
   UpdateOracleOptions,
   UpdateOracleParams,
-} from '../types/public-types.js';
+} from '../types/internal-types.js';
+import { ParamSet } from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
@@ -81,7 +80,9 @@ const updateOracle = ({
   ipfsGateway,
   workerpool,
   oracleContract,
-}: UpdateOracleParams & UpdateOracleOptions): Observable<UpdateOracleMessage> =>
+}: UpdateOracleParams &
+  UpdateOracleOptions &
+  IExecConsumer): Observable<UpdateOracleMessage> =>
   // eslint-disable-next-line sonarjs/cognitive-complexity
   new Observable((observer: SafeObserver<UpdateOracleMessage>) => {
     let abort = false;

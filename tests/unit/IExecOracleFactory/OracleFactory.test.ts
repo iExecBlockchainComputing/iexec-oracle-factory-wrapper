@@ -64,7 +64,7 @@ test('standard - instantiation', async () => {
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
+    apiKey: 'foo',
     headers: {},
     method: 'GET',
     url: 'https://api.market.iex.ec/version',
@@ -77,7 +77,7 @@ test('standard - instantiation', async () => {
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
-    dataset: '0x0000000000000000000000000000000000000000',
+    apiKey: 'foo',
     headers: {},
     method: 'GET',
     url: 'https://api.market.iex.ec/version',
@@ -106,15 +106,13 @@ test('standard - instantiation', async () => {
   });
 
   await factoryWithOptions.updateOracle({
-    paramSetOrCid: {
-      JSONPath: '$.ok',
-      body: '',
-      dataType: 'boolean',
-      dataset: '0x0000000000000000000000000000000000000000',
-      headers: {},
-      method: 'GET',
-      url: 'https://api.market.iex.ec/version',
-    },
+    JSONPath: '$.ok',
+    body: '',
+    dataType: 'boolean',
+    dataset: '0x0000000000000000000000000000000000000000',
+    headers: {},
+    method: 'GET',
+    url: 'https://api.market.iex.ec/version',
   });
   expect(updateOracle).toHaveBeenNthCalledWith(1, {
     iexec: iexecWithOptions,
@@ -134,8 +132,8 @@ test('standard - instantiation', async () => {
     targetBlockchains: [134],
   });
 
-  await factoryWithOptions.updateOracle({
-    paramSetOrCid: {
+  await factoryWithOptions.updateOracle(
+    {
       JSONPath: '$.ok',
       body: '',
       dataType: 'boolean',
@@ -143,8 +141,10 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    targetBlockchains: [80001, 137],
-  });
+    {
+      targetBlockchains: [80001, 137],
+    }
+  );
   expect(updateOracle).toHaveBeenNthCalledWith(2, {
     paramSetOrCid: {
       JSONPath: '$.ok',
@@ -162,15 +162,13 @@ test('standard - instantiation', async () => {
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
   });
   await factoryWithoutOption.updateOracle({
-    paramSetOrCid: {
-      JSONPath: '$.ok',
-      body: '',
-      dataType: 'boolean',
-      dataset: '0x0000000000000000000000000000000000000000',
-      headers: {},
-      method: 'GET',
-      url: 'https://api.market.iex.ec/version',
-    },
+    JSONPath: '$.ok',
+    body: '',
+    dataType: 'boolean',
+    dataset: '0x0000000000000000000000000000000000000000',
+    headers: {},
+    method: 'GET',
+    url: 'https://api.market.iex.ec/version',
   });
   expect(updateOracle).toHaveBeenNthCalledWith(3, {
     iexec: iexecWithoutOption,

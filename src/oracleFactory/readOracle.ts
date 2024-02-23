@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
 import { getReaderDefaults } from '../config/config.js';
 import { READ_ABI } from '../config/contract.js';
+import { EthersProviderConsumer } from '../types/internal-types.js';
 import {
-  Oracle,
+  OracleValue,
   ReadOracleOptions,
   ReadOracleParams,
 } from '../types/public-types.js';
@@ -33,7 +34,9 @@ const readOracle = async ({
   ethersProvider,
   ipfsGateway,
   oracleContract,
-}: ReadOracleParams & ReadOracleOptions): Promise<Oracle> => {
+}: ReadOracleParams &
+  ReadOracleOptions &
+  EthersProviderConsumer): Promise<OracleValue> => {
   const chainId = await ethersProvider
     .getNetwork()
     .then((res) => `${res.chainId}`);
@@ -46,7 +49,7 @@ const readOracle = async ({
   if (isOracleId(paramSetOrCidOrOracleId)) {
     oracleId = paramSetOrCidOrOracleId;
     readDataType = await readDataTypeSchema().validate(
-      dataType === undefined || dataType === '' ? 'raw' : dataType
+      !dataType ? 'raw' : dataType
     );
   } else {
     if (dataType) {

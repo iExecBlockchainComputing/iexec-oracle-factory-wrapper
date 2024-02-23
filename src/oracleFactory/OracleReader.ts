@@ -13,11 +13,14 @@ import {
 } from '../config/config.js';
 import {
   AddressOrENS,
-  Oracle,
+  OracleValue,
   OracleReaderOptions,
   ParamSet,
   Web3ReadOnlyProvider,
   Web3SignerProvider,
+  DataType,
+  ParamSetCID,
+  OracleID,
 } from '../types/public-types.js';
 import { readOracle } from './readOracle.js';
 
@@ -82,14 +85,14 @@ class IExecOracleReader {
 
   /**
    * Reads data from the oracle.
-   * @param {ParamSet | string} paramSetOrCidOrOracleId Parameters or CID or Oracle ID for reading data from the oracle.
-   * @param {string} [dataType] Data type to read from the oracle.
-   * @returns {Promise<Oracle>} Promise that resolves to the read oracle data.
+   * @param {ParamSet | ParamSetCID | OracleID} paramSetOrCidOrOracleId Parameters or CID or Oracle ID of the oracle to read.
+   * @param {DataType} dataType Data type to read from the oracle.
+   * @returns {Promise<OracleValue>} Promise that resolves to the read oracle data.
    */
   readOracle(
-    paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string
-  ): Promise<Oracle> {
+    paramSetOrCidOrOracleId: ParamSet | ParamSetCID | OracleID,
+    dataType?: DataType
+  ): Promise<OracleValue> {
     return readOracle({
       paramSetOrCidOrOracleId,
       dataType,
