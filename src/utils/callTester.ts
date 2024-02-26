@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 import jp from 'jsonpath';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
-import { ParamSet } from '../types/public-types.js';
+import { RawParams } from '../types/public-types.js';
 import { rawParamsSchema } from './validators.js';
 
 interface FinalHeaders {
@@ -9,7 +9,7 @@ interface FinalHeaders {
 }
 
 const testRawParams = async (
-  rawParams: ParamSet
+  rawParams: RawParams
 ): Promise<boolean | string | number> => {
   const { url, method, headers, body, apiKey, JSONPath, dataType } =
     await rawParamsSchema().validate(rawParams);

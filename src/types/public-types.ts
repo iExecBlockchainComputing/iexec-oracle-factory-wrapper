@@ -1,5 +1,5 @@
-import { AbstractProvider, Provider } from 'ethers';
-import { EnhancedWallet, IExec } from 'iexec';
+import { AbstractProvider } from 'ethers';
+import { EnhancedWallet } from 'iexec';
 import { IExecConfigOptions } from 'iexec/IExecConfig';
 
 /**
@@ -42,33 +42,91 @@ export type OracleReaderOptions = {
 export type Web3SignerProvider = EnhancedWallet;
 export type Web3ReadOnlyProvider = AbstractProvider;
 
-/**
- * Set of parameters for an oracle request.
- */
-export type ParamSet = {
+export type DataType = 'boolean' | 'string' | 'number' | 'raw';
+
+type ParamsBase = {
+  /**
+   * API url.
+   */
   url: string;
-  method: NonNullable<'GET' | 'POST' | 'PUT' | 'DELETE'>;
-  JSONPath: string;
-  headers?: object;
+  /**
+   * HTTP method.
+   */
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  /**
+   * HTTP request headers.
+   */
+  headers?: Record<string, string>;
+  /**
+   * HTTP request body.
+   */
   body?: string;
-  dataType?: NonNullable<'string' | 'number' | 'boolean'>;
+  /**
+   * Path to the data in the JSON response of the API.
+   */
+  JSONPath: string;
+  /**
+   * Type of data to get from the response of the API.
+   */
+  dataType: DataType;
+};
+
+/**
+ * Raw parameters for fetching the data from an API.
+ */
+export type RawParams = ParamsBase & {
+  /**
+   * Secret API key to use for the oracle call.
+   *
+   * The API key will replace any occurrence of the `%API_KEY%` placeholder in the `url`, `headers` and `body`.
+   */
   apiKey?: string;
+};
+
+/**
+ * Oracle set of parameters for fetching the data from an API.
+ */
+export type ParamSet = ParamsBase & {
+  /**
+   * Address of the encrypted dataset containing the secret API key to use for the oracle call.
+   *
+   * The API key will replace any occurrence of the `%API_KEY%` placeholder in the `url`, `headers` and `body`.
+   */
   dataset?: Address;
 };
+
+/**
+ * CID of a ParamSet uploaded on IPFS.
+ *
+ * The CID is unique for each ParamSet.
+ */
+export type ParamSetCID = string;
+
+/**
+ * Oracle ID computed from the ParamSet of the oracle.
+ *
+ * The OracleID is unique for each ParamSet.
+ */
+export type OracleID = string;
 
 /**
  * Parameters for reading data from an oracle.
  */
 export type ReadOracleParams = {
-  paramSetOrCidOrOracleId: ParamSet | string;
-  dataType?: string;
+  /**
+   * Identifier of the oracle to read.
+   */
+  paramSetOrCidOrOracleId: ParamSet | ParamSetCID | OracleID;
+  /**
+   * Type of data to read.
+   */
+  dataType?: DataType;
 };
 
 /**
- * Parameters for reading data from an oracle.
+ * Options for reading data from an oracle.
  */
 export type ReadOracleOptions = {
-  ethersProvider: Provider;
   ipfsGateway?: string;
   oracleContract?: Address;
 };
@@ -76,36 +134,7 @@ export type ReadOracleOptions = {
 /**
  * Response from an oracle query.
  */
-export type Oracle = {
+export type OracleValue = {
   value: boolean | string | number;
   date: number;
-};
-
-/**
- * Options for creating an oracle.
- */
-export type CreateOracleOptions = {
-  iexec?: IExec;
-  oracleApp?: AddressOrENS;
-  ipfsGateway?: string;
-  ipfsNode?: string;
-};
-
-/**
- * Parameters required to update an oracle.
- */
-export type UpdateOracleParams = {
-  paramSetOrCid: ParamSet | string;
-  targetBlockchains?: number[];
-};
-
-/**
- * Options for updating an oracle.
- */
-export type UpdateOracleOptions = {
-  iexec?: IExec;
-  oracleApp?: AddressOrENS;
-  oracleContract?: Address;
-  workerpool?: AddressOrENS;
-  ipfsGateway?: string;
 };

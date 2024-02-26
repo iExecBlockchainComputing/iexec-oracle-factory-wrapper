@@ -43,8 +43,10 @@ describe('IExecOracleFactory()', () => {
 
   it('should use default config', async () => {
     const oracleReader = new IExecOracleReader();
-    const oracleContract = oracleReader.getOracleContract();
-    const ipfsGateway = oracleReader.getIpfsGateway();
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const oracleContract = oracleReader['oracleContract'];
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const ipfsGateway = oracleReader['ipfsGateway'];
 
     expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -56,7 +58,8 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       ipfsGateway: customIpfsGateway,
     });
-    const ipfsGateway = oracleReader.getIpfsGateway();
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const ipfsGateway = oracleReader['ipfsGateway'];
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
   });
 
@@ -66,7 +69,8 @@ describe('IExecOracleFactory()', () => {
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
     });
-    const oracleContract = oracleReader.getOracleContract();
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const oracleContract = oracleReader['oracleContract'];
     expect(oracleContract).toStrictEqual(customSContractAddress);
   });
 
@@ -80,8 +84,10 @@ describe('IExecOracleFactory()', () => {
       ipfsGateway: customIpfsGateway,
     });
 
-    const ipfsGateway = oracleReader.getIpfsGateway();
-    const oracleContract = oracleReader.getOracleContract();
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const ipfsGateway = oracleReader['ipfsGateway'];
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const oracleContract = oracleReader['oracleContract'];
 
     expect(ipfsGateway).toStrictEqual(customIpfsGateway);
     expect(oracleContract).toStrictEqual(customSContractAddress);

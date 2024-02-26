@@ -5,7 +5,6 @@ import {
   BrowserProvider,
   Wallet,
 } from 'ethers';
-import { IExec } from 'iexec';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
@@ -13,11 +12,14 @@ import {
 } from '../config/config.js';
 import {
   AddressOrENS,
-  Oracle,
+  OracleValue,
   OracleReaderOptions,
   ParamSet,
   Web3ReadOnlyProvider,
   Web3SignerProvider,
+  DataType,
+  ParamSetCID,
+  OracleID,
 } from '../types/public-types.js';
 import { readOracle } from './readOracle.js';
 
@@ -34,8 +36,6 @@ class IExecOracleReader {
    * IPFS gateway URL.
    */
   private ipfsGateway: string;
-
-  private iexec: IExec;
 
   /**
    * Ethereum provider.
@@ -82,14 +82,14 @@ class IExecOracleReader {
 
   /**
    * Reads data from the oracle.
-   * @param {ParamSet | string} paramSetOrCidOrOracleId Parameters or CID or Oracle ID for reading data from the oracle.
-   * @param {string} [dataType] Data type to read from the oracle.
-   * @returns {Promise<Oracle>} Promise that resolves to the read oracle data.
+   * @param {ParamSet | ParamSetCID | OracleID} paramSetOrCidOrOracleId Parameters or CID or Oracle ID of the oracle to read.
+   * @param {DataType} dataType Data type to read from the oracle.
+   * @returns {Promise<OracleValue>} Promise that resolves to the read oracle data.
    */
   readOracle(
-    paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string
-  ): Promise<Oracle> {
+    paramSetOrCidOrOracleId: ParamSet | ParamSetCID | OracleID,
+    dataType?: DataType
+  ): Promise<OracleValue> {
     return readOracle({
       paramSetOrCidOrOracleId,
       dataType,
@@ -98,24 +98,6 @@ class IExecOracleReader {
       oracleContract: this.oracleContract,
     });
   }
-
-  /**
-   * Gets the instance of IExec.
-   * @returns {IExec}
-   */
-  getIExec = () => this.iexec;
-
-  /**
-   * Gets the Ethereum contract address or ENS name for the oracle contract.
-   * @returns {AddressOrENS}
-   */
-  getOracleContract = (): AddressOrENS => this.oracleContract;
-
-  /**
-   * Gets the IPFS gateway URL.
-   * @returns {string}
-   */
-  getIpfsGateway = (): string => this.ipfsGateway;
 }
 
 export { IExecOracleReader };

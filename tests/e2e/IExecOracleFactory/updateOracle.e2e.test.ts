@@ -14,13 +14,11 @@ test.skip('update oracle - standard from paramSet - no dataset', async () => {
   await new Promise((resolve: any, reject) => {
     factoryWithoutOption
       .updateOracle({
-        paramSetOrCid: {
-          JSONPath: '$.data',
-          body: '',
-          dataType: 'string',
-          method: 'GET',
-          url: 'https://foo.io',
-        },
+        JSONPath: '$.data',
+        body: '',
+        dataType: 'string',
+        method: 'GET',
+        url: 'https://foo.io',
       })
       .subscribe({
         complete: resolve,
@@ -108,8 +106,7 @@ test.skip('standard - from CID', async () => {
   const messages: any = [];
   await new Promise((resolve: any, reject) => {
     factoryWithoutOption
-      .updateOracle({
-        paramSetOrCid: 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+      .updateOracle('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh', {
         targetBlockchains: [137],
       })
       .subscribe({

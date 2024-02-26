@@ -2,21 +2,19 @@ import CID from 'cids';
 import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
 import {
+  IExecConsumer,
   TaskExecutionMessage,
   UpdateOracleMessage,
-} from '../types/internal-types.js';
-import {
-  ParamSet,
   UpdateOracleOptions,
   UpdateOracleParams,
-} from '../types/public-types.js';
+} from '../types/internal-types.js';
+import { ParamSet } from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
   jsonParamSetSchema,
   paramSetSchema,
-  throwIfMissing,
   updateTargetBlockchainsSchema,
 } from '../utils/validators.js';
 
@@ -77,12 +75,14 @@ const getParamSet = async ({
 const updateOracle = ({
   paramSetOrCid,
   targetBlockchains,
-  iexec = throwIfMissing(),
+  iexec,
   oracleApp,
   ipfsGateway,
   workerpool,
   oracleContract,
-}: UpdateOracleParams & UpdateOracleOptions): Observable<UpdateOracleMessage> =>
+}: UpdateOracleParams &
+  UpdateOracleOptions &
+  IExecConsumer): Observable<UpdateOracleMessage> =>
   // eslint-disable-next-line sonarjs/cognitive-complexity
   new Observable((observer: SafeObserver<UpdateOracleMessage>) => {
     let abort = false;
