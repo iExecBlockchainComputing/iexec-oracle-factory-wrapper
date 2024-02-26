@@ -35,6 +35,7 @@ const createApiKeyDataset = ({
   ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
   oracleApp,
 }: CreateApiKeyDatasetParams &
+  CreateOracleOptions &
   IExecConsumer): Observable<CreateOracleMessage> =>
   new Observable<CreateOracleMessage>(
     // eslint-disable-next-line sonarjs/cognitive-complexity

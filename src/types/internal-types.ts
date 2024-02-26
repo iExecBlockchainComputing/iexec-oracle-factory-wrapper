@@ -20,15 +20,13 @@ export type IExecConsumer = {
 export type EthersProviderConsumer = {
   ethersProvider: Provider;
 };
+
 /**
  * Parameters required to create an API key dataset.
  */
 export type CreateApiKeyDatasetParams = {
   apiKey: string;
   callId: string;
-  ipfsGateway?: string;
-  ipfsNode?: string;
-  oracleApp?: AddressOrENS;
 };
 
 /**
@@ -207,4 +205,5 @@ export type UpdateOracleOptions = {
   oracleContract?: Address;
   workerpool?: AddressOrENS;
   ipfsGateway?: string;
+  ipfsNode?: string;
 };
