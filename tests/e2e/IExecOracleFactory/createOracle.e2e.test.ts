@@ -16,7 +16,6 @@ test('create oracle - without dataset', async () => {
         JSONPath: '$.ok',
         body: '',
         dataType: 'boolean',
-        apiKey: 'foo',
         headers: {},
         method: 'GET',
         url: 'https://api.market.iex.ec/version',
