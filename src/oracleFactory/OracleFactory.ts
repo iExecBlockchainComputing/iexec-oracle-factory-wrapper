@@ -14,11 +14,14 @@ import {
 } from '../types/internal-types.js';
 import {
   AddressOrENS,
-  Oracle,
+  OracleValue,
   OracleFactoryOptions,
   ParamSet,
-  UpdateOracleParams,
   Web3SignerProvider,
+  DataType,
+  ParamSetCID,
+  OracleID,
+  RawParams,
 } from '../types/public-types.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
@@ -72,12 +75,12 @@ class IExecOracleFactory {
 
   /**
    * Creates a new oracle with the provided parameters.
-   * @param args {@link ParamSet} for creating the oracle.
+   * @param rawParams {@link RawParams} for creating the oracle.
    * @returns Observable {@link CreateOracleMessage} result of the creation operation.
    */
-  createOracle = (args: ParamSet): Observable<CreateOracleMessage> =>
+  createOracle = (rawParams: RawParams): Observable<CreateOracleMessage> =>
     createOracle({
-      ...args,
+      ...rawParams,
       ipfsGateway: this.ipfsGateway,
       ipfsNode: this.ipfsNode,
       iexec: this.iexec,
@@ -86,22 +89,33 @@ class IExecOracleFactory {
 
   /**
    * Updates an existing oracle with new parameters or a new CID.
-   * @param paramSetOrCid Parameters or CID for updating the oracle.
-   * @param targetBlockchains Optional array of target blockchains.
+   * @param paramSetOrCid Parameters or CID of the oracle to update.
+   * @param options Update options.
    * @returns Observable result of the update operation.
    */
-  updateOracle = ({
-    paramSetOrCid,
-    targetBlockchains = DEFAULT_TARGET_BLOCKCHAIN,
-  }: UpdateOracleParams): Observable<UpdateOracleMessage> =>
+  updateOracle = (
+    paramSetOrCid: ParamSet | ParamSetCID,
+    options?: {
+      /**
+       * workerpool to use for the update
+       */
+      workerpool?: AddressOrENS;
+      /**
+       * Chain ID of target blockchains for cross-chain update.
+       */
+      targetBlockchains?: number[];
+    }
+  ): Observable<UpdateOracleMessage> =>
     updateOracle({
       paramSetOrCid,
-      targetBlockchains,
+      targetBlockchains:
+        options?.targetBlockchains || DEFAULT_TARGET_BLOCKCHAIN,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
-      workerpool: this.workerpool,
+      ipfsNode: this.ipfsNode,
+      workerpool: options?.workerpool || this.workerpool,
     });
 
   /**
@@ -111,9 +125,9 @@ class IExecOracleFactory {
    * @returns Promise resolving to the oracle data.
    */
   readOracle = async (
-    paramSetOrCidOrOracleId: ParamSet | string,
-    dataType?: string
-  ): Promise<Oracle> =>
+    paramSetOrCidOrOracleId: ParamSet | ParamSetCID | OracleID,
+    dataType?: DataType
+  ): Promise<OracleValue> =>
     readOracle({
       paramSetOrCidOrOracleId,
       dataType,

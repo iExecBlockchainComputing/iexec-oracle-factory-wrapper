@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
 import { getReaderDefaults } from '../config/config.js';
 import { READ_ABI } from '../config/contract.js';
+import { EthersProviderConsumer } from '../types/internal-types.js';
 import {
-  Oracle,
+  OracleValue,
   ReadOracleOptions,
   ReadOracleParams,
 } from '../types/public-types.js';
@@ -14,7 +15,7 @@ import {
 import { formatOracleGetNumber } from '../utils/format.js';
 import { computeOracleId, isOracleId } from '../utils/hash.js';
 import { getParamSet } from '../utils/utils.js';
-import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
+import { readDataTypeSchema } from '../utils/validators.js';
 /**
  * Reads data from an oracle based on the provided parameters.
  * @param paramSetOrCidOrOracleId Param set, CID, or oracle ID.
@@ -28,12 +29,14 @@ import { readDataTypeSchema, throwIfMissing } from '../utils/validators.js';
  * @throws {WorkflowError} If there is an unexpected workflow error.
  */
 const readOracle = async ({
-  paramSetOrCidOrOracleId = throwIfMissing(),
+  paramSetOrCidOrOracleId,
   dataType,
   ethersProvider,
   ipfsGateway,
   oracleContract,
-}: ReadOracleParams & ReadOracleOptions): Promise<Oracle> => {
+}: ReadOracleParams &
+  ReadOracleOptions &
+  EthersProviderConsumer): Promise<OracleValue> => {
   const chainId = await ethersProvider
     .getNetwork()
     .then((res) => `${res.chainId}`);
@@ -46,7 +49,7 @@ const readOracle = async ({
   if (isOracleId(paramSetOrCidOrOracleId)) {
     oracleId = paramSetOrCidOrOracleId;
     readDataType = await readDataTypeSchema().validate(
-      dataType === undefined || dataType === '' ? 'raw' : dataType
+      !dataType ? 'raw' : dataType
     );
   } else {
     if (dataType) {
