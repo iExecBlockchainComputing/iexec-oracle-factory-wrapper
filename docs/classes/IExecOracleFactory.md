@@ -92,7 +92,7 @@ ___
 
 ### createOracle
 
-▸ **createOracle**(`args`): [`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules/internal_.md#createoraclemessage)\>
+▸ **createOracle**(`rawParams`): [`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules/internal_.md#createoraclemessage)\>
 
 Creates a new oracle with the provided parameters.
 
@@ -100,7 +100,7 @@ Creates a new oracle with the provided parameters.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `args` | [`ParamSet`](../modules.md#paramset) | [ParamSet](../modules.md#paramset) for creating the oracle. |
+| `rawParams` | [`RawParams`](../modules.md#rawparams) | [RawParams](../modules.md#rawparams) for creating the oracle. |
 
 #### Returns
 
@@ -126,7 +126,7 @@ ___
 
 ### readOracle
 
-▸ **readOracle**(`paramSetOrCidOrOracleId`, `dataType?`): `Promise`\<[`Oracle`](../modules.md#oracle)\>
+▸ **readOracle**(`paramSetOrCidOrOracleId`, `dataType?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
 
 Reads an oracle with the provided ID CID or Oracle ID.
 
@@ -134,12 +134,12 @@ Reads an oracle with the provided ID CID or Oracle ID.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | The ID CID or Oracle ID to read. |
-| `dataType?` | `string` | Optional data type for reading the oracle. |
+| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters, CID or Oracle ID to read. |
+| `dataType?` | [`DataType`](../modules.md#datatype) | Optional data type for reading the oracle. |
 
 #### Returns
 
-`Promise`\<[`Oracle`](../modules.md#oracle)\>
+`Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
 
 Promise resolving to the oracle data.
 
@@ -147,15 +147,18 @@ ___
 
 ### updateOracle
 
-▸ **updateOracle**(`«destructured»`): [`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules/internal_.md#updateoraclemessage)\>
+▸ **updateOracle**(`paramSetOrCid`, `options?`): [`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules/internal_.md#updateoraclemessage)\>
 
 Updates an existing oracle with new parameters or a new CID.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | [`UpdateOracleParams`](../modules.md#updateoracleparams) |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `paramSetOrCid` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters or CID of the oracle to update. |
+| `options?` | `Object` | Update options. |
+| `options.targetBlockchains?` | `number`[] | Chain ID of target blockchains for cross-chain update. |
+| `options.workerpool?` | `string` | workerpool to use for the update |
 
 #### Returns
 

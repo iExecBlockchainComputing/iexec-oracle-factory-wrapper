@@ -40,6 +40,7 @@
 - [ObservableError](internal_.md#observableerror)
 - [ObservableNext](internal_.md#observablenext)
 - [Observer](internal_.md#observer)
+- [ParamsBase](internal_.md#paramsbase)
 - [UpdateOracleMessage](internal_.md#updateoraclemessage)
 
 ## Type Aliases
@@ -135,6 +136,23 @@ ___
 | `complete` | [`ObservableComplete`](internal_.md#observablecomplete) |
 | `error` | [`ObservableError`](internal_.md#observableerror) |
 | `next` | [`ObservableNext`](internal_.md#observablenext)\<`DataMessageType`\> |
+
+___
+
+### ParamsBase
+
+Ƭ **ParamsBase**: `Object`
+
+#### Type declaration
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `JSONPath` | `string` | Path to the data in the JSON response of the API. |
+| `body?` | `string` | HTTP request body. |
+| `dataType` | [`DataType`](../modules.md#datatype) | Type of data to get from the response of the API. |
+| `headers?` | `Record`\<`string`, `string`\> | HTTP request headers. |
+| `method` | ``"GET"`` \| ``"POST"`` \| ``"PUT"`` \| ``"DELETE"`` | HTTP method. |
+| `url` | `string` | API url. |
 
 ___
 

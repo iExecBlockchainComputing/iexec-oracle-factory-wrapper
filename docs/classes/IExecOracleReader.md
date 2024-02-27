@@ -13,15 +13,11 @@ Oracle Reader that interacts with iExec Oracle.
 ### Properties
 
 - [ethersProvider](IExecOracleReader.md#ethersprovider)
-- [iexec](IExecOracleReader.md#iexec)
 - [ipfsGateway](IExecOracleReader.md#ipfsgateway)
 - [oracleContract](IExecOracleReader.md#oraclecontract)
 
 ### Methods
 
-- [getIExec](IExecOracleReader.md#getiexec)
-- [getIpfsGateway](IExecOracleReader.md#getipfsgateway)
-- [getOracleContract](IExecOracleReader.md#getoraclecontract)
 - [readOracle](IExecOracleReader.md#readoracle)
 
 ## Constructors
@@ -53,12 +49,6 @@ Ethereum provider.
 
 ___
 
-### iexec
-
-• `Private` **iexec**: `default`
-
-___
-
 ### ipfsGateway
 
 • `Private` **ipfsGateway**: `string`
@@ -75,45 +65,9 @@ Ethereum contract address or ENS (Ethereum Name Service) for the oracle contract
 
 ## Methods
 
-### getIExec
-
-▸ **getIExec**(): `default`
-
-Gets the instance of IExec.
-
-#### Returns
-
-`default`
-
-___
-
-### getIpfsGateway
-
-▸ **getIpfsGateway**(): `string`
-
-Gets the IPFS gateway URL.
-
-#### Returns
-
-`string`
-
-___
-
-### getOracleContract
-
-▸ **getOracleContract**(): `string`
-
-Gets the Ethereum contract address or ENS name for the oracle contract.
-
-#### Returns
-
-`string`
-
-___
-
 ### readOracle
 
-▸ **readOracle**(`paramSetOrCidOrOracleId`, `dataType?`): `Promise`\<[`Oracle`](../modules.md#oracle)\>
+▸ **readOracle**(`paramSetOrCidOrOracleId`, `dataType?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
 
 Reads data from the oracle.
 
@@ -121,11 +75,11 @@ Reads data from the oracle.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters or CID or Oracle ID for reading data from the oracle. |
-| `dataType?` | `string` | Data type to read from the oracle. |
+| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters or CID or Oracle ID of the oracle to read. |
+| `dataType?` | [`DataType`](../modules.md#datatype) | Data type to read from the oracle. |
 
 #### Returns
 
-`Promise`\<[`Oracle`](../modules.md#oracle)\>
+`Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
 
 Promise that resolves to the read oracle data.
