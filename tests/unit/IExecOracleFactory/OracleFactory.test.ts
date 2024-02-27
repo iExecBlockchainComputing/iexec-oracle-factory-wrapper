@@ -117,6 +117,7 @@ test('standard - instantiation', async () => {
   expect(updateOracle).toHaveBeenNthCalledWith(1, {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
+    ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
@@ -157,6 +158,7 @@ test('standard - instantiation', async () => {
     targetBlockchains: [80001, 137],
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
+    ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
@@ -173,6 +175,7 @@ test('standard - instantiation', async () => {
   expect(updateOracle).toHaveBeenNthCalledWith(3, {
     iexec: iexecWithoutOption,
     ipfsGateway: DEFAULT_IPFS_GATEWAY,
+    ipfsNode: DEFAULT_IPFS_UPLOAD_URL,
     oracleApp: DEFAULT_APP_ADDRESS,
     oracleContract: DEFAULT_ORACLE_CONTRACT_ADDRESS,
     workerpool: DEFAULT_WORKERPOOL_ADDRESS,

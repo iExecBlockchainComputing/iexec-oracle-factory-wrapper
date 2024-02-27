@@ -114,6 +114,7 @@ class IExecOracleFactory {
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
+      ipfsNode: this.ipfsNode,
       workerpool: options?.workerpool || this.workerpool,
     });
 

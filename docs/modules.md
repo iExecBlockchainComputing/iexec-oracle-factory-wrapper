@@ -22,15 +22,16 @@
 
 - [Address](modules.md#address)
 - [AddressOrENS](modules.md#addressorens)
-- [CreateOracleOptions](modules.md#createoracleoptions)
-- [Oracle](modules.md#oracle)
+- [DataType](modules.md#datatype)
 - [OracleFactoryOptions](modules.md#oraclefactoryoptions)
+- [OracleID](modules.md#oracleid)
 - [OracleReaderOptions](modules.md#oraclereaderoptions)
+- [OracleValue](modules.md#oraclevalue)
 - [ParamSet](modules.md#paramset)
+- [ParamSetCID](modules.md#paramsetcid)
+- [RawParams](modules.md#rawparams)
 - [ReadOracleOptions](modules.md#readoracleoptions)
 - [ReadOracleParams](modules.md#readoracleparams)
-- [UpdateOracleOptions](modules.md#updateoracleoptions)
-- [UpdateOracleParams](modules.md#updateoracleparams)
 - [Web3ReadOnlyProvider](modules.md#web3readonlyprovider)
 - [Web3SignerProvider](modules.md#web3signerprovider)
 
@@ -56,35 +57,9 @@ ethereum address or ENS name (Ethereum Name Service)
 
 ___
 
-### CreateOracleOptions
+### DataType
 
-Ƭ **CreateOracleOptions**: `Object`
-
-Options for creating an oracle.
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `iexec?` | `IExec` |
-| `ipfsGateway?` | `string` |
-| `ipfsNode?` | `string` |
-| `oracleApp?` | [`AddressOrENS`](modules.md#addressorens) |
-
-___
-
-### Oracle
-
-Ƭ **Oracle**: `Object`
-
-Response from an oracle query.
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `date` | `number` |
-| `value` | `boolean` \| `string` \| `number` |
+Ƭ **DataType**: ``"boolean"`` \| ``"string"`` \| ``"number"`` \| ``"raw"``
 
 ___
 
@@ -107,6 +82,16 @@ Configuration options for OracleFactory.
 
 ___
 
+### OracleID
+
+Ƭ **OracleID**: `string`
+
+Oracle ID computed from the ParamSet of the oracle.
+
+The OracleID is unique for each ParamSet.
+
+___
+
 ### OracleReaderOptions
 
 Ƭ **OracleReaderOptions**: `Object`
@@ -123,24 +108,44 @@ Configuration options for OracleReader.
 
 ___
 
-### ParamSet
+### OracleValue
 
-Ƭ **ParamSet**: `Object`
+Ƭ **OracleValue**: `Object`
 
-Set of parameters for an oracle request.
+Response from an oracle query.
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `JSONPath` | `string` |
-| `apiKey?` | `string` |
-| `body?` | `string` |
-| `dataType?` | `NonNullable`\<``"string"`` \| ``"number"`` \| ``"boolean"``\> |
-| `dataset?` | [`Address`](modules.md#address) |
-| `headers?` | `object` |
-| `method` | `NonNullable`\<``"GET"`` \| ``"POST"`` \| ``"PUT"`` \| ``"DELETE"``\> |
-| `url` | `string` |
+| `date` | `number` |
+| `value` | `boolean` \| `string` \| `number` |
+
+___
+
+### ParamSet
+
+Ƭ **ParamSet**: [`ParamsBase`](modules/internal_.md#paramsbase) & \{ `dataset?`: [`Address`](modules.md#address)  }
+
+Oracle set of parameters for fetching the data from an API.
+
+___
+
+### ParamSetCID
+
+Ƭ **ParamSetCID**: `string`
+
+CID of a ParamSet uploaded on IPFS.
+
+The CID is unique for each ParamSet.
+
+___
+
+### RawParams
+
+Ƭ **RawParams**: [`ParamsBase`](modules/internal_.md#paramsbase) & \{ `apiKey?`: `string`  }
+
+Raw parameters for fetching the data from an API.
 
 ___
 
@@ -148,13 +153,12 @@ ___
 
 Ƭ **ReadOracleOptions**: `Object`
 
-Parameters for reading data from an oracle.
+Options for reading data from an oracle.
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `ethersProvider` | `Provider` |
 | `ipfsGateway?` | `string` |
 | `oracleContract?` | [`Address`](modules.md#address) |
 
@@ -168,43 +172,10 @@ Parameters for reading data from an oracle.
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `dataType?` | `string` |
-| `paramSetOrCidOrOracleId` | [`ParamSet`](modules.md#paramset) \| `string` |
-
-___
-
-### UpdateOracleOptions
-
-Ƭ **UpdateOracleOptions**: `Object`
-
-Options for updating an oracle.
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `iexec?` | `IExec` |
-| `ipfsGateway?` | `string` |
-| `oracleApp?` | [`AddressOrENS`](modules.md#addressorens) |
-| `oracleContract?` | [`Address`](modules.md#address) |
-| `workerpool?` | [`AddressOrENS`](modules.md#addressorens) |
-
-___
-
-### UpdateOracleParams
-
-Ƭ **UpdateOracleParams**: `Object`
-
-Parameters required to update an oracle.
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `paramSetOrCid` | [`ParamSet`](modules.md#paramset) \| `string` |
-| `targetBlockchains?` | `number`[] |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `dataType?` | [`DataType`](modules.md#datatype) | Type of data to read. |
+| `paramSetOrCidOrOracleId` | [`ParamSet`](modules.md#paramset) \| [`ParamSetCID`](modules.md#paramsetcid) \| [`OracleID`](modules.md#oracleid) | Identifier of the oracle to read. |
 
 ___
 

@@ -76,7 +76,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `rawParams` | [`ParamSet`](../modules.md#paramset) |
+| `rawParams` | [`RawParams`](../modules.md#rawparams) |
 
 #### Returns
 

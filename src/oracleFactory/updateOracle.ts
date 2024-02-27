@@ -69,6 +69,7 @@ const getParamSet = async ({
  * @param oracleApp Oracle application address.
  * @param workerpool Workerpool address.
  * @param ipfsGateway IPFS gateway URL.
+ * @param ipfsNode IPFS upload node URL.
  * @param oracleContract Oracle contract address.
  * @returns An observable for tracking the update process.
  */
@@ -78,6 +79,7 @@ const updateOracle = ({
   iexec,
   oracleApp,
   ipfsGateway,
+  ipfsNode,
   workerpool,
   oracleContract,
 }: UpdateOracleParams &
@@ -120,9 +122,11 @@ const updateOracle = ({
           safeObserver.next({
             message: 'ENSURE_PARAMS_UPLOAD',
           });
-          cid = await ipfs.add(paramsJson, { ipfsGateway }).catch((e) => {
-            throw new WorkflowError('Failed to upload paramSet', e);
-          });
+          cid = await ipfs
+            .add(paramsJson, { ipfsGateway, ipfsNode })
+            .catch((e) => {
+              throw new WorkflowError('Failed to upload paramSet', e);
+            });
           if (abort) return;
         }
         safeObserver.next({
