@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
