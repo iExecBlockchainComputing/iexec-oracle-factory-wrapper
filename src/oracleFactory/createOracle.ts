@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 import {
   API_KEY_PLACEHOLDER,
   DEFAULT_IPFS_GATEWAY,
@@ -185,6 +186,7 @@ const createApiKeyDataset = ({
           if (e instanceof WorkflowError) {
             safeObserver.error(e);
           } else {
+            console.log('error =>', e);
             safeObserver.error(
               new WorkflowError('API key dataset creation unexpected error', e)
             );
