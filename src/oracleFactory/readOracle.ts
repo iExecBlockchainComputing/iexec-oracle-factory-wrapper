@@ -108,7 +108,7 @@ const readOracle = async ({
           );
         });
       const resultNumber = formatOracleGetNumber(resultBn);
-      return { value: resultNumber, date: formatOracleGetNumber(dateBn) };
+      return { value: resultNumber, date: parseInt(dateBn.toString()) };
     }
     case 'string': {
       const [resultString, dateBn] = await oracleSmartContract
