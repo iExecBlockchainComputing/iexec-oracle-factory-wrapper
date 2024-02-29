@@ -1,3 +1,5 @@
+@iexec/iexec-oracle-factory-wrapper / [Exports](modules.md)
+
 <p align="center">
   <a href="https://iex.ec/" rel="noopener" target="_blank"><img width="150" src="./logo-iexec.png" alt="iExec logo"/></a>
 </p>
