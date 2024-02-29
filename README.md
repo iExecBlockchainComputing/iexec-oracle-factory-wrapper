@@ -4,19 +4,19 @@
 
 <h1 align="center">OracleFactory</h1>
 
-**OracleFactory** is an SDK designed to build web2.0 API-based oracles for iExec and support cross-chain functionality on Polygon, Mumbai, Ethereum Mainnet and Goerli networks, on the top of iExec.
+**OracleFactory**
 
-Through OracleFactory, users may creating secure oracles, guaranteeing data confidentiality and integrity :
+Oracle Factory introduces a streamlined and efficient way for developers to integrate real-world data into blockchain applications. Leveraging the power of the iExec decentralized cloud infrastructure, Oracle Factory ensures the creation of reliable and trustworthy oracles.
 
-- Quick and easy oracle creation.
-- Supports cross-chain integration for DApps across iExec Sidechain, Ethereum, and Polygon.
-- Customization for specific use cases
+Key features of Oracle Factory include:
 
-OracleFactory bundles 3 methods:
+- **Create Oracle** — This method allows for the creation of custom oracles from any API, with a limitation of one data return per oracle. This feature is pivotal in fetching specific, relevant data for decentralized applications.
 
-- **createOracle** — Creates a new oracle based on the provided parameters. This method is used to create an oracle from a given API, limited to returning only one data point.
-- **updateOracle** — Updates an existing oracle to have the latest data from the linked API.
-- **readOracle** — Reads data from a specific oracle based on the provided parameters. This method retrieves the value from a specific oracle created using the provided parameters.
+- **Update Oracle** — This method ensures that the oracle stays current by fetching the latest data from its linked API. It maintains the oracle's relevance and accuracy, crucial for real-time data-dependent applications.
+
+- **Read Oracle** — This method allows users to retrieve the value from the oracle.
+
+With its cross-chain functionality, extending from the iExec Sidechain to networks like Ethereum and Polygon, Oracle Factory demonstrates remarkable versatility. It is a critical tool for developers looking to bridge the gap between blockchain and the real world, democratizing access to reliable data for DApps.
 
 <div align="center">
 
