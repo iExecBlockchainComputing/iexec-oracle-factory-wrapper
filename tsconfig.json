@@ -17,7 +17,6 @@
       "typedoc-plugin-rename-defaults",
       "typedoc-plugin-markdown"
     ],
-    "readme": "typedoc_template.md",
     "excludeExternals": true
   },
   "include": ["src/**/*", "tests/**/*"],
