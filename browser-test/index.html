@@ -50,7 +50,12 @@
             <label for="test-params-apikey-input"
               ><span class="param">apiKey</span></label
             >
-            <input id="test-params-apikey-input" type="text" value="" />
+            <input
+              id="test-params-apikey-input"
+              type="text"
+              value=""
+              placeholder="%API_KEY% will be replaced by this value"
+            />
           </div>
           <div class="input-container">
             <label for="test-params-jsonpath-input"
@@ -100,6 +105,11 @@
               the <span class="code">oracleId</span> which is the key derived
               from the paramSet for reading the onchain oracle value
             </li>
+            <li>
+              if an apiKey was provided, the
+              <span class="code">address</span> of the dataset containing the
+              protected API key
+            </li>
           </ul>
         </div>
 
@@ -136,7 +146,12 @@
             <label for="create-oracle-apikey-input"
               ><span class="param">apiKey</span></label
             >
-            <input id="create-oracle-apikey-input" type="text" value="" />
+            <input
+              id="create-oracle-apikey-input"
+              type="text"
+              value=""
+              placeholder="%API_KEY% will be replaced by this value"
+            />
           </div>
           <div class="input-container">
             <label for="create-oracle-jsonpath-input"
@@ -222,6 +237,7 @@
               id="update-oracle-from-params-dataset-input"
               type="text"
               value="0x0000000000000000000000000000000000000000"
+              placeholder="%API_KEY% will be replaced by the content of the dataset"
             />
           </div>
           <div class="input-container">
@@ -385,6 +401,7 @@
               id="read-oracle-from-params-dataset-input"
               type="text"
               value="0x0000000000000000000000000000000000000000"
+              placeholder="%API_KEY% will be replaced by the content of the dataset"
             />
           </div>
           <div class="input-container">
