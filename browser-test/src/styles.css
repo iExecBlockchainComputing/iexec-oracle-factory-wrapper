@@ -1,22 +1,54 @@
 body {
   font-family: sans-serif;
 }
-label {
-  display: inline-block;
-  width: 30%;
+#app {
+  max-width: 600px;
+  margin: auto;
 }
-input {
-  width: 60%;
+#init-error {
+  color: red;
+  font-weight: bold;
+  margin: 3rem;
 }
-textarea {
-  width: 60%;
+.code,
+.param {
+  font-family: monospace;
+  font-size: 1.3em;
+  color: blue;
+}
+.method-block {
+  margin: 50px 0;
+}
+.method-block > p {
+  color: grey;
+}
+.hint {
+  color: gray;
+}
+.input-container {
+  display: flex;
+  margin: 10px 0;
+}
+.input-container :first-child {
+  flex: 1;
+  margin-right: 1em;
+}
+.input-container :last-child {
+  flex: 3;
 }
 button {
   width: 100%;
+  margin: 10px 0;
 }
 .out {
   width: 100%;
+  color: orange;
+}
+.big {
   height: 250px;
+}
+.success {
+  color: green;
 }
 .error {
   color: red;

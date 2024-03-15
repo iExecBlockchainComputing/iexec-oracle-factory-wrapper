@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] 2024-03-15
+
+### Removed
+
+- Removed support for goerli cross-chain oracles
+
+### Changed
+
+- Project migrated to TypeScript
+
 ## [2.0.0] 2023-09-05
 
 ### Added
