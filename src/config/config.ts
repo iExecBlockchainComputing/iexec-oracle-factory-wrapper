@@ -39,12 +39,12 @@ const networkMap: Record<string | number, string> = {
   5: 'goerli',
   134: 'https://bellecour.iex.ec',
   137: 'matic',
-  80001: 'https://matic-mumbai.chainstacklabs.com',
+  80001: 'matic-mumbai',
   mainnet: 'homestead',
   goerli: 'goerli',
   bellecour: 'https://bellecour.iex.ec',
   polygon: 'matic',
-  mumbai: 'https://matic-mumbai.chainstacklabs.com',
+  mumbai: 'matic-mumbai',
 };
 
 const DEFAULT_IPFS_GATEWAY: string = 'https://ipfs-gateway.v8-bellecour.iex.ec';
