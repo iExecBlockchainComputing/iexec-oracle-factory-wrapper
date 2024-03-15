@@ -82,17 +82,17 @@ class IExecOracleReader {
 
   /**
    * Reads data from the oracle.
-   * @param {ParamSet | ParamSetCID | OracleID} paramSetOrCidOrOracleId Parameters or CID or Oracle ID of the oracle to read.
-   * @param {DataType} dataType Data type to read from the oracle.
+   * @param paramSetOrCidOrOracleId Parameters, CID or Oracle ID to read.
+   * @param options Options for reading the oracle.
    * @returns {Promise<OracleValue>} Promise that resolves to the read oracle data.
    */
   readOracle(
     paramSetOrCidOrOracleId: ParamSet | ParamSetCID | OracleID,
-    dataType?: DataType
+    options?: { dataType?: DataType }
   ): Promise<OracleValue> {
     return readOracle({
       paramSetOrCidOrOracleId,
-      dataType,
+      dataType: options?.dataType,
       ethersProvider: this.ethersProvider,
       ipfsGateway: this.ipfsGateway,
       oracleContract: this.oracleContract,

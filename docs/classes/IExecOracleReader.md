@@ -67,7 +67,7 @@ Ethereum contract address or ENS (Ethereum Name Service) for the oracle contract
 
 ### readOracle
 
-▸ **readOracle**(`paramSetOrCidOrOracleId`, `dataType?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
+▸ **readOracle**(`paramSetOrCidOrOracleId`, `options?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
 
 Reads data from the oracle.
 
@@ -75,8 +75,9 @@ Reads data from the oracle.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters or CID or Oracle ID of the oracle to read. |
-| `dataType?` | [`DataType`](../modules.md#datatype) | Data type to read from the oracle. |
+| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters, CID or Oracle ID to read. |
+| `options?` | `Object` | Options for reading the oracle. |
+| `options.dataType?` | [`DataType`](../modules.md#datatype) | - |
 
 #### Returns
 

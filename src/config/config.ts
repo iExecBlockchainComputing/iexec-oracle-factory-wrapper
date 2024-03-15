@@ -20,9 +20,6 @@ const readerConfMap: Record<number, { ORACLE_CONTRACT_ADDRESS: string }> = {
   1: {
     ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
   },
-  5: {
-    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
-  },
   134: {
     ORACLE_CONTRACT_ADDRESS: factoryConfMap[134].ORACLE_CONTRACT_ADDRESS,
   },
@@ -36,15 +33,13 @@ const readerConfMap: Record<number, { ORACLE_CONTRACT_ADDRESS: string }> = {
 
 const networkMap: Record<string | number, string> = {
   1: 'homestead',
-  5: 'goerli',
   134: 'https://bellecour.iex.ec',
   137: 'matic',
-  80001: 'https://matic-mumbai.chainstacklabs.com',
+  80001: 'matic-mumbai',
   mainnet: 'homestead',
-  goerli: 'goerli',
   bellecour: 'https://bellecour.iex.ec',
   polygon: 'matic',
-  mumbai: 'https://matic-mumbai.chainstacklabs.com',
+  mumbai: 'matic-mumbai',
 };
 
 const DEFAULT_IPFS_GATEWAY: string = 'https://ipfs-gateway.v8-bellecour.iex.ec';
@@ -54,6 +49,8 @@ const DEFAULT_IPFS_UPLOAD_URL: string =
 
 const DEFAULT_WORKERPOOL_ADDRESS: string =
   'prod-v8-bellecour.main.pools.iexec.eth';
+
+const SUPPORTED_TARGET_BLOCKCHAINS: number[] = [1, 134, 137, 80001];
 
 const DEFAULT_TARGET_BLOCKCHAIN: number[] = [134];
 
@@ -106,6 +103,7 @@ export {
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_WORKERPOOL_ADDRESS,
   DEFAULT_TARGET_BLOCKCHAIN,
+  SUPPORTED_TARGET_BLOCKCHAINS,
   getReaderDefaults,
   getFactoryDefaults,
   getDefaults,

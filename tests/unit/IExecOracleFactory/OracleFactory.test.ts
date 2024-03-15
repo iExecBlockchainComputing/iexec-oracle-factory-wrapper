@@ -60,7 +60,7 @@ test('standard - instantiation', async () => {
   const iexecWithoutOption = factoryWithoutOption.getIExec();
   expect(iexecWithoutOption).toBeInstanceOf(IExec);
 
-  await factoryWithOptions.createOracle({
+  factoryWithOptions.createOracle({
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
@@ -83,7 +83,7 @@ test('standard - instantiation', async () => {
     url: 'https://api.market.iex.ec/version',
   });
 
-  await factoryWithoutOption.createOracle({
+  factoryWithoutOption.createOracle({
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
@@ -105,7 +105,7 @@ test('standard - instantiation', async () => {
     oracleApp: DEFAULT_APP_ADDRESS,
   });
 
-  await factoryWithOptions.updateOracle({
+  factoryWithOptions.updateOracle({
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
@@ -133,7 +133,7 @@ test('standard - instantiation', async () => {
     targetBlockchains: [134],
   });
 
-  await factoryWithOptions.updateOracle(
+  factoryWithOptions.updateOracle(
     {
       JSONPath: '$.ok',
       body: '',
@@ -163,7 +163,8 @@ test('standard - instantiation', async () => {
     oracleApp: 'oracleApp',
     workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
   });
-  await factoryWithoutOption.updateOracle({
+
+  factoryWithoutOption.updateOracle({
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
@@ -216,18 +217,15 @@ test('standard - instantiation', async () => {
     },
   });
 
-  await factoryWithOptions.readOracle(
-    {
-      JSONPath: '$.ok',
-      body: '',
-      dataType: 'boolean',
-      dataset: '0x0000000000000000000000000000000000000000',
-      headers: {},
-      method: 'GET',
-      url: 'https://api.market.iex.ec/version',
-    },
-    'number'
-  );
+  await factoryWithOptions.readOracle({
+    JSONPath: '$.ok',
+    body: '',
+    dataType: 'boolean',
+    dataset: '0x0000000000000000000000000000000000000000',
+    headers: {},
+    method: 'GET',
+    url: 'https://api.market.iex.ec/version',
+  });
 
   expect(readOracle).toHaveBeenNthCalledWith(2, {
     ethersProvider: ethProvider.provider,
@@ -242,7 +240,6 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    dataType: 'number',
   });
 
   await factoryWithoutOption.readOracle('paramSetOrCidOrOracleId');
