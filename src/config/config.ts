@@ -50,6 +50,8 @@ const DEFAULT_IPFS_UPLOAD_URL: string =
 const DEFAULT_WORKERPOOL_ADDRESS: string =
   'prod-v8-bellecour.main.pools.iexec.eth';
 
+const SUPPORTED_TARGET_BLOCKCHAINS: number[] = [1, 134, 137, 80001];
+
 const DEFAULT_TARGET_BLOCKCHAIN: number[] = [134];
 
 const getDefaultProvider = (
@@ -101,6 +103,7 @@ export {
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_WORKERPOOL_ADDRESS,
   DEFAULT_TARGET_BLOCKCHAIN,
+  SUPPORTED_TARGET_BLOCKCHAINS,
   getReaderDefaults,
   getFactoryDefaults,
   getDefaults,

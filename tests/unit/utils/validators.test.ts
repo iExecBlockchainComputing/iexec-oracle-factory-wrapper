@@ -1066,15 +1066,15 @@ describe('updateTargetBlockchainsSchema', () => {
       updateTargetBlockchainsSchema().validate([])
     ).resolves.toStrictEqual([]);
   });
-  test('valid array of number', async () => {
+  test('valid array of known chainId (number)', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate([1, 5])
-    ).resolves.toStrictEqual([1, 5]);
+      updateTargetBlockchainsSchema().validate([1, 137])
+    ).resolves.toStrictEqual([1, 137]);
   });
-  test('valid array of string number', async () => {
+  test('valid array of known chainId (string)', async () => {
     await expect(
-      updateTargetBlockchainsSchema().validate(['1', '5'])
-    ).resolves.toStrictEqual([1, 5]);
+      updateTargetBlockchainsSchema().validate(['1', '137'])
+    ).resolves.toStrictEqual([1, 137]);
   });
   test('valid empty array', async () => {
     await expect(
@@ -1092,6 +1092,15 @@ describe('updateTargetBlockchainsSchema', () => {
     ).rejects.toThrow(
       new ValidationError(
         '["0"] must be a `number` type, but the final value was: `NaN` (cast from the value `"foo"`).'
+      )
+    );
+  });
+  test('unsupported chainId', async () => {
+    await expect(
+      updateTargetBlockchainsSchema().validate(['5'])
+    ).rejects.toThrow(
+      new ValidationError(
+        '[0] must be one of the following values: 1, 134, 137, 80001'
       )
     );
   });

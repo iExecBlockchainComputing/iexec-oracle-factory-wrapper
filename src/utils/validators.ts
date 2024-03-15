@@ -1,7 +1,10 @@
 import { ethers } from 'ethers';
 import jp from 'jsonpath';
 import { string, number, object, array, ObjectSchema } from 'yup';
-import { API_KEY_PLACEHOLDER } from '../config/config.js';
+import {
+  API_KEY_PLACEHOLDER,
+  SUPPORTED_TARGET_BLOCKCHAINS,
+} from '../config/config.js';
 import { ParamSet } from '../types/public-types.js';
 
 const countSubstrAllowOverlap = (str, substr) => {
@@ -370,7 +373,7 @@ const readDataTypeSchema = () =>
     .required();
 
 const updateTargetBlockchainsSchema = () =>
-  array().of(number().integer().required()).default([]);
+  array().of(number().oneOf(SUPPORTED_TARGET_BLOCKCHAINS)).default([]);
 
 export {
   callParamsSchema,
