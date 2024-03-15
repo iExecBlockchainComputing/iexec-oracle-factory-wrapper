@@ -73,7 +73,7 @@ describe('readOracle', () => {
     const oracleReader = new IExecOracleReader(134);
     const res = await oracleReader.readOracle(
       '0x31172fe38a7be8a62fa4882d3a5b5cf7da13fa6ad5b144a0c2f35b559bbba14f',
-      'number'
+      { dataType: 'number' }
     );
     const { value, date } = res;
     expect(typeof value).toBe('number');
@@ -84,7 +84,7 @@ describe('readOracle', () => {
     const oracleReader = new IExecOracleReader(134);
     const res = await oracleReader.readOracle(
       '0x9fc5c194d4898197e535060b54256435fda773ae59c93cf88be84bce1ca4ce3e',
-      'string'
+      { dataType: 'string' }
     );
     const { value, date } = res;
     expect(typeof value).toBe('string');
@@ -95,7 +95,7 @@ describe('readOracle', () => {
     const oracleReader = new IExecOracleReader(134);
     const res = await oracleReader.readOracle(
       '0xccf7d910abf22fbeeef17f861b5cf9abb9543e48ee502285f7df53c63296ce21',
-      'boolean'
+      { dataType: 'boolean' }
     );
     const { value, date } = res;
     expect(typeof value).toBe('boolean');

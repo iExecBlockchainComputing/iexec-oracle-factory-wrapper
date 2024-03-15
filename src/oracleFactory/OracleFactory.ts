@@ -121,16 +121,16 @@ class IExecOracleFactory {
   /**
    * Reads an oracle with the provided ID CID or Oracle ID.
    * @param paramSetOrCidOrOracleId Parameters, CID or Oracle ID to read.
-   * @param dataType Optional data type for reading the oracle.
+   * @param options Options for reading the oracle.
    * @returns Promise resolving to the oracle data.
    */
   readOracle = async (
     paramSetOrCidOrOracleId: ParamSet | ParamSetCID | OracleID,
-    dataType?: DataType
+    options?: { dataType?: DataType }
   ): Promise<OracleValue> =>
     readOracle({
       paramSetOrCidOrOracleId,
-      dataType,
+      dataType: options?.dataType,
       ethersProvider: await this.ethersProviderPromise,
       ipfsGateway: this.ipfsGateway,
       oracleContract: this.oracleContract,

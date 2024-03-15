@@ -126,7 +126,7 @@ ___
 
 ### readOracle
 
-▸ **readOracle**(`paramSetOrCidOrOracleId`, `dataType?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
+▸ **readOracle**(`paramSetOrCidOrOracleId`, `options?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
 
 Reads an oracle with the provided ID CID or Oracle ID.
 
@@ -135,7 +135,8 @@ Reads an oracle with the provided ID CID or Oracle ID.
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters, CID or Oracle ID to read. |
-| `dataType?` | [`DataType`](../modules.md#datatype) | Optional data type for reading the oracle. |
+| `options?` | `Object` | Options for reading the oracle. |
+| `options.dataType?` | [`DataType`](../modules.md#datatype) | - |
 
 #### Returns
 
