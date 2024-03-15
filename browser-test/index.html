@@ -1,376 +1,552 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en-US">
   <head>
-    <title>browser test</title>
+    <title>oracle-factory sandbox</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="src/styles.css" />
   </head>
   <body>
-    <div>
-      <h3>Test raw params</h3>
-      <div>
-        <label for="test-params-url-input">url:</label>
-        <input
-          id="test-params-url-input"
-          type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        />
+    <div id="app">
+      <div id="init-error"></div>
+      <div class="method-block">
+        <h3>Test an API</h3>
+        <div class="hint">
+          Use <span class="code">testRawParams()</span> to test an API call with
+          the raw parameters (HTTP requests and response data selectors) and get
+          the results.
+        </div>
+
+        <div class="method-override">
+          <div class="input-container">
+            <label for="test-params-url-input"
+              ><span class="param">url</span></label
+            >
+            <input
+              id="test-params-url-input"
+              type="text"
+              value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+            />
+          </div>
+          <div class="input-container">
+            <label for="test-params-method-input"
+              ><span class="param">method</span></label
+            >
+            <input id="test-params-method-input" type="text" value="GET" />
+          </div>
+          <div class="input-container">
+            <label for="test-params-body-input"
+              ><span class="param">body</span></label
+            >
+            <textarea id="test-params-body-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="test-params-headers-input"
+              ><span class="param">headers</span></label
+            >
+            <textarea id="test-params-headers-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="test-params-apikey-input"
+              ><span class="param">apiKey</span></label
+            >
+            <input id="test-params-apikey-input" type="text" value="" />
+          </div>
+          <div class="input-container">
+            <label for="test-params-jsonpath-input"
+              ><span class="param">JSONPath</span></label
+            >
+            <input
+              id="test-params-jsonpath-input"
+              type="text"
+              value="$['ethereum']['usd']"
+            />
+          </div>
+          <div class="input-container">
+            <label for="test-params-datatype-input"
+              ><span class="param">dataType</span></label
+            >
+            <input id="test-params-datatype-input" type="text" value="number" />
+          </div>
+          <div>
+            <button id="test-params-button" type="button" class="submit">
+              testRawParams()
+            </button>
+          </div>
+          <div>
+            <textarea id="test-params-out" class="out" disabled></textarea>
+          </div>
+        </div>
       </div>
-      <div>
-        <label for="test-params-method-input">method:</label>
-        <input id="test-params-method-input" type="text" value="GET" />
+
+      <div class="method-block">
+        <h3>Create an oracle from an API</h3>
+        <div class="hint">
+          <p>
+            Use <span class="code">createOracle()</span> to prepare an oracle
+            from raw parameters (HTTP requests and response data selectors)
+          </p>
+          createOracle returns:
+          <ul>
+            <li>
+              the <span class="code">paramSet</span> which describes the API
+              call and allow anyone to trigger an update of the oracle
+            </li>
+            <li>
+              the <span class="code">paramSetCid</span> which is the IPFS
+              content id of the paramSet
+            </li>
+            <li>
+              the <span class="code">oracleId</span> which is the key derived
+              from the paramSet for reading the onchain oracle value
+            </li>
+          </ul>
+        </div>
+
+        <div class="method-override">
+          <div class="input-container">
+            <label for="create-oracle-url-input"
+              ><span class="param">url</span></label
+            >
+            <input
+              id="create-oracle-url-input"
+              type="text"
+              value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+            />
+          </div>
+          <div class="input-container">
+            <label for="create-oracle-method-input"
+              ><span class="param">method</span></label
+            >
+            <input id="create-oracle-method-input" type="text" value="GET" />
+          </div>
+          <div class="input-container">
+            <label for="create-oracle-body-input"
+              ><span class="param">body</span></label
+            >
+            <textarea id="create-oracle-body-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="create-oracle-headers-input"
+              ><span class="param">headers</span></label
+            >
+            <textarea id="create-oracle-headers-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="create-oracle-apikey-input"
+              ><span class="param">apiKey</span></label
+            >
+            <input id="create-oracle-apikey-input" type="text" value="" />
+          </div>
+          <div class="input-container">
+            <label for="create-oracle-jsonpath-input"
+              ><span class="param">JSONPath</span></label
+            >
+            <input
+              id="create-oracle-jsonpath-input"
+              type="text"
+              value="$['ethereum']['usd']"
+            />
+          </div>
+          <div class="input-container">
+            <label for="create-oracle-datatype-input"
+              ><span class="param">dataType</span></label
+            >
+            <input
+              id="create-oracle-datatype-input"
+              type="text"
+              value="number"
+            />
+          </div>
+          <div>
+            <button id="create-oracle-button" type="button" class="submit">
+              createOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="create-oracle-out"
+              class="out big"
+              disabled
+            ></textarea>
+          </div>
+        </div>
       </div>
-      <div>
-        <label for="test-params-body-input">body:</label>
-        <textarea id="test-params-body-input"></textarea>
+
+      <div class="method-block">
+        <h3>Update an oracle value</h3>
+        <div class="hint">
+          Use <span class="code">updateOracle()</span> to trigger the update of
+          the onchain value of an oracle.
+        </div>
+
+        <div class="method-override">
+          <h4>with a paramSet</h4>
+          <div class="input-container">
+            <label for="update-oracle-from-params-url-input"
+              ><span class="param">url</span></label
+            >
+            <input
+              id="update-oracle-from-params-url-input"
+              type="text"
+              value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+            />
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-from-params-method-input"
+              ><span class="param">method</span></label
+            >
+            <input
+              id="update-oracle-from-params-method-input"
+              type="text"
+              value="GET"
+            />
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-from-params-body-input"
+              ><span class="param">body</span></label
+            >
+            <textarea id="update-oracle-from-params-body-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-from-params-headers-input"
+              ><span class="param">headers</span></label
+            >
+            <textarea id="update-oracle-from-params-headers-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-from-params-dataset-input"
+              ><span class="param">dataset</span></label
+            >
+            <input
+              id="update-oracle-from-params-dataset-input"
+              type="text"
+              value="0x0000000000000000000000000000000000000000"
+            />
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-from-params-jsonpath-input"
+              ><span class="param">JSONPath</span></label
+            >
+            <input
+              id="update-oracle-from-params-jsonpath-input"
+              type="text"
+              value="$['ethereum']['usd']"
+            />
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-from-params-datatype-input"
+              ><span class="param">dataType</span></label
+            >
+            <input
+              id="update-oracle-from-params-datatype-input"
+              type="text"
+              value="number"
+            />
+          </div>
+          <div>
+            <button
+              id="update-oracle-from-params-button"
+              type="button"
+              class="submit"
+            >
+              updateOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="update-oracle-from-params-out"
+              class="out big"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="method-override">
+          <h4>with a paramSet CID</h4>
+          <div class="input-container">
+            <label for="update-oracle-from-cid-cid-input"
+              ><span class="param">paramSetCid</span></label
+            >
+            <input
+              id="update-oracle-from-cid-cid-input"
+              type="text"
+              value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
+            />
+          </div>
+          <div>
+            <button
+              id="update-oracle-from-cid-button"
+              type="button"
+              class="submit"
+            >
+              updateOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="update-oracle-from-cid-out"
+              class="out big"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="method-override">
+          <h4>cross-chain update</h4>
+          <div class="hint">
+            cross-chain updates are rate-limited based on oracleId
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-x-chain-cid-input"
+              ><span class="param">paramSetCid</span></label
+            >
+            <input
+              id="update-oracle-x-chain-cid-input"
+              type="text"
+              value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
+            />
+          </div>
+          <div class="input-container">
+            <label for="update-oracle-x-chain-target-input"
+              ><span class="param">targetBlockchains</span></label
+            >
+            <input
+              id="update-oracle-x-chain-target-input"
+              type="text"
+              value="[80001]"
+              placeholder="array of chainId (ex: [80001] for polygon mumbai)"
+            />
+          </div>
+          <div>
+            <button
+              id="update-oracle-x-chain-button"
+              type="button"
+              class="submit"
+            >
+              updateOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="update-oracle-x-chain-out"
+              class="out big"
+              disabled
+            ></textarea>
+          </div>
+        </div>
       </div>
-      <div>
-        <label for="test-params-headers-input">headers:</label>
-        <textarea id="test-params-headers-input"></textarea>
-      </div>
-      <div>
-        <label for="test-params-apikey-input">apiKey:</label>
-        <input id="test-params-apikey-input" type="text" value="" />
-      </div>
-      <div>
-        <label for="test-params-jsonpath-input">JSONPath:</label>
-        <input
-          id="test-params-jsonpath-input"
-          type="text"
-          value="$['ethereum']['usd']"
-        />
-      </div>
-      <div>
-        <label for="test-params-datatype-input">dataType:</label>
-        <input id="test-params-datatype-input" type="text" value="number" />
-      </div>
-      <div>
-        <button id="test-params-button" type="button" name="button">
-          TEST RAW PARAMS
-        </button>
-      </div>
-      <div>
-        <textarea id="test-params-out" class="out" disabled></textarea>
+
+      <div class="method-block">
+        <h3>Read an oracle</h3>
+        <div class="hint">
+          Use <span class="code">readOracle()</span> to read the onchain value
+          of an oracle.
+        </div>
+        <div class="method-override">
+          <h4>from a paramSet</h4>
+          <div class="input-container">
+            <label for="read-oracle-from-params-url-input"
+              ><span class="param">url</span></label
+            >
+            <input
+              id="read-oracle-from-params-url-input"
+              type="text"
+              value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-params-method-input"
+              ><span class="param">method</span></label
+            >
+            <input
+              id="read-oracle-from-params-method-input"
+              type="text"
+              value="GET"
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-params-body-input"
+              ><span class="param">body</span></label
+            >
+            <textarea id="read-oracle-from-params-body-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-params-headers-input"
+              ><span class="param">headers</span></label
+            >
+            <textarea id="read-oracle-from-params-headers-input"></textarea>
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-params-dataset-input"
+              ><span class="param">dataset</span></label
+            >
+            <input
+              id="read-oracle-from-params-dataset-input"
+              type="text"
+              value="0x0000000000000000000000000000000000000000"
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-params-jsonpath-input"
+              ><span class="param">JSONPath</span></label
+            >
+            <input
+              id="read-oracle-from-params-jsonpath-input"
+              type="text"
+              value="$['ethereum']['usd']"
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-params-datatype-input"
+              ><span class="param">dataType</span></label
+            >
+            <input
+              id="read-oracle-from-params-datatype-input"
+              type="text"
+              value="number"
+            />
+          </div>
+          <div>
+            <button
+              id="read-oracle-from-params-button"
+              type="button"
+              class="submit"
+            >
+              readOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="read-oracle-from-params-out"
+              class="out"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="method-override">
+          <h4>from a paramSetCid</h4>
+          <div class="input-container">
+            <label for="read-oracle-from-cid-cid-input"
+              ><span class="param">paramSetCid</span></label
+            >
+            <input
+              id="read-oracle-from-cid-cid-input"
+              type="text"
+              value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
+            />
+          </div>
+          <div>
+            <button
+              id="read-oracle-from-cid-button"
+              type="button"
+              class="submit"
+            >
+              readOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="read-oracle-from-cid-out"
+              class="out"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="method-block">
+          <h4>from an oracleId</h4>
+          <div class="input-container">
+            <label for="read-oracle-from-oracleid-oracleid-input"
+              ><span class="param">oracleId</span></label
+            >
+            <input
+              id="read-oracle-from-oracleid-oracleid-input"
+              type="text"
+              value="0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491"
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-oracle-from-oracleid-datatype-input"
+              ><span class="param">dataType</span></label
+            >
+            <input
+              id="read-oracle-from-oracleid-datatype-input"
+              type="text"
+              value="number"
+            />
+          </div>
+          <div>
+            <button
+              id="read-oracle-from-oracleid-button"
+              type="button"
+              class="submit"
+            >
+              readOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="read-oracle-from-oracleid-out"
+              class="out"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="method-block">
+          <h4>read a cross-chain oracle</h4>
+          <div class="input-container">
+            <label for="read-x-chain-oracle-from-oracleid-provider-input"
+              ><span class="param">provider</span></label
+            >
+            <input
+              id="read-x-chain-oracle-from-oracleid-provider-input"
+              type="text"
+              placeholder="chain id | chain name | RPC endpoint | blank for injected provider"
+              value=""
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-x-chain-oracle-from-oracleid-oracleid-input"
+              ><span class="param">oracleId</span></label
+            >
+            <input
+              id="read-x-chain-oracle-from-oracleid-oracleid-input"
+              type="text"
+              value="0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491"
+            />
+          </div>
+          <div class="input-container">
+            <label for="read-x-chain-oracle-from-oracleid-datatype-input"
+              ><span class="param">dataType</span></label
+            >
+            <input
+              id="read-x-chain-oracle-from-oracleid-datatype-input"
+              type="text"
+              value="number"
+            />
+          </div>
+          <div>
+            <button
+              id="read-x-chain-oracle-from-oracleid-button"
+              type="button"
+              class="submit"
+            >
+              readOracle()
+            </button>
+          </div>
+          <div>
+            <textarea
+              id="read-x-chain-oracle-from-oracleid-out"
+              class="out"
+              disabled
+            ></textarea>
+          </div>
+        </div>
       </div>
     </div>
-    <hr />
-
-    <div>
-      <h3>Create oracle</h3>
-      <div>
-        <label for="create-oracle-url-input">url:</label>
-        <input
-          id="create-oracle-url-input"
-          type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        />
-      </div>
-      <div>
-        <label for="create-oracle-method-input">method:</label>
-        <input id="create-oracle-method-input" type="text" value="GET" />
-      </div>
-      <div>
-        <label for="create-oracle-body-input">body:</label>
-        <textarea id="create-oracle-body-input"></textarea>
-      </div>
-      <div>
-        <label for="create-oracle-headers-input">headers:</label>
-        <textarea id="create-oracle-headers-input"></textarea>
-      </div>
-      <div>
-        <label for="create-oracle-apikey-input">apiKey:</label>
-        <input id="create-oracle-apikey-input" type="text" value="" />
-      </div>
-      <div>
-        <label for="create-oracle-jsonpath-input">JSONPath:</label>
-        <input
-          id="create-oracle-jsonpath-input"
-          type="text"
-          value="$['ethereum']['usd']"
-        />
-      </div>
-      <div>
-        <label for="create-oracle-datatype-input">dataType:</label>
-        <input id="create-oracle-datatype-input" type="text" value="number" />
-      </div>
-      <div>
-        <button id="create-oracle-button" type="button" name="button">
-          CREATE ORACLE
-        </button>
-      </div>
-      <div>
-        <textarea id="create-oracle-out" class="out" disabled></textarea>
-      </div>
-    </div>
-    <hr />
-
-    <div>
-      <h3>Update oracle</h3>
-      <div>
-        <label for="update-oracle-from-params-url-input">url:</label>
-        <input
-          id="update-oracle-from-params-url-input"
-          type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        />
-      </div>
-      <div>
-        <label for="update-oracle-from-params-method-input">method:</label>
-        <input
-          id="update-oracle-from-params-method-input"
-          type="text"
-          value="GET"
-        />
-      </div>
-      <div>
-        <label for="update-oracle-from-params-body-input">body:</label>
-        <textarea id="update-oracle-from-params-body-input"></textarea>
-      </div>
-      <div>
-        <label for="update-oracle-from-params-headers-input">headers:</label>
-        <textarea id="update-oracle-from-params-headers-input"></textarea>
-      </div>
-      <div>
-        <label for="update-oracle-from-params-dataset-input">dataset:</label>
-        <input
-          id="update-oracle-from-params-dataset-input"
-          type="text"
-          value="0x0000000000000000000000000000000000000000"
-        />
-      </div>
-      <div>
-        <label for="update-oracle-from-params-jsonpath-input">JSONPath:</label>
-        <input
-          id="update-oracle-from-params-jsonpath-input"
-          type="text"
-          value="$['ethereum']['usd']"
-        />
-      </div>
-      <div>
-        <label for="update-oracle-from-params-datatype-input">dataType:</label>
-        <input
-          id="update-oracle-from-params-datatype-input"
-          type="text"
-          value="number"
-        />
-      </div>
-      <div>
-        <button
-          id="update-oracle-from-params-button"
-          type="button"
-          name="button"
-        >
-          UPDATE ORACLE USING PARAMS SET
-        </button>
-      </div>
-      <div>
-        <textarea
-          id="update-oracle-from-params-out"
-          class="out"
-          disabled
-        ></textarea>
-      </div>
-    </div>
-    <hr />
-
-    <div>
-      <h3>Update oracle (using CID)</h3>
-      <div>
-        <label for="update-oracle-from-cid-cid-input">cid:</label>
-        <input
-          id="update-oracle-from-cid-cid-input"
-          type="text"
-          value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
-        />
-      </div>
-      <div>
-        <button id="update-oracle-from-cid-button" type="button" name="button">
-          UPDATE ORACLE USING PARAMS SET'S CID
-        </button>
-      </div>
-      <div>
-        <textarea
-          id="update-oracle-from-cid-out"
-          class="out"
-          disabled
-        ></textarea>
-      </div>
-    </div>
-    <hr />
-
-    <div>
-      <h3>Read oracle (using paramSet)</h3>
-      <div>
-        <label for="read-oracle-from-params-url-input">url:</label>
-        <input
-          id="read-oracle-from-params-url-input"
-          type="text"
-          value="https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-        />
-      </div>
-      <div>
-        <label for="read-oracle-from-params-method-input">method:</label>
-        <input
-          id="read-oracle-from-params-method-input"
-          type="text"
-          value="GET"
-        />
-      </div>
-      <div>
-        <label for="read-oracle-from-params-body-input">body:</label>
-        <textarea id="read-oracle-from-params-body-input"></textarea>
-      </div>
-      <div>
-        <label for="read-oracle-from-params-headers-input">headers:</label>
-        <textarea id="read-oracle-from-params-headers-input"></textarea>
-      </div>
-      <div>
-        <label for="read-oracle-from-params-dataset-input">dataset:</label>
-        <input
-          id="read-oracle-from-params-dataset-input"
-          type="text"
-          value="0x0000000000000000000000000000000000000000"
-        />
-      </div>
-      <div>
-        <label for="read-oracle-from-params-jsonpath-input">JSONPath:</label>
-        <input
-          id="read-oracle-from-params-jsonpath-input"
-          type="text"
-          value="$['ethereum']['usd']"
-        />
-      </div>
-      <div>
-        <label for="read-oracle-from-params-datatype-input">dataType:</label>
-        <input
-          id="read-oracle-from-params-datatype-input"
-          type="text"
-          value="number"
-        />
-      </div>
-      <div>
-        <button id="read-oracle-from-params-button" type="button" name="button">
-          READ ORACLE FROM PARAMS SET
-        </button>
-      </div>
-      <div>
-        <textarea
-          id="read-oracle-from-params-out"
-          class="out"
-          disabled
-        ></textarea>
-      </div>
-    </div>
-    <hr />
-
-    <div>
-      <h3>Read oracle (using CID)</h3>
-      <div>
-        <label for="read-oracle-from-cid-cid-input">cid:</label>
-        <input
-          id="read-oracle-from-cid-cid-input"
-          type="text"
-          value="QmbeY27w6dKxNQnGXih4AaotgNY3XuZ2yzbi2ZWQfRApqs"
-        />
-      </div>
-      <div>
-        <button id="read-oracle-from-cid-button" type="button" name="button">
-          READ ORACLE USING PARAMS SET'S CID
-        </button>
-      </div>
-      <div>
-        <textarea id="read-oracle-from-cid-out" class="out" disabled></textarea>
-      </div>
-    </div>
-    <hr />
-
-    <div>
-      <h3>Read oracle (using oracleId)</h3>
-      <div>
-        <label for="read-oracle-from-oracleid-oracleid-input">oracleId:</label>
-        <input
-          id="read-oracle-from-oracleid-oracleid-input"
-          type="text"
-          value="0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491"
-        />
-      </div>
-      <div>
-        <label for="read-oracle-from-oracleid-datatype-input">dataType:</label>
-        <input
-          id="read-oracle-from-oracleid-datatype-input"
-          type="text"
-          value="number"
-        />
-      </div>
-      <div>
-        <button
-          id="read-oracle-from-oracleid-button"
-          type="button"
-          name="button"
-        >
-          READ ORACLE USING ORACLEID
-        </button>
-      </div>
-      <div>
-        <textarea
-          id="read-oracle-from-oracleid-out"
-          class="out"
-          disabled
-        ></textarea>
-      </div>
-    </div>
-
-    <div>
-      <h3>Read x-chain oracle (using oracleId)</h3>
-      <div>
-        <label for="read-x-chain-oracle-from-oracleid-provider-input"
-          >provider:</label
-        >
-        <input
-          id="read-x-chain-oracle-from-oracleid-provider-input"
-          type="text"
-          placeholder="chain id | chain name | RPC endpoint | blank for injected provider"
-          value=""
-        />
-      </div>
-      <div>
-        <label for="read-x-chain-oracle-from-oracleid-oracleid-input"
-          >oracleId:</label
-        >
-        <input
-          id="read-x-chain-oracle-from-oracleid-oracleid-input"
-          type="text"
-          value="0xf0f370ad33d1e3e8e2d8df7197c40f62b5bc403553b103858359687491234491"
-        />
-      </div>
-      <div>
-        <label for="read-x-chain-oracle-from-oracleid-datatype-input"
-          >dataType:</label
-        >
-        <input
-          id="read-x-chain-oracle-from-oracleid-datatype-input"
-          type="text"
-          value="number"
-        />
-      </div>
-      <div>
-        <button
-          id="read-x-chain-oracle-from-oracleid-button"
-          type="button"
-          name="button"
-        >
-          READ X-CHAIN ORACLE USING ORACLEID
-        </button>
-      </div>
-      <div>
-        <textarea
-          id="read-x-chain-oracle-from-oracleid-out"
-          class="out"
-          disabled
-        ></textarea>
-      </div>
-    </div>
-
     <script src="./src/index.js" type="module"></script>
   </body>
 </html>
