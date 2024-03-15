@@ -20,9 +20,6 @@ const readerConfMap: Record<number, { ORACLE_CONTRACT_ADDRESS: string }> = {
   1: {
     ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
   },
-  5: {
-    ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
-  },
   134: {
     ORACLE_CONTRACT_ADDRESS: factoryConfMap[134].ORACLE_CONTRACT_ADDRESS,
   },
@@ -36,12 +33,10 @@ const readerConfMap: Record<number, { ORACLE_CONTRACT_ADDRESS: string }> = {
 
 const networkMap: Record<string | number, string> = {
   1: 'homestead',
-  5: 'goerli',
   134: 'https://bellecour.iex.ec',
   137: 'matic',
   80001: 'matic-mumbai',
   mainnet: 'homestead',
-  goerli: 'goerli',
   bellecour: 'https://bellecour.iex.ec',
   polygon: 'matic',
   mumbai: 'matic-mumbai',
