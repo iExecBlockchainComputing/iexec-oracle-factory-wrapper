@@ -9,19 +9,17 @@ import {
   DEFAULT_WORKERPOOL_ADDRESS,
 } from '../config/config.js';
 import {
-  CreateOracleMessage,
-  UpdateOracleMessage,
-} from '../types/internal-types.js';
-import {
   AddressOrENS,
-  OracleValue,
-  OracleFactoryOptions,
-  ParamSet,
-  Web3SignerProvider,
+  CreateOracleMessage,
   DataType,
-  ParamSetCID,
+  OracleFactoryOptions,
   OracleID,
+  OracleValue,
+  ParamSet,
+  ParamSetCID,
   RawParams,
+  UpdateOracleMessage,
+  Web3SignerProvider,
 } from '../types/public-types.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
