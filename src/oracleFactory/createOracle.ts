@@ -8,11 +8,14 @@ import {
 import * as ipfs from '../services/ipfs/index.js';
 import {
   CreateApiKeyDatasetParams,
-  CreateOracleMessage,
   IExecConsumer,
   CreateOracleOptions,
 } from '../types/internal-types.js';
-import { Address, RawParams } from '../types/public-types.js';
+import {
+  Address,
+  CreateOracleMessage,
+  RawParams,
+} from '../types/public-types.js';
 import { ValidationError, WorkflowError } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
