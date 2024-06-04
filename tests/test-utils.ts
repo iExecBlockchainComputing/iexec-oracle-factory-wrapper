@@ -9,7 +9,7 @@ import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 
 const { DRONE } = process.env;
 
-const TEST_CHAIN = {
+export const TEST_CHAIN = {
   rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://localhost:8545',
   chainId: '134',
   smsURL: DRONE ? 'http://sms:13300' : 'http://127.0.0.1:13300',

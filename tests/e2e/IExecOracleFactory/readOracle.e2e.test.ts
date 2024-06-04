@@ -1,11 +1,10 @@
 import { Wallet } from 'ethers';
-import { utils } from 'iexec';
 import { IExecOracleFactory } from '../../../src/index.js';
+import { getTestWeb3SignerProvider } from '../../test-utils.js';
 
 describe('readOracle', () => {
   test('standard - from paramSet dataType: "boolean"', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -25,8 +24,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "number"', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -46,8 +44,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from paramSet dataType: "string"', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -67,8 +64,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from CID', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -82,8 +78,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (default dataType)', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -97,8 +92,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType number)', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -113,8 +107,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType string)', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -129,8 +122,7 @@ describe('readOracle', () => {
   });
 
   test('standard - from oracleId (dataType boolean)', async () => {
-    const ethProvider = utils.getSignerFromPrivateKey(
-      'bellecour',
+    const ethProvider = getTestWeb3SignerProvider(
       Wallet.createRandom().privateKey
     );
     const factoryWithoutOption = new IExecOracleFactory(ethProvider);

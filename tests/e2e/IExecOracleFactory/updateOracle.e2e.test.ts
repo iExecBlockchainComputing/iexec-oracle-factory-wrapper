@@ -1,11 +1,10 @@
 import { Wallet } from 'ethers';
-import { utils } from 'iexec';
 import { IExecOracleFactory } from '../../../src/index.js';
+import { getTestWeb3SignerProvider } from '../../test-utils.js';
 
 // eslint-disable-next-line jest/no-disabled-tests
 test.skip('update oracle - standard from paramSet - no dataset', async () => {
-  const ethProvider = utils.getSignerFromPrivateKey(
-    'bellecour',
+  const ethProvider = getTestWeb3SignerProvider(
     Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -97,8 +96,7 @@ test.skip('update oracle - standard from paramSet - no dataset', async () => {
 
 // eslint-disable-next-line jest/no-disabled-tests
 test.skip('standard - from CID', async () => {
-  const ethProvider = utils.getSignerFromPrivateKey(
-    'bellecour',
+  const ethProvider = getTestWeb3SignerProvider(
     Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
