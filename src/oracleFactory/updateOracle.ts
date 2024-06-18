@@ -195,7 +195,10 @@ const updateOracle = ({
               app: ORACLE_APP_ADDRESS,
             })
             .catch((e) => {
-              throw new MarketCallError('Failed to fetch API key usage order', e);
+              throw new MarketCallError(
+                'Failed to fetch API key usage order',
+                e
+              );
             });
           if (abort) return;
           datasetorder =
@@ -224,7 +227,10 @@ const updateOracle = ({
             dataset: datasetAddress,
           })
           .catch((e) => {
-            throw new MarketCallError('Failed to fetch computing resource order', e);
+            throw new MarketCallError(
+              'Failed to fetch computing resource order',
+              e
+            );
           });
         if (abort) return;
         const workerpoolorder =

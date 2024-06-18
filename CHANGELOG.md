@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## Next
+
+### Added
+
+- Added several error classes for managing iexec sdk call errors
+
+### Changed
+
+- Changed `createOracle`,`readOracle` and `updateOracle` to handle more precise errors
+
 ## [2.1.0] 2024-03-15
 
 ### Removed
