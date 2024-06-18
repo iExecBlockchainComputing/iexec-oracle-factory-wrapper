@@ -10,7 +10,7 @@ import {
 import {
   NoValueError,
   ValidationError,
-  WorkflowError,
+  IpfsGatewayCallError,
 } from '../utils/errors.js';
 import { formatOracleGetNumber } from '../utils/format.js';
 import { computeOracleId, isOracleId } from '../utils/hash.js';
@@ -26,7 +26,7 @@ import { readDataTypeSchema } from '../utils/validators.js';
  * @returns Promise resolving to the Oracle data.
  * @throws {NoValueError} If no value is stored for the oracle.
  * @throws {ValidationError} If there is a validation error.
- * @throws {WorkflowError} If there is an unexpected workflow error.
+ * @throws {IpfsGatewayCallError} If there is an unexpected error when reading oracle metadata.
  */
 const readOracle = async ({
   paramSetOrCidOrOracleId,
@@ -64,7 +64,7 @@ const readOracle = async ({
       if (e instanceof ValidationError) {
         throw e;
       } else {
-        throw new WorkflowError('Failed to load paramSet', e);
+        throw new IpfsGatewayCallError('Failed to load paramSet', e);
       }
     });
     readDataType = paramSet.dataType;

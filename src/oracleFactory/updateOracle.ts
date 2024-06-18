@@ -9,7 +9,15 @@ import {
   UpdateOracleParams,
 } from '../types/internal-types.js';
 import { ParamSet } from '../types/public-types.js';
-import { ValidationError, WorkflowError } from '../utils/errors.js';
+import {
+  ValidationError,
+  IpfsGatewayCallError,
+  MarketCallError,
+  Web3ProviderSignMessageError,
+  WorkerpoolCallError,
+  WorkflowError,
+  Web3ProviderSendError,
+} from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
@@ -25,6 +33,10 @@ import {
  * @returns JSON Object containing the parameter set.
  * @throws {ValidationError} If there is a validation error.
  * @throws {WorkflowError} If there is an unexpected workflow error.
+ * @throws {IpfsGatewayCallError} If there is an unexpected error occurring during a call to the IPFS gateway API such as a network error or a server internal error.
+ * @throws {Web3ProviderSignMessageError} If there is an unexpected error thrown by the web3 provider during a message signature.
+ * @throws {WorkerpoolCallError} If there is an unexpected error an error occurring during a call to a workerpool API such as a network error or a server internal error.
+ * @throws {Web3ProviderSendError} If there is an unexpected error thrown by the web3 provider during a transaction.
  */
 const getParamSet = async ({
   paramSetOrCid,
@@ -112,7 +124,7 @@ const updateOracle = ({
           if (e instanceof ValidationError) {
             throw e;
           } else {
-            throw new WorkflowError('Failed to load paramSet', e);
+            throw new IpfsGatewayCallError('Failed to load paramSet', e);
           }
         });
         if (abort) return;
@@ -125,7 +137,7 @@ const updateOracle = ({
           cid = await ipfs
             .add(paramsJson, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload paramSet', e);
+              throw new IpfsGatewayCallError('Failed to upload paramSet', e);
             });
           if (abort) return;
         }
@@ -149,7 +161,7 @@ const updateOracle = ({
             dataset: datasetAddress,
           })
           .catch((e) => {
-            throw new WorkflowError('Failed to fetch apporder', e);
+            throw new MarketCallError('Failed to fetch application order', e);
           });
         if (abort) return;
         const apporder =
@@ -183,7 +195,7 @@ const updateOracle = ({
               app: ORACLE_APP_ADDRESS,
             })
             .catch((e) => {
-              throw new WorkflowError('Failed to fetch datasetorder', e);
+              throw new MarketCallError('Failed to fetch API key usage order', e);
             });
           if (abort) return;
           datasetorder =
@@ -191,7 +203,7 @@ const updateOracle = ({
             datasetorderbook.orders[0] &&
             datasetorderbook.orders[0].order;
           if (!datasetorder) {
-            throw new WorkflowError('No datasetorder published');
+            throw new WorkflowError('No API key usage order published');
           }
           safeObserver.next({
             message: 'FETCH_DATASET_ORDER_SUCCESS',
@@ -212,7 +224,7 @@ const updateOracle = ({
             dataset: datasetAddress,
           })
           .catch((e) => {
-            throw new WorkflowError('Failed to fetch workerpoolorder', e);
+            throw new MarketCallError('Failed to fetch computing resource order', e);
           });
         if (abort) return;
         const workerpoolorder =
@@ -220,7 +232,7 @@ const updateOracle = ({
           workerpoolorderbook.orders[0] &&
           workerpoolorderbook.orders[0].order;
         if (!workerpoolorder) {
-          throw new WorkflowError('No workerpoolorder published');
+          throw new WorkflowError('No computing resource order published');
         }
         safeObserver.next({
           message: 'FETCH_WORKERPOOL_ORDER_SUCCESS',
@@ -259,7 +271,10 @@ const updateOracle = ({
         const requestorder = await iexec.order
           .signRequestorder(requestorderToSign, { preflightCheck: false })
           .catch((e) => {
-            throw new WorkflowError('Failed to sign requestorder', e);
+            throw new Web3ProviderSignMessageError(
+              'Failed to sign requestorder',
+              e
+            );
           });
         if (abort) return;
         safeObserver.next({
@@ -286,7 +301,7 @@ const updateOracle = ({
             { preflightCheck: false }
           )
           .catch((e) => {
-            throw new WorkflowError('Failed to match orders', e);
+            throw new Web3ProviderSendError('Failed to match orders', e);
           });
         if (abort) return;
         safeObserver.next({
@@ -309,7 +324,7 @@ const updateOracle = ({
                   const { message } = value;
                   if (message === 'TASK_TIMEDOUT') {
                     reject(
-                      new WorkflowError(
+                      new WorkerpoolCallError(
                         'Oracle update task timed out, update failed',
                         Error(`Task ${taskid} from deal ${dealid} timed out`)
                       )
@@ -329,7 +344,10 @@ const updateOracle = ({
                 },
                 error: (e) =>
                   reject(
-                    new WorkflowError('Failed to monitor oracle update task', e)
+                    new WorkerpoolCallError(
+                      'Failed to monitor oracle update task',
+                      e
+                    )
                   ),
                 complete: () => {},
               });

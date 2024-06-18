@@ -13,7 +13,15 @@ import {
   CreateOracleOptions,
 } from '../types/internal-types.js';
 import { Address, RawParams } from '../types/public-types.js';
-import { ValidationError, WorkflowError } from '../utils/errors.js';
+import {
+  ValidationError,
+  Web3ProviderSignMessageError,
+  IpfsGatewayCallError,
+  SmsCallError,
+  MarketCallError,
+  Web3ProviderCallError,
+  WorkflowError,
+} from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
@@ -84,7 +92,10 @@ const createApiKeyDataset = ({
           const cid = await ipfs
             .add(encryptedFile, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload encrypted API key', e);
+              throw new IpfsGatewayCallError(
+                'Failed to upload encrypted API key',
+                e
+              );
             });
           if (abort) return;
           const multiaddr = `/ipfs/${cid}`;
@@ -105,7 +116,7 @@ const createApiKeyDataset = ({
               checksum,
             })
             .catch((e: Error) => {
-              throw new WorkflowError('Failed to deploy API key dataset', e);
+              throw new Web3ProviderCallError('Failed to deploy API key', e);
             });
           if (abort) return;
           safeObserver.next({
@@ -120,10 +131,7 @@ const createApiKeyDataset = ({
           await iexec.dataset
             .pushDatasetSecret(address, key)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to push API key dataset's encryption key",
-                e
-              );
+              throw new SmsCallError('Failed to push API encryption key', e);
             });
           if (abort) return;
           safeObserver.next({
@@ -139,7 +147,7 @@ const createApiKeyDataset = ({
             })
             .catch((e: Error) => {
               throw new WorkflowError(
-                "Failed to create API key datasetorder's",
+                'Failed to create API key usage order',
                 e
               );
             });
@@ -151,8 +159,8 @@ const createApiKeyDataset = ({
           const order = await iexec.order
             .signDatasetorder(orderToSign)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to sign API key datasetorder's",
+              throw new Web3ProviderSignMessageError(
+                'Failed to sign API key usage approval',
                 e
               );
             });
@@ -169,8 +177,8 @@ const createApiKeyDataset = ({
           const orderHash = await iexec.order
             .publishDatasetorder(order)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to publish API key datasetorder's",
+              throw new MarketCallError(
+                'Failed to publish API key usage order',
                 e
               );
             });
@@ -187,7 +195,7 @@ const createApiKeyDataset = ({
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('API key dataset creation unexpected error', e)
+              new WorkflowError('API key creation unexpected error', e)
             );
           }
         }
@@ -302,7 +310,7 @@ const createOracle = ({
           const cid = await ipfs
             .add(jsonParams, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload paramSet', e);
+              throw new IpfsGatewayCallError('Failed to upload paramSet', e);
             });
           if (abort) return;
           const multiaddr = `/ipfs/${cid}`;
