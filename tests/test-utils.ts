@@ -10,7 +10,7 @@ import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 const { DRONE } = process.env;
 
 export const TEST_CHAIN = {
-  rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://localhost:8545',
+  rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545',
   chainId: '134',
   smsURL: DRONE ? 'http://sms:13300' : 'http://127.0.0.1:13300',
   resultProxyURL: DRONE
@@ -23,7 +23,7 @@ export const TEST_CHAIN = {
   ),
   voucherSubgraphURL: DRONE
     ? 'http://gaphnode:8000/subgraphs/name/bellecour/iexec-voucher'
-    : 'http://localhost:8000/subgraphs/name/bellecour/iexec-voucher',
+    : 'http://127.0.0.1:8000/subgraphs/name/bellecour/iexec-voucher',
   debugWorkerpool: 'debug-v8-bellecour.main.pools.iexec.eth',
   debugWorkerpoolOwnerWallet: new Wallet(
     '0x800e01919eadf36f110f733decb1cc0f82e7941a748e89d7a3f76157f6654bb3'
@@ -33,7 +33,7 @@ export const TEST_CHAIN = {
     '0x6a12f56d7686e85ab0f46eb3c19cb0c75bfabf8fb04e595654fc93ad652fa7bc'
   ),
   provider: new JsonRpcProvider(
-    DRONE ? 'http://bellecour-fork:8545' : 'http://localhost:8545'
+    DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545'
   ),
 };
 

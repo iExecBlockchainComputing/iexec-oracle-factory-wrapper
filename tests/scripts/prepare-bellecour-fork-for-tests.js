@@ -21,7 +21,7 @@ const PROD_WORKERPOOL_OWNER_WALLET =
 const DEBUG_WORKERPOOL = '0xdb214a4a444d176e22030be1ed89da1b029320f2'; // 'debug-v8-bellecour.main.pools.iexec.eth';
 const PROD_WORKERPOOL = '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f'; // 'prod-v8-bellecour.main.pools.iexec.eth';
 
-const rpcURL = DRONE ? 'http://bellecour-fork:8545' : 'http://localhost:8545';
+const rpcURL = DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545';
 
 const provider = new JsonRpcProvider(rpcURL);
 
@@ -134,7 +134,7 @@ const getVoucherManagementRoles = async (targetManager) => {
         type: 'function',
       },
     ],
-    provider,
+    provider
   );
 
   const defaultAdmin = await voucherHubContract.defaultAdmin();
@@ -146,7 +146,7 @@ const getVoucherManagementRoles = async (targetManager) => {
   const VOUCHER_MANAGER_ROLE = keccak256(Buffer.from('VOUCHER_MANAGER_ROLE'));
 
   const ASSET_ELIGIBILITY_MANAGER_ROLE = keccak256(
-    Buffer.from('ASSET_ELIGIBILITY_MANAGER_ROLE'),
+    Buffer.from('ASSET_ELIGIBILITY_MANAGER_ROLE')
   );
 
   await voucherHubContract
@@ -166,15 +166,15 @@ const getVoucherManagementRoles = async (targetManager) => {
   console.log(
     `${targetManager} has role VOUCHER_MANAGER_ROLE: ${await voucherHubContract.hasRole(
       VOUCHER_MANAGER_ROLE,
-      targetManager,
-    )}`,
+      targetManager
+    )}`
   );
 
   console.log(
     `${targetManager} has role ASSET_ELIGIBILITY_MANAGER_ROLE: ${await voucherHubContract.hasRole(
       ASSET_ELIGIBILITY_MANAGER_ROLE,
-      targetManager,
-    )}`,
+      targetManager
+    )}`
   );
 };
 
@@ -236,7 +236,7 @@ const getWorkerpoolOwnership = async (resourceAddress, targetOwner) => {
   const resourceContract = new Contract(
     resourceAddress,
     RESOURCE_ABI,
-    provider,
+    provider
   );
 
   const resourceOwner = await resourceContract.owner();
@@ -244,7 +244,7 @@ const getWorkerpoolOwnership = async (resourceAddress, targetOwner) => {
   const resourceRegistryContract = new Contract(
     resourceRegistryAddress,
     RESOURCE_REGISTRY_ABI,
-    provider,
+    provider
   );
 
   await impersonate(resourceOwner);
