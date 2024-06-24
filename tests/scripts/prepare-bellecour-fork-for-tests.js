@@ -9,7 +9,6 @@ import {
 
 // eslint-disable-next-line import/extensions
 import { VOUCHER_HUB_ADDRESS } from '../bellecour-fork/voucher-config.js'; // TODO: change with deployment address once voucher is deployed on bellecour
-
 const { DRONE } = process.env;
 
 const TARGET_VOUCHER_MANAGER_WALLET =
@@ -20,6 +19,8 @@ const PROD_WORKERPOOL_OWNER_WALLET =
   '0x1Ff6AfF580e8Ca738F76485E0914C2aCaDa7B462';
 const DEBUG_WORKERPOOL = '0xdb214a4a444d176e22030be1ed89da1b029320f2'; // 'debug-v8-bellecour.main.pools.iexec.eth';
 const PROD_WORKERPOOL = '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f'; // 'prod-v8-bellecour.main.pools.iexec.eth';
+const ORACLE_DAPP_ADDRESS = '0xd11f5d70f8817add3d9e15d316911e6a4d699f79'; // oracle-factory.apps.iexec.eth
+const APP_OWNER_WALLET = '0x626D65C778fB98f813C25F84249E3012B80e8d91';
 
 const rpcURL = DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545';
 
@@ -176,7 +177,7 @@ const getVoucherManagementRoles = async (targetManager) => {
   );
 };
 
-const getWorkerpoolOwnership = async (resourceAddress, targetOwner) => {
+const getIExecResourceOwnership = async (resourceAddress, targetOwner) => {
   const RESOURCE_ABI = [
     {
       inputs: [],
@@ -255,7 +256,7 @@ const getWorkerpoolOwnership = async (resourceAddress, targetOwner) => {
   await stopImpersonate(resourceOwner);
 
   const newOwner = await resourceContract.owner();
-  console.log(`Workerpool ${resourceAddress} is now owned by ${newOwner}`);
+  console.log(`resource ${resourceAddress} is now owned by ${newOwner}`);
 };
 
 const main = async () => {
@@ -266,8 +267,17 @@ const main = async () => {
   await getVoucherManagementRoles(TARGET_VOUCHER_MANAGER_WALLET);
 
   // prepare workerpools
-  await getWorkerpoolOwnership(DEBUG_WORKERPOOL, DEBUG_WORKERPOOL_OWNER_WALLET);
-  await getWorkerpoolOwnership(PROD_WORKERPOOL, PROD_WORKERPOOL_OWNER_WALLET);
+  await getIExecResourceOwnership(
+    DEBUG_WORKERPOOL,
+    DEBUG_WORKERPOOL_OWNER_WALLET
+  );
+  await getIExecResourceOwnership(
+    PROD_WORKERPOOL,
+    PROD_WORKERPOOL_OWNER_WALLET
+  );
+
+  // prepare oracle factory app for tests
+  await getIExecResourceOwnership(ORACLE_DAPP_ADDRESS, APP_OWNER_WALLET);
 };
 
 main();

@@ -1,9 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Wallet, JsonRpcProvider, ethers, Contract } from 'ethers';
-import { IExec, IExecAppModule, TeeFramework, utils } from 'iexec';
+import { IExec, utils } from 'iexec';
 import { getSignerFromPrivateKey } from 'iexec/utils';
-import { Web3SignerProvider, getWeb3Provider } from '../src/index.js';
+import { AddressOrENS, Web3SignerProvider } from '../src/index.js';
 // eslint-disable-next-line import/extensions
 import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 
@@ -32,6 +32,9 @@ export const TEST_CHAIN = {
   prodWorkerpoolOwnerWallet: new Wallet(
     '0x6a12f56d7686e85ab0f46eb3c19cb0c75bfabf8fb04e595654fc93ad652fa7bc'
   ),
+  appOwnerWallet: new Wallet(
+    '0xa911b93e50f57c156da0b8bff2277d241bcdb9345221a3e246a99c6e7cedcde5'
+  ),
   provider: new JsonRpcProvider(
     DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545'
   ),
@@ -59,41 +62,19 @@ export const getTestIExecOption = () => ({
   voucherSubgraphURL: TEST_CHAIN.voucherSubgraphURL,
 });
 
-export const getRequiredFieldMessage = (field: string = 'this') =>
-  `${field} is a required field`;
+export const getTestConfig = (
+  privateKey: string
+): [Web3SignerProvider, OracleFactoryOptions] => {
+  const ethProvider = getTestWeb3SignerProvider(privateKey);
+  const options = {
+    iexecOptions: getTestIExecOption(),
+    ipfsNode: DRONE ? 'http://ipfs:5001' : 'http://127.0.0.1:5001',
+    ipfsGateway: DRONE ? 'http://ipfs:8080' : 'http://127.0.0.1:8080',
+  };
+  return [ethProvider, options];
+};
 
 export const getRandomAddress = () => Wallet.createRandom().address;
-
-export const deployRandomApp = async (
-  options: {
-    ethProvider?: Web3SignerProvider;
-    teeFramework?: TeeFramework;
-  } = {}
-) => {
-  const ethProvider =
-    options.ethProvider || getWeb3Provider(Wallet.createRandom().privateKey);
-  const iexecAppModule = new IExecAppModule({ ethProvider });
-  const { address } = await iexecAppModule.deployApp({
-    owner: ethProvider.address,
-    name: 'test-do-not-use',
-    type: 'DOCKER',
-    multiaddr: 'foo/bar:baz',
-    checksum:
-      '0x00f51494d7a42a3c1c43464d9f09e06b2a99968e3b978f6cd11ab3410b7bcd14',
-    mrenclave:
-      options.teeFramework &&
-      ({
-        // base
-        framework: options.teeFramework,
-        version: 'v0',
-        fingerprint: 'thumb',
-        // scone specific
-        entrypoint: options.teeFramework === 'scone' ? 'foo' : undefined,
-        heapSize: options.teeFramework === 'scone' ? 1 : undefined,
-      } as any),
-  });
-  return address;
-};
 
 /**
  * on bellecour the blocktime is expected to be 5sec but in case of issue on the network this blocktime can reach unexpected length
@@ -110,10 +91,22 @@ export const MAX_EXPECTED_WEB2_SERVICES_TIME = 80_000;
 
 const MARKET_API_CALL_TIMEOUT = 2_000;
 
+const MAX_EXPECTED_CREATE_API_KEY_DATASET_TIME =
+  MAX_EXPECTED_WEB2_SERVICES_TIME + //  upload encrypted API key to IPFS
+  MAX_EXPECTED_BLOCKTIME + // deploy API key dataset
+  MAX_EXPECTED_WEB2_SERVICES_TIME * 5; // push dataset secret + create dataset order + sign dataset order + publish dataset order +  upload paramSet to IPFS
+
 export const timeouts = {
   // utils
   createVoucherType: MAX_EXPECTED_BLOCKTIME * 2,
   createVoucher: MAX_EXPECTED_BLOCKTIME * 4 + MARKET_API_CALL_TIMEOUT * 2,
+  updateOracle:
+    MAX_EXPECTED_WEB2_SERVICES_TIME + // IPFS fetch and upload
+    MAX_EXPECTED_MARKET_API_PURGE_TIME * 3 + // fetch app order + dataset order + workerpool order
+    MAX_EXPECTED_WEB2_SERVICES_TIME + // create and sign request order
+    MAX_EXPECTED_BLOCKTIME, // match orders
+  createOracle:
+    MAX_EXPECTED_CREATE_API_KEY_DATASET_TIME + MAX_EXPECTED_WEB2_SERVICES_TIME, // create Api Key Dataset + upload paramSet to IPFS
 };
 
 export const sleep = (ms) =>
@@ -215,39 +208,64 @@ export const createVoucherType = async ({
   return id as bigint;
 };
 
-// TODO: update createWorkerpoolorder() parameters when it is specified
-const createAndPublishWorkerpoolOrder = async (
+export const createAndPublishAppOrders = async (
+  appAddress: AddressOrENS,
+  appOwnerWallet: ethers.Wallet
+) => {
+  const ethProvider = utils.getSignerFromPrivateKey(
+    TEST_CHAIN.rpcURL,
+    appOwnerWallet.privateKey
+  );
+  const iexec = new IExec({ ethProvider }, getTestIExecOption());
+  const apporder = await iexec.order.createApporder({
+    app: appAddress,
+    tag: ['tee', 'scone'],
+    volume: 100,
+    appprice: 0,
+  });
+  const signedApporder = await iexec.order.signApporder(apporder);
+  await iexec.order.publishApporder(signedApporder);
+  return signedApporder;
+};
+
+const ensureSufficientStake = async (iexec, requiredStake) => {
+  const walletAddress = await iexec.wallet.getAddress();
+  const account = await iexec.account.checkBalance(walletAddress);
+  const currentStake = account.stake;
+
+  if (currentStake < requiredStake) {
+    await setNRlcBalance(walletAddress, requiredStake);
+    await iexec.account.deposit(requiredStake);
+  }
+};
+
+export const createAndPublishWorkerpoolOrder = async (
   workerpool: string,
   workerpoolOwnerWallet: ethers.Wallet,
-  voucherOwnerAddress: string
+  requesterrestrict?: string,
+  workerpoolprice?: number = 0,
+  volume?: number = 1000
 ) => {
   const ethProvider = utils.getSignerFromPrivateKey(
     TEST_CHAIN.rpcURL,
     workerpoolOwnerWallet.privateKey
   );
   const iexec = new IExec({ ethProvider }, getTestIExecOption());
-
-  const workerpoolprice = 1000;
-  const volume = 1000;
-
-  await setNRlcBalance(
-    await iexec.wallet.getAddress(),
-    volume * workerpoolprice
-  );
-  await iexec.account.deposit(volume * workerpoolprice);
+  const requiredStake = volume * workerpoolprice;
+  await ensureSufficientStake(iexec, requiredStake);
 
   const workerpoolorder = await iexec.order.createWorkerpoolorder({
     workerpool,
     category: 0,
-    requesterrestrict: voucherOwnerAddress,
+    requesterrestrict,
     volume,
     workerpoolprice,
     tag: ['tee', 'scone'],
   });
-
-  await iexec.order
-    .signWorkerpoolorder(workerpoolorder)
-    .then((o) => iexec.order.publishWorkerpoolorder(o));
+  const signedWorkerpoolorder =
+    await iexec.order.signWorkerpoolorder(workerpoolorder);
+  await iexec.order.publishWorkerpoolorder(signedWorkerpoolorder);
+  return signedWorkerpoolorder;
 };
 
 export const createVoucher = async ({
@@ -357,15 +375,19 @@ export const createVoucher = async ({
   }
 
   try {
+    // TODO: Voucher - Update createWorkerpoolorder() parameters when it is specified
+    const workerpoolprice = 1000;
     await createAndPublishWorkerpoolOrder(
       TEST_CHAIN.debugWorkerpool,
       TEST_CHAIN.debugWorkerpoolOwnerWallet,
-      owner
+      owner,
+      workerpoolprice
     );
     await createAndPublishWorkerpoolOrder(
       TEST_CHAIN.prodWorkerpool,
       TEST_CHAIN.prodWorkerpoolOwnerWallet,
-      owner
+      owner,
+      workerpoolprice
     );
   } catch (error) {
     console.error('Error publishing workerpoolorder:', error);
