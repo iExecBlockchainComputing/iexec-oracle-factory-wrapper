@@ -264,14 +264,17 @@ describe('readOracle', () => {
     mockGet.mockRejectedValueOnce(Error('ipfs.get failed'));
     mockIsCid.mockResolvedValueOnce(true);
     const provider = getDefaultProvider('https://bellecour.iex.ec', {});
+    const paramsetCID = 'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh';
     await expect(
       readOracle({
         ethersProvider: provider,
-        paramSetOrCidOrOracleId:
-          'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh',
+        paramSetOrCidOrOracleId: paramsetCID,
       })
     ).rejects.toThrow(
-      new WorkflowError('Failed to load paramSet', Error('ipfs.get failed'))
+      new WorkflowError(
+        'Failed to load paramSet',
+        Error(`Failed to load paramSetSet from CID ${paramsetCID}`)
+      )
     );
   });
 

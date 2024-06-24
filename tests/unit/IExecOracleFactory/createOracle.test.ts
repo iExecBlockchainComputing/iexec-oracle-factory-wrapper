@@ -516,7 +516,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to upload paramSet');
-    expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
+    expect(errors[0].cause).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
   test('error - unexpected error', async () => {
@@ -553,8 +553,8 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Create oracle unexpected error');
-    expect(errors[0].originalError).toBeInstanceOf(TypeError);
+    expect(errors[0].message).toBe('Failed to create oracle: fake error');
+    expect(errors[0].cause).toBeInstanceOf(TypeError);
   }, 10000);
 
   test('error - with apiKey failed to encrypt apiKey', async () => {
@@ -599,7 +599,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to encrypt API key');
-    expect(errors[0].originalError).toStrictEqual(
+    expect(errors[0].cause).toStrictEqual(
       Error('iexec.dataset.encrypt failed')
     );
   }, 10000);
@@ -651,7 +651,7 @@ describe('createOracle', () => {
     expect(errors[0].message).toBe(
       'Failed to compute encrypted API key checksum'
     );
-    expect(errors[0].originalError).toStrictEqual(
+    expect(errors[0].cause).toStrictEqual(
       Error('iexec.dataset.computeEncryptedFileChecksum failed')
     );
   }, 10000);
@@ -692,7 +692,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to upload encrypted API key');
-    expect(errors[0].originalError).toStrictEqual(Error('ipfs.add failed'));
+    expect(errors[0].cause).toStrictEqual(Error('ipfs.add failed'));
   }, 10000);
 
   test('error - with apiKey failed to deploy dataset', async () => {
@@ -741,7 +741,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe('Failed to deploy API key dataset');
-    expect(errors[0].originalError).toStrictEqual(
+    expect(errors[0].cause).toStrictEqual(
       Error('iexec.dataset.deployDataset failed')
     );
   }, 10000);
@@ -805,7 +805,7 @@ describe('createOracle', () => {
     expect(errors[0].message).toBe(
       "Failed to push API key dataset's encryption key"
     );
-    expect(errors[0].originalError).toStrictEqual(
+    expect(errors[0].cause).toStrictEqual(
       Error('iexec.dataset.pushDatasetSecret failed')
     );
   }, 10000);
@@ -873,7 +873,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to create API key datasetorder's");
-    expect(errors[0].originalError).toStrictEqual(
+    expect(errors[0].cause).toStrictEqual(
       Error('iexec.order.createDatasetorder failed')
     );
   }, 10000);
@@ -955,7 +955,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe("Failed to sign API key datasetorder's");
-    expect(errors[0].originalError).toStrictEqual(
+    expect(errors[0].cause).toStrictEqual(
       Error('iexec.order.signDatasetorder failed')
     );
   }, 10000);
@@ -1000,9 +1000,9 @@ describe('createOracle', () => {
     expect(messages.length).toBe(0);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('API key dataset creation unexpected error');
-    expect(errors[0].originalError).toStrictEqual(
-      Error('something bad happened')
+    expect(errors[0].message).toBe(
+      'Failed to create oracle: something bad happened'
     );
+    expect(errors[0].cause).toStrictEqual(Error('something bad happened'));
   }, 10000);
 });

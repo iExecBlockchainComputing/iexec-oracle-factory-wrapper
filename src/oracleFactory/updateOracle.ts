@@ -9,7 +9,11 @@ import {
   UpdateOracleParams,
 } from '../types/internal-types.js';
 import { ParamSet } from '../types/public-types.js';
-import { ValidationError, WorkflowError } from '../utils/errors.js';
+import {
+  ValidationError,
+  WorkflowError,
+  handleProtocolError,
+} from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
@@ -341,14 +345,22 @@ const updateOracle = ({
           message: 'UPDATE_TASK_COMPLETED',
         });
         safeObserver.complete();
-      } catch (e) {
+      } catch (error) {
         if (abort) return;
-        if (e instanceof WorkflowError || e instanceof ValidationError) {
-          safeObserver.error(e);
+        if (
+          error instanceof WorkflowError ||
+          error instanceof ValidationError
+        ) {
+          safeObserver.error(error);
         } else {
-          safeObserver.error(
-            new WorkflowError('Update oracle unexpected error', e)
-          );
+          if (!handleProtocolError(error)) {
+            safeObserver.error(
+              new WorkflowError(
+                `Failed to update oracle: ${error.message}`,
+                error
+              )
+            );
+          }
         }
       }
     };

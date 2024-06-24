@@ -13,7 +13,11 @@ import {
   CreateOracleOptions,
 } from '../types/internal-types.js';
 import { Address, RawParams } from '../types/public-types.js';
-import { ValidationError, WorkflowError } from '../utils/errors.js';
+import {
+  ValidationError,
+  WorkflowError,
+  handleProtocolError,
+} from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
@@ -181,13 +185,17 @@ const createApiKeyDataset = ({
           });
 
           safeObserver.complete();
-        } catch (e) {
+        } catch (error) {
           if (abort) return;
-          if (e instanceof WorkflowError) {
-            safeObserver.error(e);
-          } else {
+          if (error instanceof WorkflowError) {
+            safeObserver.error(error);
+          }
+          if (!handleProtocolError(error)) {
             safeObserver.error(
-              new WorkflowError('API key dataset creation unexpected error', e)
+              new WorkflowError(
+                `Failed to create oracle: ${error.message}`,
+                error
+              )
             );
           }
         }
@@ -313,13 +321,17 @@ const createOracle = ({
           });
 
           safeObserver.complete();
-        } catch (e) {
+        } catch (error) {
           if (abort) return;
-          if (e instanceof WorkflowError || e instanceof ValidationError) {
-            safeObserver.error(e);
-          } else {
+          if (error instanceof WorkflowError) {
+            safeObserver.error(error);
+          }
+          if (!handleProtocolError(error)) {
             safeObserver.error(
-              new WorkflowError('Create oracle unexpected error', e)
+              new WorkflowError(
+                `Failed to create oracle: ${error.message}`,
+                error
+              )
             );
           }
         }

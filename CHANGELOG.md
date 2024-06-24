@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## Next
+
+### Changed
+
+- Upgraded to iexec ^8.9.1
+- Upgraded to ES2023 in order to support cause option in Error.
+- Upgrade typescript version dependency to support es2023
+
+### Removed
+
+- Removed `OriginalError` from `WorkflowError`
+
 ## [2.1.0] 2024-03-15
 
 ### Removed
