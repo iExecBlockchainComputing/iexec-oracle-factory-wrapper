@@ -16,7 +16,7 @@ import { Address, RawParams } from '../types/public-types.js';
 import {
   ValidationError,
   WorkflowError,
-  handleProtocolError,
+  handleIfProtocolError,
 } from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
@@ -67,16 +67,19 @@ const createApiKeyDataset = ({
           const encryptedFile = await iexec.dataset
             .encrypt(Buffer.from(dataset, 'utf8'), key)
             .catch((e: Error) => {
-              throw new WorkflowError('Failed to encrypt API key', e);
+              throw new WorkflowError({
+                message: 'Failed to encrypt API key',
+                cause: e,
+              });
             });
           if (abort) return;
           const checksum = await iexec.dataset
             .computeEncryptedFileChecksum(encryptedFile)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                'Failed to compute encrypted API key checksum',
-                e
-              );
+              throw new WorkflowError({
+                message: 'Failed to compute encrypted API key checksum',
+                cause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -88,7 +91,10 @@ const createApiKeyDataset = ({
           const cid = await ipfs
             .add(encryptedFile, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload encrypted API key', e);
+              throw new WorkflowError({
+                message: 'Failed to upload encrypted API key',
+                cause: e,
+              });
             });
           if (abort) return;
           const multiaddr = `/ipfs/${cid}`;
@@ -109,7 +115,10 @@ const createApiKeyDataset = ({
               checksum,
             })
             .catch((e: Error) => {
-              throw new WorkflowError('Failed to deploy API key dataset', e);
+              throw new WorkflowError({
+                message: 'Failed to deploy API key dataset',
+                cause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -124,10 +133,10 @@ const createApiKeyDataset = ({
           await iexec.dataset
             .pushDatasetSecret(address, key)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to push API key dataset's encryption key",
-                e
-              );
+              throw new WorkflowError({
+                message: "Failed to push API key dataset's encryption key",
+                cause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -142,10 +151,10 @@ const createApiKeyDataset = ({
               volume: Number.MAX_SAFE_INTEGER - 1,
             })
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to create API key datasetorder's",
-                e
-              );
+              throw new WorkflowError({
+                message: "Failed to create API key datasetorder's",
+                cause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -155,10 +164,10 @@ const createApiKeyDataset = ({
           const order = await iexec.order
             .signDatasetorder(orderToSign)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to sign API key datasetorder's",
-                e
-              );
+              throw new WorkflowError({
+                message: "Failed to sign API key datasetorder's",
+                cause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -173,10 +182,10 @@ const createApiKeyDataset = ({
           const orderHash = await iexec.order
             .publishDatasetorder(order)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to publish API key datasetorder's",
-                e
-              );
+              throw new WorkflowError({
+                message: "Failed to publish API key datasetorder's",
+                cause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -185,17 +194,17 @@ const createApiKeyDataset = ({
           });
 
           safeObserver.complete();
-        } catch (error) {
+        } catch (e) {
           if (abort) return;
-          if (error instanceof WorkflowError) {
-            safeObserver.error(error);
-          }
-          if (!handleProtocolError(error)) {
+          handleIfProtocolError(e, safeObserver);
+          if (e instanceof WorkflowError) {
+            safeObserver.error(e);
+          } else {
             safeObserver.error(
-              new WorkflowError(
-                `Failed to create oracle: ${error.message}`,
-                error
-              )
+              new WorkflowError({
+                message: 'API key dataset creation unexpected error',
+                cause: e,
+              })
             );
           }
         }
@@ -310,7 +319,10 @@ const createOracle = ({
           const cid = await ipfs
             .add(jsonParams, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload paramSet', e);
+              throw new WorkflowError({
+                message: 'Failed to upload paramSet',
+                cause: e,
+              });
             });
           if (abort) return;
           const multiaddr = `/ipfs/${cid}`;
@@ -321,17 +333,17 @@ const createOracle = ({
           });
 
           safeObserver.complete();
-        } catch (error) {
+        } catch (e) {
           if (abort) return;
-          if (error instanceof WorkflowError) {
-            safeObserver.error(error);
-          }
-          if (!handleProtocolError(error)) {
+          handleIfProtocolError(e, safeObserver);
+          if (e instanceof WorkflowError || e instanceof ValidationError) {
+            safeObserver.error(e);
+          } else {
             safeObserver.error(
-              new WorkflowError(
-                `Failed to create oracle: ${error.message}`,
-                error
-              )
+              new WorkflowError({
+                message: 'Create oracle unexpected error',
+                cause: e,
+              })
             );
           }
         }

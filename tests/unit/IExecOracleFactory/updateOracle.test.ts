@@ -789,7 +789,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(4);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to fetch apporder');
+    expect(errors[0].message).toBe('Failed to fetch app order');
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.orderbook.fetchAppOrderbook failed')
     );
@@ -837,8 +837,8 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(4);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('No apporder published');
-    expect(errors[0].cause).toBeUndefined();
+    expect(errors[0].message).toBe('Failed to update oracle');
+    expect(errors[0].cause).toStrictEqual(Error('No app order published'));
   }, 10000);
 
   test('error - fail to fetch datasetorder', async () => {
@@ -889,7 +889,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(6);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to fetch datasetorder');
+    expect(errors[0].message).toBe('Failed to fetch dataset order');
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.orderbook.fetchDatasetOrderbook fail')
     );
@@ -941,11 +941,11 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(6);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('No datasetorder published');
-    expect(errors[0].cause).toBeUndefined();
+    expect(errors[0].message).toBe('Failed to update oracle');
+    expect(errors[0].cause).toStrictEqual(Error('No dataset order published'));
   }, 10000);
 
-  test('error - fail to fetch workerppolorder', async () => {
+  test('error - fail to fetch workerpool order', async () => {
     mockAdd.mockResolvedValueOnce(
       'QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh'
     ) as any;
@@ -997,7 +997,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(8);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to fetch workerpoolorder');
+    expect(errors[0].message).toBe('Failed to fetch workerpool order');
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.orderbook.fetchWorkerpoolOrderbook fail')
     );
@@ -1053,8 +1053,10 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(8);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('No workerpoolorder published');
-    expect(errors[0].cause).toBeUndefined();
+    expect(errors[0].message).toBe('Failed to update oracle');
+    expect(errors[0].cause).toStrictEqual(
+      Error('No workerpool order published')
+    );
   }, 10000);
 
   test('error - fail to create requestorder', async () => {
@@ -1113,7 +1115,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(9);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to create requestorder');
+    expect(errors[0].message).toBe('Failed to create request order');
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.order.createRequestorder failed')
     );
@@ -1442,7 +1444,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(2);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to update oracle: fake error');
+    expect(errors[0].message).toBe('Update oracle unexpected error');
     expect(errors[0].cause).toBeInstanceOf(TypeError);
   }, 10000);
 });

@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 ### Removed
 
-- Removed `OriginalError` from `WorkflowError`
+- Removed `cause` from `WorkflowError`
 
 ## [2.1.0] 2024-03-15
 

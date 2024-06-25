@@ -553,7 +553,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to create oracle: fake error');
+    expect(errors[0].message).toBe('Create oracle unexpected error');
     expect(errors[0].cause).toBeInstanceOf(TypeError);
   }, 10000);
 
@@ -1000,9 +1000,7 @@ describe('createOracle', () => {
     expect(messages.length).toBe(0);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe(
-      'Failed to create oracle: something bad happened'
-    );
+    expect(errors[0].message).toBe('API key dataset creation unexpected error');
     expect(errors[0].cause).toStrictEqual(Error('something bad happened'));
   }, 10000);
 });

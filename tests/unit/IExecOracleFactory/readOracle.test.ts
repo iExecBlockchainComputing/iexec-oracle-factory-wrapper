@@ -271,10 +271,10 @@ describe('readOracle', () => {
         paramSetOrCidOrOracleId: paramsetCID,
       })
     ).rejects.toThrow(
-      new WorkflowError(
-        'Failed to load paramSet',
-        Error(`Failed to load paramSetSet from CID ${paramsetCID}`)
-      )
+      new WorkflowError({
+        message: 'Failed to load paramSet',
+        cause: Error(`Failed to load paramSetSet from CID ${paramsetCID}`),
+      })
     );
   });
 
