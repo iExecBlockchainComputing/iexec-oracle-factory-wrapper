@@ -66,6 +66,8 @@ const getParamSet = async ({
  * Updates an oracle with new parameters.
  * @param paramSetOrCid Parameter set or CID.
  * @param iexec iExec SDK instance.
+ * @param targetBlockchains Chain ID of target blockchains for cross-chain update
+ * @param useVoucher Whether to use a voucher for payment (default: false)
  * @param oracleApp Oracle application address.
  * @param workerpool Workerpool address.
  * @param ipfsGateway IPFS gateway URL.
@@ -76,6 +78,7 @@ const getParamSet = async ({
 const updateOracle = ({
   paramSetOrCid,
   targetBlockchains,
+  useVoucher,
   iexec,
   oracleApp,
   ipfsGateway,
@@ -92,6 +95,11 @@ const updateOracle = ({
     const safeObserver = new SafeObserver(observer);
     const start = async () => {
       try {
+        const userAddress = await iexec.wallet.getAddress();
+        let voucherInfos;
+        if (useVoucher) {
+          voucherInfos = await iexec.voucher.showUserVoucher(userAddress);
+        }
         const targetBlockchainsArray =
           await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
@@ -144,7 +152,7 @@ const updateOracle = ({
           .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
             minTag: ['tee', 'scone'],
             maxTag: ['tee', 'scone'],
-            requester: await iexec.wallet.getAddress(),
+            requester: userAddress,
             workerpool,
             dataset: datasetAddress,
           })
@@ -178,7 +186,7 @@ const updateOracle = ({
             .fetchDatasetOrderbook(datasetAddress, {
               minTag: ['tee', 'scone'],
               maxTag: ['tee', 'scone'],
-              requester: await iexec.wallet.getAddress(),
+              requester: userAddress,
               workerpool,
               app: ORACLE_APP_ADDRESS,
             })
@@ -206,7 +214,7 @@ const updateOracle = ({
         const workerpoolorderbook = await iexec.orderbook
           .fetchWorkerpoolOrderbook({
             minTag: ['tee', 'scone'],
-            requester: await iexec.wallet.getAddress(),
+            requester: userAddress,
             workerpool,
             app: ORACLE_APP_ADDRESS,
             dataset: datasetAddress,
@@ -219,6 +227,56 @@ const updateOracle = ({
           workerpoolorderbook &&
           workerpoolorderbook.orders[0] &&
           workerpoolorderbook.orders[0].order;
+
+        if (useVoucher) {
+          const sponsoredWorkerpools = voucherInfos.sponsoredWorkerpools;
+          const workerpoolAddress = await iexec.ens.resolveName(workerpool);
+          const voucherBalance = parseInt(voucherInfos.balance.toString());
+          const totalWorkerpoolCost =
+            workerpoolorder.workerpoolprice * workerpoolorder.volume;
+
+          // Check if the workerpool is sponsored by the voucher
+          if (sponsoredWorkerpools.includes(workerpoolAddress)) {
+            // Check if the voucher can pay for the entire workerpool order
+            if (voucherBalance < totalWorkerpoolCost) {
+              // Check if the voucher can use the user's account
+              const voucherAddress =
+                await iexec.voucher.getVoucherAddress(userAddress);
+              const voucherAllowanceAmount = await iexec.account.checkAllowance(
+                userAddress,
+                voucherAddress
+              );
+              const voucherAllowance = parseInt(
+                voucherAllowanceAmount.toString()
+              );
+              if (voucherAllowance === 0) {
+                throw new WorkflowError(
+                  `Insufficient voucher balance (${voucherBalance} nRLC) to cover workerpool cost (${totalWorkerpoolCost} nRLC). Authorize the voucher ${voucherAddress} to use account ${userAddress} to cover the remaining amount`
+                );
+              }
+
+              // Check if the allowance is sufficient to cover the additional amount
+              const additionalAmountRequired =
+                totalWorkerpoolCost - voucherBalance;
+              if (voucherAllowance < additionalAmountRequired) {
+                throw new WorkflowError(
+                  `Insufficient voucher balance (${voucherBalance} RLC) to cover workerpool cost (${totalWorkerpoolCost} RLC). Insufficient allowance (${voucherAllowance} nRLC) to cover the additional amount (${additionalAmountRequired} nRLC required)`
+                );
+              }
+            }
+          } else {
+            // Check if the user's stake is sufficient to cover the workerpool order cost
+            const { stake: userStake } =
+              await iexec.account.checkBalance(userAddress);
+            const userStakeNumber = parseInt(userStake.toString());
+            if (userStakeNumber < totalWorkerpoolCost) {
+              throw new WorkflowError(
+                `Insufficient user balance (${userStakeNumber} nRLC) to cover workerpool cost (${totalWorkerpoolCost} nRLC).`
+              );
+            }
+          }
+        }
+
         if (!workerpoolorder) {
           throw new WorkflowError('No workerpoolorder published');
         }
@@ -347,7 +405,10 @@ const updateOracle = ({
           safeObserver.error(e);
         } else {
           safeObserver.error(
-            new WorkflowError('Update oracle unexpected error', e)
+            new WorkflowError(
+              'Update oracle unexpected error : ' + e.message,
+              e
+            )
           );
         }
       }

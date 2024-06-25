@@ -24,11 +24,11 @@ export const TEST_CHAIN = {
   voucherSubgraphURL: DRONE
     ? 'http://gaphnode:8000/subgraphs/name/bellecour/iexec-voucher'
     : 'http://127.0.0.1:8000/subgraphs/name/bellecour/iexec-voucher',
-  debugWorkerpool: 'debug-v8-bellecour.main.pools.iexec.eth',
+  debugWorkerpool: '0xdb214a4a444d176e22030be1ed89da1b029320f2', // 'debug-v8-bellecour.main.pools.iexec.eth'
   debugWorkerpoolOwnerWallet: new Wallet(
     '0x800e01919eadf36f110f733decb1cc0f82e7941a748e89d7a3f76157f6654bb3'
   ),
-  prodWorkerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+  prodWorkerpool: '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f', // 'prod-v8-bellecour.main.pools.iexec.eth'
   prodWorkerpoolOwnerWallet: new Wallet(
     '0x6a12f56d7686e85ab0f46eb3c19cb0c75bfabf8fb04e595654fc93ad652fa7bc'
   ),
@@ -228,12 +228,11 @@ export const createAndPublishAppOrders = async (
   return signedApporder;
 };
 
-const ensureSufficientStake = async (iexec, requiredStake) => {
+export const ensureSufficientStake = async (iexec, requiredStake) => {
   const walletAddress = await iexec.wallet.getAddress();
-  const account = await iexec.account.checkBalance(walletAddress);
-  const currentStake = account.stake;
+  const { stake } = await iexec.account.checkBalance(walletAddress);
 
-  if (currentStake < requiredStake) {
+  if (stake < requiredStake) {
     await setNRlcBalance(walletAddress, requiredStake);
     await iexec.account.deposit(requiredStake);
   }
@@ -266,6 +265,53 @@ export const createAndPublishWorkerpoolOrder = async (
     await iexec.order.signWorkerpoolorder(workerpoolorder);
   await iexec.order.publishWorkerpoolorder(signedWorkerpoolorder);
   return signedWorkerpoolorder;
+};
+
+export const addVoucherEligibleAsset = async (assetAddress, voucherTypeId) => {
+  const voucherHubContract = new Contract(VOUCHER_HUB_ADDRESS, [
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: 'voucherTypeId',
+          type: 'uint256',
+        },
+        {
+          internalType: 'address',
+          name: 'asset',
+          type: 'address',
+        },
+      ],
+      name: 'addEligibleAsset',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+  ]);
+
+  const signer = TEST_CHAIN.voucherManagerWallet.connect(TEST_CHAIN.provider);
+  const retryableAddEligibleAsset = async (tryCount = 1) => {
+    try {
+      const tx = await voucherHubContract
+        .connect(signer)
+        .addEligibleAsset(voucherTypeId, assetAddress);
+      await tx.wait();
+    } catch (error) {
+      console.warn(
+        `Error adding eligible asset to voucher (try count ${tryCount}):`,
+        error
+      );
+      if (tryCount < 5) {
+        await sleep(3000 * tryCount);
+        await retryableAddEligibleAsset(tryCount + 1);
+      } else {
+        throw new Error(
+          `Failed to add eligible asset to voucher after ${tryCount} attempts`
+        );
+      }
+    }
+  };
+  await retryableAddEligibleAsset();
 };
 
 export const createVoucher = async ({
