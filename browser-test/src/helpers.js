@@ -34,8 +34,8 @@ export const formatObservableData = (data) => {
 
 export const formatObservableError = (error) => {
   let message = `ERROR\n${error.toString()}`;
-  if (error.cause) {
-    message += `\n${error.cause.toString()}`;
+  if (error.errorCause) {
+    message += `\n${error.errorCause.toString()}`;
   }
   return message;
 };

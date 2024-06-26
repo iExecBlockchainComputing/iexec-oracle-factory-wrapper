@@ -69,7 +69,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError({
                 message: 'Failed to encrypt API key',
-                cause: e,
+                errorCause: e,
               });
             });
           if (abort) return;
@@ -78,7 +78,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError({
                 message: 'Failed to compute encrypted API key checksum',
-                cause: e,
+                errorCause: e,
               });
             });
           if (abort) return;
@@ -93,7 +93,7 @@ const createApiKeyDataset = ({
             .catch((e) => {
               throw new WorkflowError({
                 message: 'Failed to upload encrypted API key',
-                cause: e,
+                errorCause: e,
               });
             });
           if (abort) return;
@@ -107,19 +107,12 @@ const createApiKeyDataset = ({
           safeObserver.next({
             message: 'DATASET_DEPLOYMENT_SIGN_TX_REQUEST',
           });
-          const { address, txHash } = await iexec.dataset
-            .deployDataset({
-              owner: await iexec.wallet.getAddress(),
-              name: 'api-key',
-              multiaddr,
-              checksum,
-            })
-            .catch((e: Error) => {
-              throw new WorkflowError({
-                message: 'Failed to deploy API key dataset',
-                cause: e,
-              });
-            });
+          const { address, txHash } = await iexec.dataset.deployDataset({
+            owner: await iexec.wallet.getAddress(),
+            name: 'api-key',
+            multiaddr,
+            checksum,
+          });
           if (abort) return;
           safeObserver.next({
             message: 'DATASET_DEPLOYMENT_SUCCESS',
@@ -130,32 +123,18 @@ const createApiKeyDataset = ({
           safeObserver.next({
             message: 'PUSH_SECRET_TO_SMS_SIGN_REQUEST',
           });
-          await iexec.dataset
-            .pushDatasetSecret(address, key)
-            .catch((e: Error) => {
-              throw new WorkflowError({
-                message: "Failed to push API key dataset's encryption key",
-                cause: e,
-              });
-            });
+          await iexec.dataset.pushDatasetSecret(address, key);
           if (abort) return;
           safeObserver.next({
             message: 'PUSH_SECRET_TO_SMS_SUCCESS',
           });
 
-          const orderToSign = await iexec.order
-            .createDatasetorder({
-              dataset: address,
-              tag: ['tee', 'scone'],
-              apprestrict: ORACLE_APP_ADDRESS,
-              volume: Number.MAX_SAFE_INTEGER - 1,
-            })
-            .catch((e: Error) => {
-              throw new WorkflowError({
-                message: "Failed to create API key datasetorder's",
-                cause: e,
-              });
-            });
+          const orderToSign = await iexec.order.createDatasetorder({
+            dataset: address,
+            tag: ['tee', 'scone'],
+            apprestrict: ORACLE_APP_ADDRESS,
+            volume: Number.MAX_SAFE_INTEGER - 1,
+          });
           if (abort) return;
           safeObserver.next({
             message: 'DATASET_ORDER_SIGNATURE_SIGN_REQUEST',
@@ -166,7 +145,7 @@ const createApiKeyDataset = ({
             .catch((e: Error) => {
               throw new WorkflowError({
                 message: "Failed to sign API key datasetorder's",
-                cause: e,
+                errorCause: e,
               });
             });
           if (abort) return;
@@ -179,14 +158,7 @@ const createApiKeyDataset = ({
             message: 'DATASET_ORDER_PUBLISH_SIGN_REQUEST',
             order,
           });
-          const orderHash = await iexec.order
-            .publishDatasetorder(order)
-            .catch((e: Error) => {
-              throw new WorkflowError({
-                message: "Failed to publish API key datasetorder's",
-                cause: e,
-              });
-            });
+          const orderHash = await iexec.order.publishDatasetorder(order);
           if (abort) return;
           safeObserver.next({
             message: 'DATASET_ORDER_PUBLISH_SUCCESS',
@@ -202,8 +174,9 @@ const createApiKeyDataset = ({
           } else {
             safeObserver.error(
               new WorkflowError({
-                message: 'API key dataset creation unexpected error',
-                cause: e,
+                message:
+                  'Failed to create dataset containing encrypted API key',
+                errorCause: e,
               })
             );
           }
@@ -321,7 +294,7 @@ const createOracle = ({
             .catch((e) => {
               throw new WorkflowError({
                 message: 'Failed to upload paramSet',
-                cause: e,
+                errorCause: e,
               });
             });
           if (abort) return;
@@ -341,8 +314,8 @@ const createOracle = ({
           } else {
             safeObserver.error(
               new WorkflowError({
-                message: 'Create oracle unexpected error',
-                cause: e,
+                message: 'Failed to create oracle',
+                errorCause: e,
               })
             );
           }

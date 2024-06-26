@@ -66,7 +66,7 @@ const readOracle = async ({
       } else {
         throw new WorkflowError({
           message: 'Failed to load paramSet',
-          cause: e,
+          errorCause: e,
         });
       }
     });

@@ -553,7 +553,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Create oracle unexpected error');
+    expect(errors[0].message).toBe('Failed to create oracle');
     expect(errors[0].cause).toBeInstanceOf(TypeError);
   }, 10000);
 
@@ -740,7 +740,9 @@ describe('createOracle', () => {
     expect(messages.length).toBe(4);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to deploy API key dataset');
+    expect(errors[0].message).toBe(
+      'Failed to create dataset containing encrypted API key'
+    );
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.dataset.deployDataset failed')
     );
@@ -803,7 +805,7 @@ describe('createOracle', () => {
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
     expect(errors[0].message).toBe(
-      "Failed to push API key dataset's encryption key"
+      'Failed to create dataset containing encrypted API key'
     );
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.dataset.pushDatasetSecret failed')
@@ -872,7 +874,9 @@ describe('createOracle', () => {
     expect(messages.length).toBe(7);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe("Failed to create API key datasetorder's");
+    expect(errors[0].message).toBe(
+      'Failed to create dataset containing encrypted API key'
+    );
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.order.createDatasetorder failed')
     );
@@ -1000,7 +1004,9 @@ describe('createOracle', () => {
     expect(messages.length).toBe(0);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('API key dataset creation unexpected error');
+    expect(errors[0].message).toBe(
+      'Failed to create dataset containing encrypted API key'
+    );
     expect(errors[0].cause).toStrictEqual(Error('something bad happened'));
   }, 10000);
 });

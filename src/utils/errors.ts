@@ -9,14 +9,14 @@ export class WorkflowError extends Error {
 
   constructor({
     message,
-    cause,
+    errorCause,
     isProtocolError = false,
   }: {
     message: string;
-    cause: Error;
+    errorCause: Error;
     isProtocolError?: boolean;
   }) {
-    super(message, { cause: cause });
+    super(message, { cause: errorCause });
     this.name = this.constructor.name;
     this.isProtocolError = isProtocolError;
   }
@@ -31,7 +31,7 @@ export function handleIfProtocolError(
       new WorkflowError({
         message:
           "A service in the iExec protocol appears to be unavailable. You can retry later or contact iExec's technical support for help.",
-        cause: error,
+        errorCause: error,
         isProtocolError: true,
       })
     );

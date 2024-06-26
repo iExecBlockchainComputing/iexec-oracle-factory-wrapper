@@ -1,6 +1,8 @@
 import { Wallet } from 'ethers';
 import { utils } from 'iexec';
+import { MarketCallError } from 'iexec/errors';
 import { IExecOracleFactory } from '../../../src/index.js';
+import { WorkflowError } from '../../../src/utils/errors.js';
 
 // eslint-disable-next-line jest/no-disabled-tests
 test.skip('update oracle - standard from paramSet - no dataset', async () => {
@@ -183,3 +185,44 @@ test.skip('standard - from CID', async () => {
   });
   expect(messages[14]).toStrictEqual({ message: 'UPDATE_TASK_COMPLETED' });
 }, 10000);
+
+test('update oracle - protocol error unavailable market url', async () => {
+  const ethProvider = utils.getSignerFromPrivateKey(
+    'bellecour',
+    Wallet.createRandom().privateKey
+  );
+  const factory = new IExecOracleFactory(ethProvider, {
+    iexecOptions: {
+      iexecGatewayURL: 'https://unavailable.market.url',
+    },
+  });
+  let error: WorkflowError | undefined;
+  try {
+    await new Promise((resolve: any, reject) => {
+      factory
+        .updateOracle('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh', {
+          targetBlockchains: [137],
+        })
+        .subscribe({
+          complete: resolve,
+          error: (e) => {
+            reject(e);
+          },
+          next: () => {},
+        });
+    });
+  } catch (e) {
+    error = e as WorkflowError;
+  }
+  expect(error).toBeInstanceOf(WorkflowError);
+  expect(error.message).toBe(
+    "A service in the iExec protocol appears to be unavailable. You can retry later or contact iExec's technical support for help."
+  );
+  expect(error.cause).toStrictEqual(
+    new MarketCallError(
+      'Connection to https://unavailable.market.url failed with a network error',
+      Error('original error trace')
+    )
+  );
+  expect(error.isProtocolError).toBe(true);
+}, 30000);
