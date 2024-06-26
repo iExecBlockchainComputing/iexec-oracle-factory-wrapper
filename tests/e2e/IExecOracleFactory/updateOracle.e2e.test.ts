@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import { beforeAll } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { IExec, utils } from 'iexec';
@@ -23,7 +24,7 @@ import {
 } from '../../test-utils.js';
 
 // TODO : update iexec-sdk with voucher integration (stable version)
-describe('oracleFactory.updateOracle() - use voucher', () => {
+describe('oracleFactory.updateOracle() - using voucher', () => {
   beforeAll(async () => {
     const ORACLE_APP_ADDRESS = getFactoryDefaults(
       Number(TEST_CHAIN.chainId)
@@ -35,14 +36,14 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
   });
 
   test(
-    'update oracle - use voucher - should throw error when missing voucher address',
+    'should throw error when missing voucher address',
     async () => {
       const consumerWallet = Wallet.createRandom();
       const factoryWithoutOption = new IExecOracleFactory(
         ...getTestConfig(consumerWallet.privateKey)
       );
-      await expect(
-        new Promise((resolve: any, reject) => {
+      try {
+        await new Promise((resolve: any, reject) => {
           factoryWithoutOption
             .updateOracle(
               {
@@ -59,24 +60,22 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
               error: (e) => {
                 reject(e);
               },
-              next: (value) => {
-                if (value.message === 'TASK_UPDATED') {
-                  resolve();
-                }
-              },
+              next: () => {},
             });
-        })
-      ).rejects.toThrow(
-        new WorkflowError(
-          `Update oracle unexpected error : No Voucher found for address ${consumerWallet.address}`
-        )
-      );
+        });
+      } catch (error) {
+        expect(error.message).toBe('Update oracle unexpected error');
+        expect(error.originalError).toBeDefined();
+        expect(error.originalError.message).toBe(
+          `No Voucher found for address ${consumerWallet.address}`
+        );
+      }
     },
     timeouts.updateOracle
   );
 
   test(
-    'update oracle - should throw error if : use voucher & workerpool is sponsored & insufficient voucher balance & voucher not allowed to use the user account',
+    'should throw error if : workerpool is sponsored & insufficient voucher balance & voucher not allowed to use the user account',
     async () => {
       const consumerWallet = Wallet.createRandom();
       const voucherTypeId = await createVoucherType({
@@ -128,11 +127,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
               error: (e) => {
                 reject(e);
               },
-              next: (value) => {
-                if (value.message === 'TASK_UPDATED') {
-                  resolve();
-                }
-              },
+              next: () => {},
             });
         })
       ).rejects.toThrow(
@@ -145,7 +140,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
   );
 
   test(
-    'update oracle - should throw error if : use voucher & workerpool is sponsored & insufficient voucher balance & insufficient allowance to cover the additional amount',
+    'should throw error if : workerpool is sponsored & insufficient voucher balance & insufficient allowance to cover the additional amount',
     async () => {
       const consumerWallet = Wallet.createRandom();
       const voucherTypeId = await createVoucherType({
@@ -205,11 +200,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
               error: (e) => {
                 reject(e);
               },
-              next: (value) => {
-                if (value.message === 'TASK_UPDATED') {
-                  resolve();
-                }
-              },
+              next: () => {},
             });
         })
       ).rejects.toThrow(
@@ -222,7 +213,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
   );
 
   test(
-    'update oracle - should NOT throw error if : use voucher & workerpool is sponsored & insufficient voucher balance & sufficient allowance to cover the additional amount',
+    'should NOT throw error if : workerpool is sponsored & insufficient voucher balance & sufficient allowance to cover the additional amount',
     async () => {
       const consumerWallet = Wallet.createRandom();
       const voucherTypeId = await createVoucherType({
@@ -279,7 +270,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
   );
 
   test(
-    'update oracle - should throw error if : use voucher & workerpool is NOT sponsored & insufficient user balance to cover total workerpool cost',
+    'should throw error if : workerpool is NOT sponsored & insufficient user balance to cover total workerpool cost',
     async () => {
       const consumerWallet = Wallet.createRandom();
       const voucherTypeId = await createVoucherType({
@@ -331,11 +322,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
               error: (e) => {
                 reject(e);
               },
-              next: (value) => {
-                if (value.message === 'TASK_UPDATED') {
-                  resolve();
-                }
-              },
+              next: () => {},
             });
         })
       ).rejects.toThrow(
@@ -348,7 +335,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
   );
 
   test(
-    'update oracle - should NOT throw error if : use voucher & workerpool is NOT sponsored & sufficient user balance to cover total workerpool cost',
+    'should NOT throw error if : workerpool is NOT sponsored & sufficient user balance to cover total workerpool cost',
     async () => {
       const consumerWallet = Wallet.createRandom();
       const voucherTypeId = await createVoucherType({
@@ -403,7 +390,7 @@ describe('oracleFactory.updateOracle() - use voucher', () => {
   );
 });
 
-describe('oracleFactory.updateOracle()', () => {
+describe('oracleFactory.updateOracle() - without using voucher', () => {
   let signedWorkerpoolorder;
   let signedApporder;
 
