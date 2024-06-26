@@ -1,4 +1,5 @@
 import CID from 'cids';
+import { isAddress } from 'ethers';
 import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
 import {
@@ -230,7 +231,10 @@ const updateOracle = ({
 
         if (useVoucher) {
           const sponsoredWorkerpools = voucherInfos.sponsoredWorkerpools;
-          const workerpoolAddress = await iexec.ens.resolveName(workerpool);
+          let workerpoolAddress;
+          if (!isAddress(workerpool)) {
+            workerpoolAddress = await iexec.ens.resolveName(workerpool);
+          }
           const voucherBalance = parseInt(voucherInfos.balance.toString());
           const totalWorkerpoolCost =
             workerpoolorder.workerpoolprice * workerpoolorder.volume;
