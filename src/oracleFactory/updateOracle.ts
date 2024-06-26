@@ -405,10 +405,7 @@ const updateOracle = ({
           safeObserver.error(e);
         } else {
           safeObserver.error(
-            new WorkflowError(
-              'Update oracle unexpected error : ' + e.message,
-              e
-            )
+            new WorkflowError('Update oracle unexpected error', e)
           );
         }
       }
