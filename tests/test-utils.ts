@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { Wallet, JsonRpcProvider, ethers, Contract } from 'ethers';
+import { Wallet, JsonRpcProvider, ethers, Contract, isAddress } from 'ethers';
 import { IExec, utils } from 'iexec';
 import { getSignerFromPrivateKey } from 'iexec/utils';
 import { AddressOrENS, Web3SignerProvider } from '../src/index.js';
@@ -8,6 +8,9 @@ import { AddressOrENS, Web3SignerProvider } from '../src/index.js';
 import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 
 const { DRONE } = process.env;
+
+export const OF_APP_ADDRESS: AddressOrENS =
+  '0xd11f5d70f8817add3d9e15d316911e6a4d699f79'; // 'oracle-factory.apps.iexec.eth';
 
 export const TEST_CHAIN = {
   rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545',
@@ -209,19 +212,25 @@ export const createVoucherType = async ({
 };
 
 export const createAndPublishAppOrders = async (
-  appAddress: AddressOrENS,
-  appOwnerWallet: ethers.Wallet
+  appAddressOrEns: AddressOrENS,
+  appOwnerWallet: ethers.Wallet,
+  appprice? = 1000,
+  volume? = 1000
 ) => {
   const ethProvider = utils.getSignerFromPrivateKey(
     TEST_CHAIN.rpcURL,
     appOwnerWallet.privateKey
   );
   const iexec = new IExec({ ethProvider }, getTestIExecOption());
+  let appAddress = appAddressOrEns;
+  if (!isAddress(appAddressOrEns)) {
+    appAddress = await iexec.ens.resolveName(appAddressOrEns);
+  }
   const apporder = await iexec.order.createApporder({
     app: appAddress,
     tag: ['tee', 'scone'],
-    volume: 100,
-    appprice: 0,
+    volume,
+    appprice,
   });
   const signedApporder = await iexec.order.signApporder(apporder);
   await iexec.order.publishApporder(signedApporder);
@@ -242,7 +251,7 @@ export const createAndPublishWorkerpoolOrder = async (
   workerpool: string,
   workerpoolOwnerWallet: ethers.Wallet,
   requesterrestrict?: string,
-  workerpoolprice?: number = 0,
+  workerpoolprice?: number = 1000,
   volume?: number = 1000
 ) => {
   const ethProvider = utils.getSignerFromPrivateKey(
@@ -365,7 +374,7 @@ export const createVoucher = async ({
       outputs: [
         {
           internalType: 'address',
-          name: '',
+          name: 'voucherAddress',
           type: 'address',
         },
       ],
@@ -374,21 +383,23 @@ export const createVoucher = async ({
     },
   ];
 
-  const iexec = new IExec(
+  // deposit voucher value on VoucherHub with a random wallet
+  const voucherSponsorWallet = Wallet.createRandom();
+  const iexecVoucherSponsor = new IExec(
     {
       ethProvider: getSignerFromPrivateKey(
         TEST_CHAIN.rpcURL,
-        TEST_CHAIN.voucherManagerWallet.privateKey
+        voucherSponsorWallet.privateKey
       ),
     },
     { hubAddress: TEST_CHAIN.hubAddress }
   );
-
   // ensure RLC balance
-  await setNRlcBalance(await iexec.wallet.getAddress(), value);
+  await setNRlcBalance(await iexecVoucherSponsor.wallet.getAddress(), value);
 
   // deposit RLC to voucherHub
-  const contractClient = await iexec.config.resolveContractsClient();
+  const contractClient =
+    await iexecVoucherSponsor.config.resolveContractsClient();
   const iexecContract = contractClient.getIExecContract();
 
   try {
@@ -409,27 +420,35 @@ export const createVoucher = async ({
 
   const signer = TEST_CHAIN.voucherManagerWallet.connect(TEST_CHAIN.provider);
 
-  try {
-    const createVoucherTxHash = await voucherHubContract
-      .connect(signer)
-      .createVoucher(owner, voucherType, value);
+  const retryableCreateVoucher = async (tryCount = 1) => {
+    try {
+      const createVoucherTx = await voucherHubContract
+        .connect(signer)
+        .createVoucher(owner, voucherType, value);
+      await createVoucherTx.wait();
+    } catch (error) {
+      console.warn(`Error creating voucher (try count ${tryCount}):`, error);
+      if (tryCount < 3) {
+        await sleep(3000 * tryCount);
+        await retryableCreateVoucher(tryCount + 1);
+      } else {
+        throw new Error(`Failed to create voucher after ${tryCount} attempts`);
+      }
+    }
+  };
+  await retryableCreateVoucher();
 
-    await createVoucherTxHash.wait();
-  } catch (error) {
-    console.error('Error creating voucher:', error);
-    throw error;
-  }
-
+  let signedDebugWorkerpoolorder;
+  let signedProdWorkerpoolorder;
   try {
-    // TODO: Voucher - Update createWorkerpoolorder() parameters when it is specified
     const workerpoolprice = 1000;
-    await createAndPublishWorkerpoolOrder(
+    signedDebugWorkerpoolorder = await createAndPublishWorkerpoolOrder(
       TEST_CHAIN.debugWorkerpool,
       TEST_CHAIN.debugWorkerpoolOwnerWallet,
       owner,
       workerpoolprice
     );
-    await createAndPublishWorkerpoolOrder(
+    signedProdWorkerpoolorder = await createAndPublishWorkerpoolOrder(
       TEST_CHAIN.prodWorkerpool,
       TEST_CHAIN.prodWorkerpoolOwnerWallet,
       owner,
@@ -441,7 +460,12 @@ export const createVoucher = async ({
   }
 
   try {
-    return await voucherHubContract.getVoucher(owner);
+    const voucherAddress = await voucherHubContract.getVoucher(owner);
+    return {
+      voucherAddress,
+      signedDebugWorkerpoolorder,
+      signedProdWorkerpoolorder,
+    };
   } catch (error) {
     console.error('Error getting voucher:', error);
     throw error;

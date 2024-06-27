@@ -2,11 +2,10 @@
 import { beforeAll } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { IExec, utils } from 'iexec';
-import { getFactoryDefaults } from '../../../src/config/config.js';
 import { IExecOracleFactory } from '../../../src/index.js';
-import { WorkflowError } from '../../../src/utils/errors.js';
 import {
   MAX_EXPECTED_BLOCKTIME,
+  OF_APP_ADDRESS,
   TEST_CHAIN,
   addVoucherEligibleAsset,
   createAndPublishAppOrders,
@@ -20,27 +19,33 @@ import {
   timeouts,
 } from '../../test-utils.js';
 
-// TODO : update iexec-sdk with voucher integration (stable version)
 describe('oracleFactory.updateOracle()', () => {
-  let signedApporder;
-
-  beforeAll(async () => {
-    const ORACLE_APP_ADDRESS = getFactoryDefaults(
-      Number(TEST_CHAIN.chainId)
-    ).ORACLE_APP_ADDRESS;
-    signedApporder = await createAndPublishAppOrders(
-      ORACLE_APP_ADDRESS,
-      TEST_CHAIN.appOwnerWallet
-    );
-  }, 4 * MAX_EXPECTED_BLOCKTIME);
-
   describe('using voucher', () => {
+    let signedApporder;
+    beforeAll(async () => {
+      const appPrice = 100;
+      const volume = 1000;
+      signedApporder = await createAndPublishAppOrders(
+        OF_APP_ADDRESS,
+        TEST_CHAIN.appOwnerWallet,
+        appPrice,
+        volume
+      );
+    }, 4 * MAX_EXPECTED_BLOCKTIME);
+
     test(
-      'should throw error when the user has no voucher',
+      'should throw error if no voucher available for the requester',
       async () => {
         const consumerWallet = Wallet.createRandom();
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
+        );
+        const workerpoolprice = 1000;
+        await createAndPublishWorkerpoolOrder(
+          TEST_CHAIN.prodWorkerpool,
+          TEST_CHAIN.prodWorkerpoolOwnerWallet,
+          consumerWallet.address,
+          workerpoolprice
         );
         try {
           await new Promise((resolve: any, reject) => {
@@ -64,10 +69,10 @@ describe('oracleFactory.updateOracle()', () => {
               });
           });
         } catch (error) {
-          expect(error.message).toBe('Update oracle unexpected error');
+          expect(error.message).toBe('Failed to match orders');
           expect(error.originalError).toBeDefined();
           expect(error.originalError.message).toBe(
-            `No Voucher found for address ${consumerWallet.address}`
+            `No voucher available for the requester ${consumerWallet.address}`
           );
         }
       },
@@ -75,15 +80,15 @@ describe('oracleFactory.updateOracle()', () => {
     );
 
     test(
-      'should throw error if : workerpool is sponsored & insufficient voucher balance & voucher not allowed to use the user account',
+      'should throw error if insufficient voucher amount',
       async () => {
         const consumerWallet = Wallet.createRandom();
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
         });
-        const voucherBalance = 1000;
-        const voucherAddress = await createVoucher({
+        const voucherBalance = 10;
+        const { signedProdWorkerpoolorder } = await createVoucher({
           owner: consumerWallet.address,
           voucherType: voucherTypeId,
           value: voucherBalance,
@@ -91,29 +96,18 @@ describe('oracleFactory.updateOracle()', () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        const ethProvider = utils.getSignerFromPrivateKey(
-          TEST_CHAIN.rpcURL,
-          consumerWallet.privateKey
-        );
         await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
         await addVoucherEligibleAsset(
           TEST_CHAIN.debugWorkerpool,
           voucherTypeId
         );
-        const iexec = new IExec({ ethProvider }, getTestIExecOption());
-        const workerpoolorderbook =
-          await iexec.orderbook.fetchWorkerpoolOrderbook({
-            requester: consumerWallet.address,
-          });
-        const workerpoolorder =
-          workerpoolorderbook &&
-          workerpoolorderbook.orders[0] &&
-          workerpoolorderbook.orders[0].order;
-        const totalWorkerpoolCost =
-          workerpoolorder.workerpoolprice * workerpoolorder.volume;
-
-        await expect(
-          new Promise((resolve: any, reject) => {
+        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        const missingAmount =
+          Number(signedProdWorkerpoolorder.workerpoolprice) +
+          Number(signedApporder.appprice) -
+          Number(voucherBalance);
+        try {
+          await new Promise((resolve: any, reject) => {
             factoryWithoutOption
               .updateOracle(
                 {
@@ -132,121 +126,54 @@ describe('oracleFactory.updateOracle()', () => {
                 },
                 next: () => {},
               });
-          })
-        ).rejects.toThrow(
-          new WorkflowError(
-            `Insufficient voucher balance (${voucherBalance} nRLC) to cover workerpool cost (${totalWorkerpoolCost} nRLC). Authorize the voucher ${voucherAddress} to use account ${consumerWallet.address} to cover the remaining amount`
-          )
-        );
-      },
-      timeouts.updateOracle
-    );
-
-    test(
-      'should throw error if : workerpool is sponsored & insufficient voucher balance & insufficient allowance to cover the additional amount',
-      async () => {
-        const consumerWallet = Wallet.createRandom();
-        const voucherTypeId = await createVoucherType({
-          description: 'test voucher type',
-          duration: 60 * 60,
-        });
-        const voucherBalance = 800_000;
-        const voucherAddress = await createVoucher({
-          owner: consumerWallet.address,
-          voucherType: voucherTypeId,
-          value: voucherBalance,
-        });
-        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
-        await addVoucherEligibleAsset(
-          TEST_CHAIN.debugWorkerpool,
-          voucherTypeId
-        );
-        const ethProvider = utils.getSignerFromPrivateKey(
-          TEST_CHAIN.rpcURL,
-          consumerWallet.privateKey
-        );
-        const iexec = new IExec({ ethProvider }, getTestIExecOption());
-        const workerpoolorderbook =
-          await iexec.orderbook.fetchWorkerpoolOrderbook({
-            requester: consumerWallet.address,
           });
-        const workerpoolorder =
-          workerpoolorderbook &&
-          workerpoolorderbook.orders[0] &&
-          workerpoolorderbook.orders[0].order;
-        const totalWorkerpoolCost =
-          workerpoolorder.workerpoolprice * workerpoolorder.volume;
-        await ensureSufficientStake(iexec, 100_0000);
-        await iexec.account.approve(100, voucherAddress);
-        const factoryWithoutOption = new IExecOracleFactory(
-          ...getTestConfig(consumerWallet.privateKey)
-        );
-        const voucherAllowanceAmount = await iexec.account.checkAllowance(
-          consumerWallet.address,
-          voucherAddress
-        );
-        const voucherAllowance = parseInt(voucherAllowanceAmount.toString());
-        const additionalAmountRequired = totalWorkerpoolCost - voucherBalance;
-
-        await expect(
-          new Promise((resolve: any, reject) => {
-            factoryWithoutOption
-              .updateOracle(
-                {
-                  JSONPath: '$.data',
-                  body: '',
-                  dataType: 'string',
-                  method: 'GET',
-                  url: 'https://foo.io',
-                },
-                { useVoucher: true }
-              )
-              .subscribe({
-                complete: resolve,
-                error: (e) => {
-                  reject(e);
-                },
-                next: () => {},
-              });
-          })
-        ).rejects.toThrow(
-          new WorkflowError(
-            `Insufficient voucher balance (${voucherBalance} RLC) to cover workerpool cost (${totalWorkerpoolCost} RLC). Insufficient allowance (${voucherAllowance} nRLC) to cover the additional amount (${additionalAmountRequired} nRLC required)`
-          )
-        );
+        } catch (error) {
+          expect(error.message).toBe('Failed to match orders');
+          expect(error.originalError).toBeDefined();
+          expect(error.originalError.message).toBe(
+            `Orders can't be matched. Please approve an additional ${missingAmount} for voucher usage.`
+          );
+        }
       },
       timeouts.updateOracle
     );
 
     test(
-      'should create a task if : workerpool is sponsored & insufficient voucher balance & sufficient allowance to cover the additional amount',
+      'should create a task when user deposits to cover the missing amount',
       async () => {
         const consumerWallet = Wallet.createRandom();
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
         });
-        const voucherBalance = 800_000;
-        const voucherAddress = await createVoucher({
-          owner: consumerWallet.address,
-          voucherType: voucherTypeId,
-          value: voucherBalance,
-        });
+        const voucherBalance = 10;
+        const { voucherAddress, signedProdWorkerpoolorder } =
+          await createVoucher({
+            owner: consumerWallet.address,
+            voucherType: voucherTypeId,
+            value: voucherBalance,
+          });
+        const factoryWithoutOption = new IExecOracleFactory(
+          ...getTestConfig(consumerWallet.privateKey)
+        );
         await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
         await addVoucherEligibleAsset(
           TEST_CHAIN.debugWorkerpool,
           voucherTypeId
         );
+        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        const missingAmount =
+          Number(signedProdWorkerpoolorder.workerpoolprice) +
+          Number(signedApporder.appprice) -
+          Number(voucherBalance);
         const ethProvider = utils.getSignerFromPrivateKey(
           TEST_CHAIN.rpcURL,
           consumerWallet.privateKey
         );
         const iexec = new IExec({ ethProvider }, getTestIExecOption());
-        await ensureSufficientStake(iexec, 100_0000);
-        await iexec.account.approve(100_0000, voucherAddress);
-        const factoryWithoutOption = new IExecOracleFactory(
-          ...getTestConfig(consumerWallet.privateKey)
-        );
+        await ensureSufficientStake(iexec, missingAmount);
+        await iexec.account.approve(missingAmount, voucherAddress);
+
         const messages: any = [];
         await new Promise((resolve: any, reject) => {
           factoryWithoutOption
@@ -279,42 +206,31 @@ describe('oracleFactory.updateOracle()', () => {
     );
 
     test(
-      'should throw error if : workerpool is NOT sponsored & insufficient user balance to cover total workerpool cost',
+      'should throw error if the app is not sponsored',
       async () => {
         const consumerWallet = Wallet.createRandom();
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
         });
-        const voucherBalance = 800_000;
+        const voucherBalance = 1000_000;
         await createVoucher({
           owner: consumerWallet.address,
           voucherType: voucherTypeId,
           value: voucherBalance,
         });
-        const ethProvider = utils.getSignerFromPrivateKey(
-          TEST_CHAIN.rpcURL,
-          consumerWallet.privateKey
-        );
-        const iexec = new IExec({ ethProvider }, getTestIExecOption());
-        const workerpoolorderbook =
-          await iexec.orderbook.fetchWorkerpoolOrderbook({
-            requester: consumerWallet.address,
-          });
-        const workerpoolorder =
-          workerpoolorderbook &&
-          workerpoolorderbook.orders[0] &&
-          workerpoolorderbook.orders[0].order;
-        const totalWorkerpoolCost =
-          workerpoolorder.workerpoolprice * workerpoolorder.volume;
-        const userStakeNumber = 100;
-        await ensureSufficientStake(iexec, userStakeNumber);
-
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        await expect(
-          new Promise((resolve: any, reject) => {
+        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
+        await addVoucherEligibleAsset(
+          TEST_CHAIN.debugWorkerpool,
+          voucherTypeId
+        );
+        const missingAmount = signedApporder.appprice;
+
+        try {
+          await new Promise((resolve: any, reject) => {
             factoryWithoutOption
               .updateOracle(
                 {
@@ -333,41 +249,94 @@ describe('oracleFactory.updateOracle()', () => {
                 },
                 next: () => {},
               });
-          })
-        ).rejects.toThrow(
-          new WorkflowError(
-            `Insufficient user balance (${userStakeNumber} nRLC) to cover workerpool cost (${totalWorkerpoolCost} nRLC).`
-          )
-        );
+          });
+        } catch (error) {
+          expect(error.message).toBe('Failed to match orders');
+          expect(error.originalError).toBeDefined();
+          expect(error.originalError.message).toBe(
+            `Orders can't be matched. Please approve an additional ${missingAmount} for voucher usage.`
+          );
+        }
       },
       timeouts.updateOracle
     );
 
     test(
-      'should create a task if : workerpool is NOT sponsored & sufficient user balance to cover total workerpool cost',
+      'should throw error if the workerpool is not sponsored',
       async () => {
         const consumerWallet = Wallet.createRandom();
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
         });
-        const voucherBalance = 10_000;
+        const voucherBalance = 1000_000;
+        const { signedProdWorkerpoolorder } = await createVoucher({
+          owner: consumerWallet.address,
+          voucherType: voucherTypeId,
+          value: voucherBalance,
+        });
+        const factoryWithoutOption = new IExecOracleFactory(
+          ...getTestConfig(consumerWallet.privateKey)
+        );
+        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        const missingAmount = signedProdWorkerpoolorder.workerpoolprice;
+        try {
+          await new Promise((resolve: any, reject) => {
+            factoryWithoutOption
+              .updateOracle(
+                {
+                  JSONPath: '$.data',
+                  body: '',
+                  dataType: 'string',
+                  method: 'GET',
+                  url: 'https://foo.io',
+                },
+                { useVoucher: true }
+              )
+              .subscribe({
+                complete: resolve,
+                error: (e) => {
+                  reject(e);
+                },
+                next: () => {},
+              });
+          });
+        } catch (error) {
+          expect(error.message).toBe('Failed to match orders');
+          expect(error.originalError).toBeDefined();
+          expect(error.originalError.message).toBe(
+            `Orders can't be matched. Please approve an additional ${missingAmount} for voucher usage.`
+          );
+        }
+      },
+      timeouts.updateOracle
+    );
+
+    test(
+      'should create a task with sufficient voucher amount',
+      async () => {
+        const consumerWallet = Wallet.createRandom();
+        const voucherTypeId = await createVoucherType({
+          description: 'test voucher type',
+          duration: 2 * 60 * 60,
+        });
+        const voucherBalance = 1000_0000;
         await createVoucher({
           owner: consumerWallet.address,
           voucherType: voucherTypeId,
           value: voucherBalance,
         });
-        const ethProvider = utils.getSignerFromPrivateKey(
-          TEST_CHAIN.rpcURL,
-          consumerWallet.privateKey
-        );
-        const iexec = new IExec({ ethProvider }, getTestIExecOption());
-        const userStakeNumber = 1200_000;
-        await ensureSufficientStake(iexec, userStakeNumber);
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        const messages = [];
+        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
+        await addVoucherEligibleAsset(
+          TEST_CHAIN.debugWorkerpool,
+          voucherTypeId
+        );
+        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+
+        const messages: any = [];
         await new Promise((resolve: any, reject) => {
           factoryWithoutOption
             .updateOracle(
@@ -393,35 +362,62 @@ describe('oracleFactory.updateOracle()', () => {
               },
             });
         });
-        expect(messages.length).toEqual(12);
+        expect(messages.length).toBe(12);
       },
       timeouts.updateOracle
     );
   });
 
-  describe('without using voucher - default prod workerpool (free)', () => {
+  describe('without using voucher', () => {
     const consumerWallet = Wallet.createRandom();
     const DEFAULT_WORKERPOOL_ADDRESS =
-      '0x0e7Bc972c99187c191A17f3CaE4A2711a4188c3F';
+      '0x0e7Bc972c99187c191A17f3CaE4A2711a4188c3F'; // 'prod-v8-bellecour.main.pools.iexec.eth'
+    let signedApporder;
+    let signedProdWorkerpoolorder;
+
     beforeAll(async () => {
-      const workerpoolPrice = 0;
-      const volume = 2;
-      // create and publish free workerpool order
-      await createAndPublishWorkerpoolOrder(
-        TEST_CHAIN.prodWorkerpool,
-        TEST_CHAIN.prodWorkerpoolOwnerWallet,
-        consumerWallet.address,
+      const workerpoolPrice = 1000;
+      const volume = 1000;
+      signedApporder = await createAndPublishAppOrders(
+        OF_APP_ADDRESS,
+        TEST_CHAIN.appOwnerWallet,
         workerpoolPrice,
         volume
       );
-    });
+      signedProdWorkerpoolorder = await createAndPublishWorkerpoolOrder(
+        TEST_CHAIN.prodWorkerpool,
+        TEST_CHAIN.prodWorkerpoolOwnerWallet,
+        undefined,
+        workerpoolPrice,
+        volume
+      );
+      const totalCost =
+        Number(signedProdWorkerpoolorder.workerpoolprice) +
+        Number(signedApporder.appprice);
+
+      const ethProvider = utils.getSignerFromPrivateKey(
+        TEST_CHAIN.rpcURL,
+        consumerWallet.privateKey
+      );
+      const iexec = new IExec({ ethProvider }, getTestIExecOption());
+      await ensureSufficientStake(iexec, totalCost);
+    }, 4 * MAX_EXPECTED_BLOCKTIME);
 
     test(
-      'update oracle - standard from paramSet - no dataset',
+      'should create a task - standard oracle from paramSet - no dataset',
       async () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
+
+        const ethProvider = utils.getSignerFromPrivateKey(
+          TEST_CHAIN.rpcURL,
+          consumerWallet.privateKey
+        );
+        const iexec = new IExec({ ethProvider }, getTestIExecOption());
+
+        await ensureSufficientStake(iexec, 100_0000);
+
         const messages: any = [];
         await new Promise((resolve: any, reject) => {
           factoryWithoutOption
@@ -450,7 +446,9 @@ describe('oracleFactory.updateOracle()', () => {
         });
         expect(messages.length).toBe(12);
         expect(messages[0]).toStrictEqual({ message: 'ENSURE_PARAMS' });
-        expect(messages[1]).toStrictEqual({ message: 'ENSURE_PARAMS_UPLOAD' });
+        expect(messages[1]).toStrictEqual({
+          message: 'ENSURE_PARAMS_UPLOAD',
+        });
         expect(messages[2]).toStrictEqual({
           message: 'ENSURE_PARAMS_SUCCESS',
           paramSet: {
@@ -529,7 +527,7 @@ describe('oracleFactory.updateOracle()', () => {
     );
 
     test(
-      'standard - from CID',
+      'should create a task - standard oracle from CID - with dataset',
       async () => {
         const ethProvider = getTestWeb3SignerProvider(
           consumerWallet.privateKey
