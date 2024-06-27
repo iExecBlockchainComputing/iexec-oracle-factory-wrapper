@@ -9,8 +9,7 @@ import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 
 const { DRONE } = process.env;
 
-export const OF_APP_ADDRESS: AddressOrENS =
-  '0xd11f5d70f8817add3d9e15d316911e6a4d699f79'; // 'oracle-factory.apps.iexec.eth';
+export const OF_APP_ADDRESS: AddressOrENS = 'oracle-factory.apps.iexec.eth';
 
 export const TEST_CHAIN = {
   rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545',
@@ -27,11 +26,11 @@ export const TEST_CHAIN = {
   voucherSubgraphURL: DRONE
     ? 'http://gaphnode:8000/subgraphs/name/bellecour/iexec-voucher'
     : 'http://127.0.0.1:8000/subgraphs/name/bellecour/iexec-voucher',
-  debugWorkerpool: '0xdb214a4a444d176e22030be1ed89da1b029320f2', // 'debug-v8-bellecour.main.pools.iexec.eth'
+  debugWorkerpool: 'debug-v8-bellecour.main.pools.iexec.eth',
   debugWorkerpoolOwnerWallet: new Wallet(
     '0x800e01919eadf36f110f733decb1cc0f82e7941a748e89d7a3f76157f6654bb3'
   ),
-  prodWorkerpool: '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f', // 'prod-v8-bellecour.main.pools.iexec.eth'
+  prodWorkerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
   prodWorkerpoolOwnerWallet: new Wallet(
     '0x6a12f56d7686e85ab0f46eb3c19cb0c75bfabf8fb04e595654fc93ad652fa7bc'
   ),

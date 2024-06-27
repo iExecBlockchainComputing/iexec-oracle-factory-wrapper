@@ -83,6 +83,12 @@ describe('oracleFactory.updateOracle()', () => {
       'should throw error if insufficient voucher amount',
       async () => {
         const consumerWallet = Wallet.createRandom();
+        const ethProvider = utils.getSignerFromPrivateKey(
+          TEST_CHAIN.rpcURL,
+          consumerWallet.privateKey
+        );
+        const iexec = new IExec({ ethProvider }, getTestIExecOption());
+
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
@@ -96,12 +102,18 @@ describe('oracleFactory.updateOracle()', () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
         await addVoucherEligibleAsset(
-          TEST_CHAIN.debugWorkerpool,
+          await iexec.ens.resolveName(TEST_CHAIN.prodWorkerpool),
           voucherTypeId
         );
-        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(TEST_CHAIN.debugWorkerpool),
+          voucherTypeId
+        );
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(OF_APP_ADDRESS),
+          voucherTypeId
+        );
         const missingAmount =
           Number(signedProdWorkerpoolorder.workerpoolprice) +
           Number(signedApporder.appprice) -
@@ -142,6 +154,12 @@ describe('oracleFactory.updateOracle()', () => {
       'should create a task when user deposits to cover the missing amount',
       async () => {
         const consumerWallet = Wallet.createRandom();
+        const ethProvider = utils.getSignerFromPrivateKey(
+          TEST_CHAIN.rpcURL,
+          consumerWallet.privateKey
+        );
+        const iexec = new IExec({ ethProvider }, getTestIExecOption());
+
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
@@ -156,21 +174,23 @@ describe('oracleFactory.updateOracle()', () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
         await addVoucherEligibleAsset(
-          TEST_CHAIN.debugWorkerpool,
+          await iexec.ens.resolveName(TEST_CHAIN.prodWorkerpool),
           voucherTypeId
         );
-        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(TEST_CHAIN.debugWorkerpool),
+          voucherTypeId
+        );
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(OF_APP_ADDRESS),
+          voucherTypeId
+        );
         const missingAmount =
           Number(signedProdWorkerpoolorder.workerpoolprice) +
           Number(signedApporder.appprice) -
           Number(voucherBalance);
-        const ethProvider = utils.getSignerFromPrivateKey(
-          TEST_CHAIN.rpcURL,
-          consumerWallet.privateKey
-        );
-        const iexec = new IExec({ ethProvider }, getTestIExecOption());
+
         await ensureSufficientStake(iexec, missingAmount);
         await iexec.account.approve(missingAmount, voucherAddress);
 
@@ -209,6 +229,11 @@ describe('oracleFactory.updateOracle()', () => {
       'should throw error if the app is not sponsored',
       async () => {
         const consumerWallet = Wallet.createRandom();
+        const ethProvider = utils.getSignerFromPrivateKey(
+          TEST_CHAIN.rpcURL,
+          consumerWallet.privateKey
+        );
+        const iexec = new IExec({ ethProvider }, getTestIExecOption());
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
@@ -222,9 +247,12 @@ describe('oracleFactory.updateOracle()', () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
         await addVoucherEligibleAsset(
-          TEST_CHAIN.debugWorkerpool,
+          await iexec.ens.resolveName(TEST_CHAIN.prodWorkerpool),
+          voucherTypeId
+        );
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(TEST_CHAIN.debugWorkerpool),
           voucherTypeId
         );
         const missingAmount = signedApporder.appprice;
@@ -265,6 +293,11 @@ describe('oracleFactory.updateOracle()', () => {
       'should throw error if the workerpool is not sponsored',
       async () => {
         const consumerWallet = Wallet.createRandom();
+        const ethProvider = utils.getSignerFromPrivateKey(
+          TEST_CHAIN.rpcURL,
+          consumerWallet.privateKey
+        );
+        const iexec = new IExec({ ethProvider }, getTestIExecOption());
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 60 * 60,
@@ -278,7 +311,10 @@ describe('oracleFactory.updateOracle()', () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(OF_APP_ADDRESS),
+          voucherTypeId
+        );
         const missingAmount = signedProdWorkerpoolorder.workerpoolprice;
         try {
           await new Promise((resolve: any, reject) => {
@@ -316,6 +352,11 @@ describe('oracleFactory.updateOracle()', () => {
       'should create a task with sufficient voucher amount',
       async () => {
         const consumerWallet = Wallet.createRandom();
+        const ethProvider = utils.getSignerFromPrivateKey(
+          TEST_CHAIN.rpcURL,
+          consumerWallet.privateKey
+        );
+        const iexec = new IExec({ ethProvider }, getTestIExecOption());
         const voucherTypeId = await createVoucherType({
           description: 'test voucher type',
           duration: 2 * 60 * 60,
@@ -329,12 +370,18 @@ describe('oracleFactory.updateOracle()', () => {
         const factoryWithoutOption = new IExecOracleFactory(
           ...getTestConfig(consumerWallet.privateKey)
         );
-        await addVoucherEligibleAsset(TEST_CHAIN.prodWorkerpool, voucherTypeId);
         await addVoucherEligibleAsset(
-          TEST_CHAIN.debugWorkerpool,
+          await iexec.ens.resolveName(TEST_CHAIN.prodWorkerpool),
           voucherTypeId
         );
-        await addVoucherEligibleAsset(OF_APP_ADDRESS, voucherTypeId);
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(TEST_CHAIN.debugWorkerpool),
+          voucherTypeId
+        );
+        await addVoucherEligibleAsset(
+          await iexec.ens.resolveName(OF_APP_ADDRESS),
+          voucherTypeId
+        );
 
         const messages: any = [];
         await new Promise((resolve: any, reject) => {
