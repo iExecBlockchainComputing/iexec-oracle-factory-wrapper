@@ -1,5 +1,4 @@
 import CID from 'cids';
-import { isAddress } from 'ethers';
 import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
 import {
@@ -97,10 +96,6 @@ const updateOracle = ({
     const start = async () => {
       try {
         const userAddress = await iexec.wallet.getAddress();
-        let voucherInfos;
-        if (useVoucher) {
-          voucherInfos = await iexec.voucher.showUserVoucher(userAddress);
-        }
         const targetBlockchainsArray =
           await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
@@ -229,58 +224,6 @@ const updateOracle = ({
           workerpoolorderbook.orders[0] &&
           workerpoolorderbook.orders[0].order;
 
-        if (useVoucher) {
-          const sponsoredWorkerpools = voucherInfos.sponsoredWorkerpools;
-          let workerpoolAddress;
-          if (!isAddress(workerpool)) {
-            workerpoolAddress = await iexec.ens.resolveName(workerpool);
-          }
-          const voucherBalance = parseInt(voucherInfos.balance.toString());
-          const totalWorkerpoolCost =
-            workerpoolorder.workerpoolprice * workerpoolorder.volume;
-
-          // Check if the workerpool is sponsored by the voucher
-          if (sponsoredWorkerpools.includes(workerpoolAddress)) {
-            // Check if the voucher can pay for the entire workerpool order
-            if (voucherBalance < totalWorkerpoolCost) {
-              // Check if the voucher can use the user's account
-              const voucherAddress =
-                await iexec.voucher.getVoucherAddress(userAddress);
-              const voucherAllowanceAmount = await iexec.account.checkAllowance(
-                userAddress,
-                voucherAddress
-              );
-              const voucherAllowance = parseInt(
-                voucherAllowanceAmount.toString()
-              );
-              if (voucherAllowance === 0) {
-                throw new WorkflowError(
-                  `Insufficient voucher balance (${voucherBalance} nRLC) to cover workerpool cost (${totalWorkerpoolCost} nRLC). Authorize the voucher ${voucherAddress} to use account ${userAddress} to cover the remaining amount`
-                );
-              }
-
-              // Check if the allowance is sufficient to cover the additional amount
-              const additionalAmountRequired =
-                totalWorkerpoolCost - voucherBalance;
-              if (voucherAllowance < additionalAmountRequired) {
-                throw new WorkflowError(
-                  `Insufficient voucher balance (${voucherBalance} RLC) to cover workerpool cost (${totalWorkerpoolCost} RLC). Insufficient allowance (${voucherAllowance} nRLC) to cover the additional amount (${additionalAmountRequired} nRLC required)`
-                );
-              }
-            }
-          } else {
-            // Check if the user's stake is sufficient to cover the workerpool order cost
-            const { stake: userStake } =
-              await iexec.account.checkBalance(userAddress);
-            const userStakeNumber = parseInt(userStake.toString());
-            if (userStakeNumber < totalWorkerpoolCost) {
-              throw new WorkflowError(
-                `Insufficient user balance (${userStakeNumber} nRLC) to cover workerpool cost (${totalWorkerpoolCost} nRLC).`
-              );
-            }
-          }
-        }
-
         if (!workerpoolorder) {
           throw new WorkflowError('No workerpoolorder published');
         }
@@ -345,7 +288,7 @@ const updateOracle = ({
               workerpoolorder,
               requestorder,
             },
-            { preflightCheck: false }
+            { preflightCheck: false, useVoucher }
           )
           .catch((e) => {
             throw new WorkflowError('Failed to match orders', e);
