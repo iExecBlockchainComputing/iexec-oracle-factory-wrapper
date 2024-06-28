@@ -22,7 +22,7 @@
     "check-format": "prettier --check \"(src|tests)/**/*.ts|tests/**/*.ts\"",
     "generate-doc": "./node_modules/typedoc/bin/typedoc --tsconfig tsconfig.json --disableSources",
     "stop-test-stack": "cd tests && docker compose down --volumes --remove-orphans",
-    "start-test-stack": "cd tests && npm run stop-test-stack && node scripts/prepare-test-env.js && docker compose build  &&  docker compose up -d",
+    "start-test-stack": "cd tests && npm run stop-test-stack && node scripts/prepare-test-env.js && docker compose pull &&  docker compose up -d",
     "test:prepare": "cd tests && node scripts/prepare-bellecour-fork-for-tests.js"
   },
   "repository": {
