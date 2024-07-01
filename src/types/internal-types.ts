@@ -192,6 +192,10 @@ export type UpdateOracleParams = {
    */
   paramSetOrCid: ParamSet | ParamSetCID;
   /**
+   *  whether to use a voucher for payment (default: false)
+   */
+  useVoucher?: boolean;
+  /**
    * Chain ID of targeted blockchain for cross-chain update.
    */
   targetBlockchains?: number[];

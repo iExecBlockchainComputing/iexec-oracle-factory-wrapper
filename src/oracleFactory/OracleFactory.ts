@@ -104,12 +104,17 @@ class IExecOracleFactory {
        * Chain ID of target blockchains for cross-chain update.
        */
       targetBlockchains?: number[];
+      /**
+       *  whether to use a voucher for payment (default: false)
+       */
+      useVoucher?: boolean;
     }
   ): Observable<UpdateOracleMessage> =>
     updateOracle({
       paramSetOrCid,
       targetBlockchains:
         options?.targetBlockchains || DEFAULT_TARGET_BLOCKCHAIN,
+      useVoucher: options?.useVoucher || false,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
       oracleContract: this.oracleContract,

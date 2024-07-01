@@ -66,6 +66,8 @@ const getParamSet = async ({
  * Updates an oracle with new parameters.
  * @param paramSetOrCid Parameter set or CID.
  * @param iexec iExec SDK instance.
+ * @param targetBlockchains Chain ID of target blockchains for cross-chain update
+ * @param useVoucher Whether to use a voucher for payment (default: false)
  * @param oracleApp Oracle application address.
  * @param workerpool Workerpool address.
  * @param ipfsGateway IPFS gateway URL.
@@ -76,6 +78,7 @@ const getParamSet = async ({
 const updateOracle = ({
   paramSetOrCid,
   targetBlockchains,
+  useVoucher,
   iexec,
   oracleApp,
   ipfsGateway,
@@ -92,6 +95,7 @@ const updateOracle = ({
     const safeObserver = new SafeObserver(observer);
     const start = async () => {
       try {
+        const userAddress = await iexec.wallet.getAddress();
         const targetBlockchainsArray =
           await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
@@ -144,7 +148,7 @@ const updateOracle = ({
           .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
             minTag: ['tee', 'scone'],
             maxTag: ['tee', 'scone'],
-            requester: await iexec.wallet.getAddress(),
+            requester: userAddress,
             workerpool,
             dataset: datasetAddress,
           })
@@ -178,7 +182,7 @@ const updateOracle = ({
             .fetchDatasetOrderbook(datasetAddress, {
               minTag: ['tee', 'scone'],
               maxTag: ['tee', 'scone'],
-              requester: await iexec.wallet.getAddress(),
+              requester: userAddress,
               workerpool,
               app: ORACLE_APP_ADDRESS,
             })
@@ -206,7 +210,7 @@ const updateOracle = ({
         const workerpoolorderbook = await iexec.orderbook
           .fetchWorkerpoolOrderbook({
             minTag: ['tee', 'scone'],
-            requester: await iexec.wallet.getAddress(),
+            requester: userAddress,
             workerpool,
             app: ORACLE_APP_ADDRESS,
             dataset: datasetAddress,
@@ -219,6 +223,7 @@ const updateOracle = ({
           workerpoolorderbook &&
           workerpoolorderbook.orders[0] &&
           workerpoolorderbook.orders[0].order;
+
         if (!workerpoolorder) {
           throw new WorkflowError('No workerpoolorder published');
         }
@@ -283,7 +288,7 @@ const updateOracle = ({
               workerpoolorder,
               requestorder,
             },
-            { preflightCheck: false }
+            { preflightCheck: false, useVoucher }
           )
           .catch((e) => {
             throw new WorkflowError('Failed to match orders', e);
