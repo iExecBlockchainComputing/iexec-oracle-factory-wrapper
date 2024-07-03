@@ -1248,7 +1248,7 @@ describe('updateOracle', () => {
     expect(messages.length).toBe(12);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe('Failed to match orders');
+    expect(errors[0].message).toBe('Failed to update oracle');
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.order.matchOrders failed')
     );

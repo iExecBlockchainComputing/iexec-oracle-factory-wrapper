@@ -874,9 +874,7 @@ describe('createOracle', () => {
     expect(messages.length).toBe(7);
     expect(errors.length).toBe(1);
     expect(errors[0]).toBeInstanceOf(WorkflowError);
-    expect(errors[0].message).toBe(
-      'Failed to create dataset containing encrypted API key'
-    );
+    expect(errors[0].message).toBe('Failed to create API key dataset order');
     expect(errors[0].cause).toStrictEqual(
       Error('iexec.order.createDatasetorder failed')
     );
