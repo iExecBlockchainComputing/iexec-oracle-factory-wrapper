@@ -296,22 +296,15 @@ const updateOracle = ({
           workerpoolorder,
           requestorder,
         });
-        const { dealid, txHash } = await iexec.order
-          .matchOrders(
-            {
-              apporder,
-              datasetorder,
-              workerpoolorder,
-              requestorder,
-            },
-            { preflightCheck: false }
-          )
-          .catch((e) => {
-            throw new WorkflowError({
-              message: 'Failed to match orders',
-              errorCause: e,
-            });
-          });
+        const { dealid, txHash } = await iexec.order.matchOrders(
+          {
+            apporder,
+            datasetorder,
+            workerpoolorder,
+            requestorder,
+          },
+          { preflightCheck: false }
+        );
         if (abort) return;
         safeObserver.next({
           message: 'MATCH_ORDERS_SUCCESS',

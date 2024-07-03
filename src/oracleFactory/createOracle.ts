@@ -129,12 +129,19 @@ const createApiKeyDataset = ({
             message: 'PUSH_SECRET_TO_SMS_SUCCESS',
           });
 
-          const orderToSign = await iexec.order.createDatasetorder({
-            dataset: address,
-            tag: ['tee', 'scone'],
-            apprestrict: ORACLE_APP_ADDRESS,
-            volume: Number.MAX_SAFE_INTEGER - 1,
-          });
+          const orderToSign = await iexec.order
+            .createDatasetorder({
+              dataset: address,
+              tag: ['tee', 'scone'],
+              apprestrict: ORACLE_APP_ADDRESS,
+              volume: Number.MAX_SAFE_INTEGER - 1,
+            })
+            .catch((e: Error) => {
+              throw new WorkflowError({
+                message: "Failed to create API key datasetorder's",
+                errorCause: e,
+              });
+            });
           if (abort) return;
           safeObserver.next({
             message: 'DATASET_ORDER_SIGNATURE_SIGN_REQUEST',
