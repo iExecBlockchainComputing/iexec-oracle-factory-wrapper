@@ -18,20 +18,20 @@
 
 ### Properties
 
-- [originalError](errors.WorkflowError.md#originalerror)
+- [errorCause](errors.WorkflowError.md#errorCause)
 
 ## Constructors
 
 ### constructor
 
-• **new WorkflowError**(`message`, `originalError?`): [`WorkflowError`](errors.WorkflowError.md)
+• **new WorkflowError**(`message`, `errorCause?`): [`WorkflowError`](errors.WorkflowError.md)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `message` | `string` |
-| `originalError?` | `Error` |
+| `errorCause?` | `Error` |
 
 #### Returns
 
@@ -43,6 +43,6 @@ Error.constructor
 
 ## Properties
 
-### originalError
+### errorCause
 
-• `Optional` **originalError**: `Error`
+• `Optional` **errorCause**: `Error`

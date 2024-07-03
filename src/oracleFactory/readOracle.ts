@@ -64,7 +64,10 @@ const readOracle = async ({
       if (e instanceof ValidationError) {
         throw e;
       } else {
-        throw new WorkflowError('Failed to load paramSet', e);
+        throw new WorkflowError({
+          message: 'Failed to load paramSet',
+          errorCause: e,
+        });
       }
     });
     readDataType = paramSet.dataType;
