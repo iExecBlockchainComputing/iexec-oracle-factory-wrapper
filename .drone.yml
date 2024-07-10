@@ -386,6 +386,14 @@ steps:
     commands:
       - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
 
+  - name: set voucher version suffix
+    image: node:18
+    commands:
+      - eval npm pkg set version="$(npm pkg get version)-voucher"
+    when:
+      branch:
+        - voucher
+
   - name: publish
     image: plugins/npm
     pull: always
