@@ -345,7 +345,6 @@ trigger:
     - sdk-nightly
   branch:
     - develop
-    - voucher
 
 steps:
   - name: install
