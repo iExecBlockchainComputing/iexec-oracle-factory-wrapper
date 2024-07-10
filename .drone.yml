@@ -664,11 +664,6 @@ steps:
     image: node:18
     commands:
       - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
-    when:
-      branch:
-        - develop
-      target:
-        - sdk-nightly
 
   - name: set-voucher-nightly-version
     image: node:18
