@@ -361,7 +361,7 @@ describe('oracleFactory.updateOracle()', () => {
           description: 'test voucher type',
           duration: 2 * 60 * 60,
         });
-        const voucherBalance = 1000_0000;
+        const voucherBalance = 10_000_000;
         await createVoucher({
           owner: consumerWallet.address,
           voucherType: voucherTypeId,
