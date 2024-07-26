@@ -47,8 +47,8 @@
     "cids": "^1.1.9",
     "cross-fetch": "^4.0.0",
     "debug": "^4.3.4",
-    "ethers": "^6.11.0",
-    "iexec": "^8.9.1",
+    "ethers": "^6.13.2",
+    "iexec": "^8.10.0",
     "jsonpath": "^1.1.1",
     "kubo-rpc-client": "^3.0.2",
     "yup": "^1.3.3"
