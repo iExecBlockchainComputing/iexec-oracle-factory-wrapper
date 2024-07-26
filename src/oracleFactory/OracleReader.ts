@@ -51,6 +51,7 @@ class IExecOracleReader {
     ethProviderOrNetwork:
       | Web3ReadOnlyProvider
       | Web3SignerProvider
+      | AbstractProvider
       | Eip1193Provider
       | string
       | number = 134,
