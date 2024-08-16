@@ -4,6 +4,7 @@ import {
 } from 'ethers';
 import { AddressOrENS } from '../index.js';
 import { getEnvironment, KnownEnv } from '@iexec/oracle-factory-environments';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'dotenv/config';
 
 const { ENV = 'bellecour-fork' } = process.env;

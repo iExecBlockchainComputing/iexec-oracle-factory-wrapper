@@ -19,6 +19,6 @@
     ],
     "excludeExternals": true
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*", "tests/**/*", "environments"],
   "exclude": ["node_modules"]
 }

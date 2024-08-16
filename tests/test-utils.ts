@@ -331,7 +331,7 @@ export const ensureSufficientStake = async (iexec, requiredStake) => {
 };
 
 export const createAndPublishWorkerpoolOrder = async (
-  workerpool: string,
+  workerpoolAddress: string,
   workerpoolOwnerWallet: ethers.Wallet,
   requesterrestrict?: string,
   workerpoolprice?: number = 1000,
@@ -346,7 +346,7 @@ export const createAndPublishWorkerpoolOrder = async (
   await ensureSufficientStake(iexec, requiredStake);
 
   const workerpoolorder = await iexec.order.createWorkerpoolorder({
-    workerpool,
+    workerpool: workerpoolAddress,
     category: 0,
     requesterrestrict,
     volume,

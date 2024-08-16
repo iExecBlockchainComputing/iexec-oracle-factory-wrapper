@@ -1,6 +1,6 @@
 import { Wallet } from 'ethers';
 import { IExecOracleFactory } from '../../../src/index.js';
-import { getTestConfig, getTestWeb3SignerProvider } from '../../test-utils.js';
+import { getTestConfig } from '../../test-utils.js';
 
 describe('readOracle', () => {
   test('standard - from paramSet dataType: "boolean"', async () => {
