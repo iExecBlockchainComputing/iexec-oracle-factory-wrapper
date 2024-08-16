@@ -6,41 +6,120 @@ import { getSignerFromPrivateKey } from 'iexec/utils';
 import { AddressOrENS, Web3SignerProvider } from '../src/index.js';
 // eslint-disable-next-line import/extensions
 import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
+import { getEnvironment } from '@iexec/oracle-factory-environments';
+import 'dotenv/config';
 
-const { DRONE } = process.env;
+const { ENV, DRONE } = process.env;
 
-export const OF_APP_ADDRESS: AddressOrENS = 'oracle-factory.apps.iexec.eth';
+const {
+  chainId,
+  rpcURL,
+  hubAddress,
+  ensRegistryAddress,
+  ensPublicResolverAddress,
+  voucherHubAddress,
+  smsURL,
+  iexecGatewayURL,
+  resultProxyURL,
+  ipfsGatewayURL,
+  ipfsNodeURL,
+  pocoSubgraphURL,
+  voucherSubgraphURL,
 
-export const TEST_CHAIN = {
-  rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545',
-  chainId: '134',
-  smsURL: DRONE ? 'http://sms:13300' : 'http://127.0.0.1:13300',
-  resultProxyURL: DRONE
-    ? 'http://result-proxy:13200'
-    : 'http://127.0.0.1:13200',
-  iexecGatewayURL: DRONE ? 'http://market-api:3000' : 'http://127.0.0.1:3000',
-  voucherHubAddress: VOUCHER_HUB_ADDRESS, // TODO: change with deployment address once voucher is deployed on bellecour
-  voucherManagerWallet: new Wallet(
-    '0x2c906d4022cace2b3ee6c8b596564c26c4dcadddf1e949b769bcb0ad75c40c33'
-  ),
-  voucherSubgraphURL: DRONE
-    ? 'http://gaphnode:8000/subgraphs/name/bellecour/iexec-voucher'
-    : 'http://127.0.0.1:8000/subgraphs/name/bellecour/iexec-voucher',
-  debugWorkerpool: 'debug-v8-bellecour.main.pools.iexec.eth',
-  debugWorkerpoolOwnerWallet: new Wallet(
-    '0x800e01919eadf36f110f733decb1cc0f82e7941a748e89d7a3f76157f6654bb3'
-  ),
-  prodWorkerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
-  prodWorkerpoolOwnerWallet: new Wallet(
-    '0x6a12f56d7686e85ab0f46eb3c19cb0c75bfabf8fb04e595654fc93ad652fa7bc'
-  ),
-  appOwnerWallet: new Wallet(
-    '0xa911b93e50f57c156da0b8bff2277d241bcdb9345221a3e246a99c6e7cedcde5'
-  ),
-  provider: new JsonRpcProvider(
-    DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545'
-  ),
+  oracleContract,
+  ipfsNode,
+  ipfsGateway,
+  oracleApp,
+  workerpool,
+} = getEnvironment(ENV as KnownEnv);
+
+export const iexecOptions = {
+  chainId,
+  rpcURL,
+  hubAddress,
+  ensRegistryAddress,
+  ensPublicResolverAddress,
+  voucherHubAddress,
+  smsURL,
+  iexecGatewayURL,
+  resultProxyURL,
+  ipfsGatewayURL,
+  ipfsNodeURL,
+  pocoSubgraphURL,
+  voucherSubgraphURL,
 };
+
+export const oracleFactoryOptions = {
+  oracleContract,
+  oracleApp,
+  ipfsNode,
+  ipfsGateway,
+};
+
+export const OF_APP_ADDRESS: AddressOrENS = oracleApp;
+
+let TEST_CHAIN;
+if (ENV === 'bellecour-fork') {
+  TEST_CHAIN = {
+    chainId: chainId,
+    hubAddress,
+    ensRegistryAddress,
+    ensPublicResolverAddress,
+    voucherHubAddress: VOUCHER_HUB_ADDRESS,
+    rpcURL: DRONE ? 'http://bellecour-fork:8545' : rpcURL,
+    smsURL: DRONE ? 'http://sms:13300' : smsURL,
+    resultProxyURL: DRONE ? 'http://result-proxy:13200' : resultProxyURL,
+    iexecGatewayURL: DRONE ? 'http://market-api:3000' : iexecGatewayURL,
+    ipfsNodUrl: DRONE ? 'http://ipfs:5001' : 'http://127.0.0.1:5001',
+    ipfsGatewayUrl: DRONE ? 'http://ipfs:8080' : 'http://127.0.0.1:8080',
+    voucherManagerWallet: new Wallet(
+      '0x2c906d4022cace2b3ee6c8b596564c26c4dcadddf1e949b769bcb0ad75c40c33'
+    ),
+    voucherSubgraphURL: DRONE
+      ? 'http://gaphnode:8000/subgraphs/name/bellecour/iexec-voucher'
+      : voucherSubgraphURL,
+    debugWorkerpool: 'debug-v8-bellecour.main.pools.iexec.eth',
+    debugWorkerpoolOwnerWallet: new Wallet(
+      '0x800e01919eadf36f110f733decb1cc0f82e7941a748e89d7a3f76157f6654bb3'
+    ),
+    prodWorkerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+    prodWorkerpoolOwnerWallet: new Wallet(
+      '0x6a12f56d7686e85ab0f46eb3c19cb0c75bfabf8fb04e595654fc93ad652fa7bc'
+    ),
+    appOwnerWallet: new Wallet(
+      '0xa911b93e50f57c156da0b8bff2277d241bcdb9345221a3e246a99c6e7cedcde5'
+    ),
+    provider: new JsonRpcProvider(
+      DRONE ? 'http://bellecour-fork:8545' : rpcURL
+    ),
+  };
+} else {
+  TEST_CHAIN = {
+    rpcURL,
+    chainId,
+    smsURL,
+    hubAddress,
+    resultProxyURL,
+    iexecGatewayURL,
+    ipfsGatewayURL,
+    ipfsNodeURL,
+    voucherHubAddress,
+    // voucherManagerWallet: new Wallet('0xEnvVoucherManagerWalletPrivateKey'),
+    voucherSubgraphURL,
+    // debugWorkerpool: 'debug-v8-env.main.pools.iexec.eth',
+    // debugWorkerpoolOwnerWallet: new Wallet(
+    //   '0xEnvDebugWorkerpoolOwnerWalletPrivateKey'
+    // ),
+    prodWorkerpool: workerpool,
+    // prodWorkerpoolOwnerWallet: new Wallet(
+    //   '0xEnvWorkerpoolOwnerWalletPrivateKey'
+    // ),
+    // appOwnerWallet: new Wallet('0xEnvAppOwnerWalletPrivateKey'),
+    provider: new JsonRpcProvider(rpcURL),
+  };
+}
+
+export { TEST_CHAIN };
 
 export const getEventFromLogs = (eventName, logs, { strict = true }) => {
   const eventFound = logs.find((log) => log.eventName === eventName);
@@ -50,16 +129,19 @@ export const getEventFromLogs = (eventName, logs, { strict = true }) => {
   }
   return eventFound;
 };
-
 export const getTestWeb3SignerProvider = (
   privateKey: string = Wallet.createRandom().privateKey
 ): Web3SignerProvider =>
   utils.getSignerFromPrivateKey(TEST_CHAIN.rpcURL, privateKey);
 
 export const getTestIExecOption = () => ({
+  rpcURL: TEST_CHAIN.rpcURL,
   smsURL: TEST_CHAIN.smsURL,
   resultProxyURL: TEST_CHAIN.resultProxyURL,
   iexecGatewayURL: TEST_CHAIN.iexecGatewayURL,
+  hubAddress: TEST_CHAIN.hubAddress,
+  ipfsGatewayURL: TEST_CHAIN.ipfsGatewayURL,
+  ipfsNodeURL: TEST_CHAIN.ipfsNodeURL,
   voucherHubAddress: TEST_CHAIN.voucherHubAddress,
   voucherSubgraphURL: TEST_CHAIN.voucherSubgraphURL,
 });
@@ -70,8 +152,10 @@ export const getTestConfig = (
   const ethProvider = getTestWeb3SignerProvider(privateKey);
   const options = {
     iexecOptions: getTestIExecOption(),
-    ipfsNode: DRONE ? 'http://ipfs:5001' : 'http://127.0.0.1:5001',
-    ipfsGateway: DRONE ? 'http://ipfs:8080' : 'http://127.0.0.1:8080',
+    oracleContract,
+    oracleApp,
+    ipfsNode,
+    ipfsGateway,
   };
   return [ethProvider, options];
 };

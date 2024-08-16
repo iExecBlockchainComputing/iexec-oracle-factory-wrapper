@@ -1,19 +1,16 @@
 import { Wallet } from 'ethers';
 import { IExecOracleFactory } from '../../../src/index.js';
-import {
-  getTestWeb3SignerProvider,
-  getTestIExecOption,
-} from '../../test-utils.js';
+import { getTestConfig } from '../../test-utils.js';
 
 test('create oracle - without dataset', async () => {
-  const ethProvider = getTestWeb3SignerProvider(
-    Wallet.createRandom().privateKey
+  const consumerWallet = Wallet.createRandom();
+  const factoryWithOption = new IExecOracleFactory(
+    ...getTestConfig(consumerWallet.privateKey)
   );
-  const factoryWithoutOption = new IExecOracleFactory(ethProvider);
 
   const messages: any = [];
   await new Promise((resolve: any, reject) => {
-    factoryWithoutOption
+    factoryWithOption
       .createOracle({
         JSONPath: '$.ok',
         body: '',
@@ -36,16 +33,14 @@ test('create oracle - without dataset', async () => {
 });
 
 test('create oracle - with dataset', async () => {
-  const ethProvider = getTestWeb3SignerProvider(
-    Wallet.createRandom().privateKey
+  const consumerWallet = Wallet.createRandom();
+  const factoryWithOption = new IExecOracleFactory(
+    ...getTestConfig(consumerWallet.privateKey)
   );
-  const factoryWithoutOption = new IExecOracleFactory(ethProvider, {
-    iexecOptions: getTestIExecOption(),
-  });
 
   const messages: any = [];
   await new Promise((resolve: any, reject) => {
-    factoryWithoutOption
+    factoryWithOption
       .createOracle({
         url: 'https://foo.io',
         method: 'GET',
@@ -70,14 +65,13 @@ test('create oracle - with dataset', async () => {
 }, 30000);
 
 test('cancel - without apiKey', async () => {
-  const ethProvider = getTestWeb3SignerProvider(
-    Wallet.createRandom().privateKey
+  const consumerWallet = Wallet.createRandom();
+  const factoryWithOption = new IExecOracleFactory(
+    ...getTestConfig(consumerWallet.privateKey)
   );
-  const factoryWithoutOption = new IExecOracleFactory(ethProvider);
-
   const messages: any[] = [];
   await new Promise((resolve: any, reject) => {
-    const cancel = factoryWithoutOption
+    const cancel = factoryWithOption
       .createOracle({
         url: 'https://foo.io',
         method: 'GET',
@@ -100,14 +94,13 @@ test('cancel - without apiKey', async () => {
 }, 10000);
 
 test('cancel - with apiKey', async () => {
-  const ethProvider = getTestWeb3SignerProvider(
-    Wallet.createRandom().privateKey
+  const consumerWallet = Wallet.createRandom();
+  const factoryWithOption = new IExecOracleFactory(
+    ...getTestConfig(consumerWallet.privateKey)
   );
-  const factoryWithoutOption = new IExecOracleFactory(ethProvider);
-
   const messages: any[] = [];
   await new Promise((resolve: any, reject) => {
-    const cancel = factoryWithoutOption
+    const cancel = factoryWithOption
       .createOracle({
         url: 'https://foo.io',
         method: 'GET',

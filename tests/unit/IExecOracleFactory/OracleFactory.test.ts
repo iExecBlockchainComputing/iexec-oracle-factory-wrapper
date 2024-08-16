@@ -8,6 +8,7 @@ import {
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_WORKERPOOL_ADDRESS,
 } from '../../../src/config/config.js';
+import { iexecOptions } from '../../test-utils.js';
 
 jest.unstable_mockModule('../../../src/oracleFactory/createOracle.js', () => ({
   createOracle: jest.fn(),
@@ -120,7 +121,7 @@ test('standard - instantiation', async () => {
     ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
-    workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+    workerpool: DEFAULT_WORKERPOOL_ADDRESS,
     paramSetOrCid: {
       JSONPath: '$.ok',
       body: '',
@@ -131,7 +132,7 @@ test('standard - instantiation', async () => {
       url: 'https://api.market.iex.ec/version',
     },
     useVoucher: false,
-    targetBlockchains: [134],
+    targetBlockchains: [Number(iexecOptions.chainId)],
   });
 
   factoryWithOptions.updateOracle(
@@ -163,7 +164,7 @@ test('standard - instantiation', async () => {
     ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
-    workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+    workerpool: DEFAULT_WORKERPOOL_ADDRESS,
   });
 
   factoryWithoutOption.updateOracle({
