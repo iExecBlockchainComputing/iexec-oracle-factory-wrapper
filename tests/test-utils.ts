@@ -9,7 +9,7 @@ import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 import { getEnvironment } from '@iexec/oracle-factory-environments';
 import 'dotenv/config';
 
-const { ENV, DRONE } = process.env;
+const { ENV = 'bellecour-fork', DRONE } = process.env;
 
 const {
   chainId,

@@ -6,7 +6,7 @@ import { AddressOrENS } from '../index.js';
 import { getEnvironment, KnownEnv } from '@iexec/oracle-factory-environments';
 import 'dotenv/config';
 
-const { ENV } = process.env;
+const { ENV = 'bellecour-fork' } = process.env;
 
 const {
   chainId,
