@@ -19,7 +19,7 @@
     "ipfsGateway": "https://ipfs-gateway.v8-bellecour.iex.ec",
     "oracleApp": "oracle-factory.apps.iexec.eth",
 
-    "workerpool": "prod-v8-bellecour.main.pools.iexec.eth"
+    "workerpool": "0x0E7BC972C99187C191A17F3CAE4A2711A4188C3F"
   },
   "staging": {
     "chainId": "134",
@@ -83,6 +83,6 @@
     "ipfsNode": "/dns4/ipfs-upload.v8-bellecour.iex.ec/https",
     "ipfsGateway": "https://ipfs-gateway.v8-bellecour.iex.ec",
     "oracleApp": "oracle-factory.apps.iexec.eth",
-    "workerpool": "prod-v8-bellecour.main.pools.iexec.eth"
+    "workerpool": "0x0E7BC972C99187C191A17F3CAE4A2711A4188C3F"
   }
 }
