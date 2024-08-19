@@ -723,8 +723,6 @@ describe('oracleFactory.updateOracle()', () => {
         expect(messages[12].dealid).toBeDefined();
         expect(messages[12].taskid).toBeDefined();
         expect(messages[12].status).toStrictEqual('UNSET');
-        console.log('🚀 ~ messages[12].taskid:', messages[12].taskid);
-        console.log('🚀 ~ messages[12].dealid:', messages[12].dealid);
       },
       timeouts.createOracle + timeouts.updateOracle
     );
