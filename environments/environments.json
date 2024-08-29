@@ -61,7 +61,7 @@
     "oracleContract": "0x054FFC21BA8f305Ebc5B2f2A1dF26C7312D36165",
     "ipfsNode": "/dns4/ipfs-upload.v8-bellecour.iex.ec/https",
     "ipfsGateway": "https://ipfs-gateway.v8-bellecour.iex.ec",
-    "oracleApp": "0x0e70c0273D21d3a1e3633826e5839fe3564730e7",
+    "oracleApp": "0x3086C7314f7118A2876F9f03540CC4e8313c43e0",
 
     "workerpool": "0x3779Da315D935D3E3957561667236BF6859C1b0E"
   },

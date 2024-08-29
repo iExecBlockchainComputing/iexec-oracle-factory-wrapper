@@ -17,6 +17,7 @@ import {
   getTestConfig,
   getTestIExecOption,
   getTestWeb3SignerProvider,
+  iexecOptions,
   timeouts,
 } from '../../test-utils.js';
 import 'dotenv/config';
@@ -462,7 +463,7 @@ describe('oracleFactory.updateOracle()', () => {
       }
     }, 4 * MAX_EXPECTED_BLOCKTIME);
 
-    test.only(
+    test(
       'should create a task - standard oracle from paramSet - no dataset',
       async () => {
         const factoryWithoutOption = new IExecOracleFactory(
@@ -630,7 +631,7 @@ describe('oracleFactory.updateOracle()', () => {
         await new Promise((resolve: any, reject) => {
           factoryWithoutOption
             .updateOracle(cid, {
-              targetBlockchains: [134],
+              targetBlockchains: [Number(iexecOptions.chainId)],
               useVoucher: false,
             })
             .subscribe({

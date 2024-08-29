@@ -193,7 +193,7 @@ test('standard - instantiation', async () => {
       url: 'https://api.market.iex.ec/version',
     },
     useVoucher: false,
-    targetBlockchains: [134],
+    targetBlockchains: [Number(iexecOptions.chainId)],
   });
 
   await factoryWithOptions.readOracle({
