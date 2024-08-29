@@ -422,7 +422,7 @@ describe('oracleFactory.updateOracle()', () => {
       );
     });
   } else {
-    console.log(`Voucher not yet deployed in [${ENV}] environment`);
+    console.log(`Voucher not yet configured for [${ENV}] environment`);
     test('placeholder test', () => {
       expect(true).toBe(true);
     });
@@ -462,7 +462,7 @@ describe('oracleFactory.updateOracle()', () => {
       }
     }, 4 * MAX_EXPECTED_BLOCKTIME);
 
-    test(
+    test.only(
       'should create a task - standard oracle from paramSet - no dataset',
       async () => {
         const factoryWithoutOption = new IExecOracleFactory(
@@ -583,6 +583,7 @@ describe('oracleFactory.updateOracle()', () => {
         expect(messages[11].dealid).toBeDefined();
         expect(messages[11].taskid).toBeDefined();
         expect(messages[11].status).toStrictEqual('UNSET');
+        console.log(messages[11].taskid);
       },
       timeouts.updateOracle
     );

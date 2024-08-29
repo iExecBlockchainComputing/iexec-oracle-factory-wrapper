@@ -58,7 +58,7 @@ if (ENV === 'bellecour-fork') {
     );
   });
 } else {
-  console.log(`Voucher not yet deployed in [${ENV}] environment`);
+  console.log(`Voucher not yet configured for [${ENV}] environment`);
   test('placeholder test', () => {
     expect(true).toBe(true);
   });
