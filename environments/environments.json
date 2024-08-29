@@ -58,10 +58,10 @@
     "pocoSubgraphURL": "http://thegraph.wp-throughput.az1.internal:8000/subgraphs/name/bellecour/poco-v5",
     "voucherSubgraphURL": "http://thegraph.wp-throughput.az1.internal:8000/subgraphs/name/bellecour/iexec-voucher",
 
-    "oracleContract": "0x8d85F35F4941E146F8a40C974865AF03e80CFE0B",
+    "oracleContract": "0x054FFC21BA8f305Ebc5B2f2A1dF26C7312D36165",
     "ipfsNode": "/dns4/ipfs-upload.v8-bellecour.iex.ec/https",
     "ipfsGateway": "https://ipfs-gateway.v8-bellecour.iex.ec",
-    "oracleApp": "0x822A4B3D5650398723B9D3233598aaE8ba501d22",
+    "oracleApp": "0x0e70c0273D21d3a1e3633826e5839fe3564730e7",
 
     "workerpool": "0x3779Da315D935D3E3957561667236BF6859C1b0E"
   },
