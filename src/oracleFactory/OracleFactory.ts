@@ -14,10 +14,6 @@ import {
   DEFAULT_WORKERPOOL_ADDRESS,
 } from '../config/config.js';
 import {
-  CreateOracleMessage,
-  UpdateOracleMessage,
-} from '../types/internal-types.js';
-import {
   AddressOrENS,
   OracleValue,
   OracleFactoryOptions,
@@ -27,6 +23,8 @@ import {
   ParamSetCID,
   OracleID,
   RawParams,
+  CreateOracleMessage,
+  UpdateOracleMessage,
 } from '../types/public-types.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';

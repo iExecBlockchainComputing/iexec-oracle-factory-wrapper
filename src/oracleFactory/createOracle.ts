@@ -6,13 +6,13 @@ import {
   getFactoryDefaults,
 } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
+import { Address, RawParams } from '../types/common-types.js';
 import {
+  CreateOracleOptions,
   CreateApiKeyDatasetParams,
   CreateOracleMessage,
-  IExecConsumer,
-  CreateOracleOptions,
-} from '../types/internal-types.js';
-import { Address, RawParams } from '../types/public-types.js';
+} from '../types/createOracle-types.js';
+import { IExecConsumer } from '../types/internal-types.js';
 import {
   ValidationError,
   WorkflowError,
