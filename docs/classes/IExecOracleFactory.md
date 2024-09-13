@@ -34,7 +34,7 @@ Optional configuration options OracleFactory.
 
 ### createOracle()
 
-> **createOracle**(`rawParams`): [`Observable`](../-internal-/classes/Observable.md)\<[`CreateOracleMessage`](../-internal-/type-aliases/CreateOracleMessage.md)\>
+> **createOracle**(`rawParams`): [`Observable`](Observable.md)\<[`CreateOracleMessage`](../type-aliases/CreateOracleMessage.md)\>
 
 Creates a new oracle with the provided parameters.
 
@@ -46,9 +46,9 @@ Creates a new oracle with the provided parameters.
 
 #### Returns
 
-[`Observable`](../-internal-/classes/Observable.md)\<[`CreateOracleMessage`](../-internal-/type-aliases/CreateOracleMessage.md)\>
+[`Observable`](Observable.md)\<[`CreateOracleMessage`](../type-aliases/CreateOracleMessage.md)\>
 
-Observable [CreateOracleMessage](../-internal-/type-aliases/CreateOracleMessage.md) result of the creation operation.
+Observable [CreateOracleMessage](../type-aliases/CreateOracleMessage.md) result of the creation operation.
 
 ***
 
@@ -94,7 +94,7 @@ Promise resolving to the oracle data.
 
 ### updateOracle()
 
-> **updateOracle**(`paramSetOrCid`, `options`?): [`Observable`](../-internal-/classes/Observable.md)\<[`UpdateOracleMessage`](../-internal-/type-aliases/UpdateOracleMessage.md)\>
+> **updateOracle**(`paramSetOrCid`, `options`?): [`Observable`](Observable.md)\<[`UpdateOracleMessage`](../type-aliases/UpdateOracleMessage.md)\>
 
 Updates an existing oracle with new parameters or a new CID.
 
@@ -118,6 +118,6 @@ workerpool to use for the update
 
 #### Returns
 
-[`Observable`](../-internal-/classes/Observable.md)\<[`UpdateOracleMessage`](../-internal-/type-aliases/UpdateOracleMessage.md)\>
+[`Observable`](Observable.md)\<[`UpdateOracleMessage`](../type-aliases/UpdateOracleMessage.md)\>
 
 Observable result of the update operation.

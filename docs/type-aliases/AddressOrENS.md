@@ -6,6 +6,6 @@
 
 # Type Alias: AddressOrENS
 
-> **AddressOrENS**: [`Address`](Address.md) \| [`ENS`](../-internal-/type-aliases/ENS.md)
+> **AddressOrENS**: [`Address`](Address.md) \| [`ENS`](ENS.md)
 
 ethereum address or ENS name (Ethereum Name Service)
