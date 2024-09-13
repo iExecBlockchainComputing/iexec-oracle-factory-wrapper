@@ -1,168 +1,123 @@
-[@iexec/iexec-oracle-factory-wrapper](../README.md) / [Exports](../modules.md) / IExecOracleFactory
+[**@iexec/iexec-oracle-factory-wrapper**](../README.md) • **Docs**
+
+***
+
+[@iexec/iexec-oracle-factory-wrapper](../globals.md) / IExecOracleFactory
 
 # Class: IExecOracleFactory
 
 IExecOracleFactory, used to interact with oracle creation, update, and read operations.
 
-## Table of contents
-
-### Constructors
-
-- [constructor](IExecOracleFactory.md#constructor)
-
-### Properties
-
-- [ethersProviderPromise](IExecOracleFactory.md#ethersproviderpromise)
-- [iexec](IExecOracleFactory.md#iexec)
-- [ipfsGateway](IExecOracleFactory.md#ipfsgateway)
-- [ipfsNode](IExecOracleFactory.md#ipfsnode)
-- [oracleApp](IExecOracleFactory.md#oracleapp)
-- [oracleContract](IExecOracleFactory.md#oraclecontract)
-- [workerpool](IExecOracleFactory.md#workerpool)
-
-### Methods
-
-- [createOracle](IExecOracleFactory.md#createoracle)
-- [getIExec](IExecOracleFactory.md#getiexec)
-- [readOracle](IExecOracleFactory.md#readoracle)
-- [updateOracle](IExecOracleFactory.md#updateoracle)
-
 ## Constructors
 
-### constructor
+### new IExecOracleFactory()
 
-• **new IExecOracleFactory**(`ethProvider`, `options?`): [`IExecOracleFactory`](IExecOracleFactory.md)
+> **new IExecOracleFactory**(`ethProvider`, `options`?): [`IExecOracleFactory`](IExecOracleFactory.md)
 
 Creates an instance of IExecOracleFactory.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `ethProvider` | `EnhancedWallet` \| `Eip1193Provider` | The Ethereum provider used to interact with the blockchain. |
-| `options?` | [`OracleFactoryOptions`](../modules.md#oraclefactoryoptions) | Optional configuration options OracleFactory. |
+• **ethProvider**: `EnhancedWallet` \| `Eip1193Provider` \| `AbstractSigner`\<`Provider`\> \| `BrowserProvider`
+
+The Ethereum provider used to interact with the blockchain.
+
+• **options?**: [`OracleFactoryOptions`](../type-aliases/OracleFactoryOptions.md)
+
+Optional configuration options OracleFactory.
 
 #### Returns
 
 [`IExecOracleFactory`](IExecOracleFactory.md)
 
-## Properties
-
-### ethersProviderPromise
-
-• `Private` **ethersProviderPromise**: `Promise`\<`Provider`\>
-
-___
-
-### iexec
-
-• `Private` **iexec**: `default`
-
-___
-
-### ipfsGateway
-
-• `Private` **ipfsGateway**: `string`
-
-___
-
-### ipfsNode
-
-• `Private` **ipfsNode**: `string`
-
-___
-
-### oracleApp
-
-• `Private` **oracleApp**: `string`
-
-___
-
-### oracleContract
-
-• `Private` **oracleContract**: `string`
-
-___
-
-### workerpool
-
-• `Private` **workerpool**: `string`
-
 ## Methods
 
-### createOracle
+### createOracle()
 
-▸ **createOracle**(`rawParams`): [`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules/internal_.md#createoraclemessage)\>
+> **createOracle**(`rawParams`): [`Observable`](../-internal-/classes/Observable.md)\<[`CreateOracleMessage`](../-internal-/type-aliases/CreateOracleMessage.md)\>
 
 Creates a new oracle with the provided parameters.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `rawParams` | [`RawParams`](../modules.md#rawparams) | [RawParams](../modules.md#rawparams) for creating the oracle. |
+• **rawParams**: [`RawParams`](../type-aliases/RawParams.md)
+
+[RawParams](../type-aliases/RawParams.md) for creating the oracle.
 
 #### Returns
 
-[`Observable`](internal_.Observable.md)\<[`CreateOracleMessage`](../modules/internal_.md#createoraclemessage)\>
+[`Observable`](../-internal-/classes/Observable.md)\<[`CreateOracleMessage`](../-internal-/type-aliases/CreateOracleMessage.md)\>
 
-Observable [CreateOracleMessage](../modules/internal_.md#createoraclemessage) result of the creation operation.
+Observable [CreateOracleMessage](../-internal-/type-aliases/CreateOracleMessage.md) result of the creation operation.
 
-___
+***
 
-### getIExec
+### getIExec()
 
-▸ **getIExec**(): `default`
+> **getIExec**(): `IExec`
 
 Gets the current instance of the IExec interface.
 
 #### Returns
 
-`default`
+`IExec`
 
 Current instance of IExec.
 
-___
+***
 
-### readOracle
+### readOracle()
 
-▸ **readOracle**(`paramSetOrCidOrOracleId`, `options?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
+> **readOracle**(`paramSetOrCidOrOracleId`, `options`?): `Promise`\<[`OracleValue`](../type-aliases/OracleValue.md)\>
 
 Reads an oracle with the provided ID CID or Oracle ID.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters, CID or Oracle ID to read. |
-| `options?` | `Object` | Options for reading the oracle. |
-| `options.dataType?` | [`DataType`](../modules.md#datatype) | - |
+• **paramSetOrCidOrOracleId**: `string` \| [`ParamSet`](../type-aliases/ParamSet.md)
+
+Parameters, CID or Oracle ID to read.
+
+• **options?**
+
+Options for reading the oracle.
+
+• **options.dataType?**: [`DataType`](../type-aliases/DataType.md)
 
 #### Returns
 
-`Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
+`Promise`\<[`OracleValue`](../type-aliases/OracleValue.md)\>
 
 Promise resolving to the oracle data.
 
-___
+***
 
-### updateOracle
+### updateOracle()
 
-▸ **updateOracle**(`paramSetOrCid`, `options?`): [`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules/internal_.md#updateoraclemessage)\>
+> **updateOracle**(`paramSetOrCid`, `options`?): [`Observable`](../-internal-/classes/Observable.md)\<[`UpdateOracleMessage`](../-internal-/type-aliases/UpdateOracleMessage.md)\>
 
 Updates an existing oracle with new parameters or a new CID.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `paramSetOrCid` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters or CID of the oracle to update. |
-| `options?` | `Object` | Update options. |
-| `options.targetBlockchains?` | `number`[] | Chain ID of target blockchains for cross-chain update. |
-| `options.workerpool?` | `string` | workerpool to use for the update |
+• **paramSetOrCid**: `string` \| [`ParamSet`](../type-aliases/ParamSet.md)
+
+Parameters or CID of the oracle to update.
+
+• **options?**
+
+Update options.
+
+• **options.targetBlockchains?**: `number`[]
+
+Chain ID of target blockchains for cross-chain update.
+
+• **options.workerpool?**: `string`
+
+workerpool to use for the update
 
 #### Returns
 
-[`Observable`](internal_.Observable.md)\<[`UpdateOracleMessage`](../modules/internal_.md#updateoraclemessage)\>
+[`Observable`](../-internal-/classes/Observable.md)\<[`UpdateOracleMessage`](../-internal-/type-aliases/UpdateOracleMessage.md)\>
 
 Observable result of the update operation.

@@ -1,4 +1,9 @@
-import { Eip1193Provider, Provider } from 'ethers';
+import {
+  Eip1193Provider,
+  Provider,
+  AbstractSigner,
+  BrowserProvider,
+} from 'ethers';
 import { IExec } from 'iexec';
 import {
   DEFAULT_APP_ADDRESS,
@@ -53,7 +58,11 @@ class IExecOracleFactory {
    * @param options Optional configuration options OracleFactory.
    */
   constructor(
-    ethProvider: Eip1193Provider | Web3SignerProvider,
+    ethProvider:
+      | Eip1193Provider
+      | Web3SignerProvider
+      | AbstractSigner
+      | BrowserProvider,
     options?: OracleFactoryOptions
   ) {
     try {

@@ -6,6 +6,7 @@ import {
 } from '../../../src/config/config.js';
 import { IExecOracleReader, getWeb3Provider } from '../../../src/index.js';
 import { getWeb3ReadOnlyProvider } from '../../../src/utils/getWeb3Provider.js';
+import { JsonRpcProvider } from 'ethers';
 
 describe('IExecOracleFactory()', () => {
   it('instantiates with a chainId as ethProviderOrNetwork', async () => {
@@ -26,6 +27,12 @@ describe('IExecOracleFactory()', () => {
 
   it('instantiates with a Web3ReadOnlyProvider as ethProviderOrNetwork', async () => {
     const provider = getWeb3ReadOnlyProvider(134);
+    const oracleReader = new IExecOracleReader(provider);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
+  it('instantiates with an AbstractProvider as ethProviderOrNetwork', async () => {
+    const provider = new JsonRpcProvider('https://bellecour.iex.ec');
     const oracleReader = new IExecOracleReader(provider);
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });

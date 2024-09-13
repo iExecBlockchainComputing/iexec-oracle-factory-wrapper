@@ -8,6 +8,7 @@ import {
   DEFAULT_ORACLE_CONTRACT_ADDRESS,
 } from '../../../src/config/config.js';
 import { IExecOracleFactory, getWeb3Provider } from '../../../src/index.js';
+import { JsonRpcProvider } from 'ethers';
 
 describe('IExecOracleFactory()', () => {
   it('should use default ipfs node url when ipfsNode is not provided', async () => {
@@ -119,11 +120,18 @@ describe('IExecOracleFactory()', () => {
       Error('Unsupported ethProvider, Missing ethProvider')
     );
   });
-  it('instantiates with a valid ethProvider', async () => {
+  it('instantiates with getWeb3Provider as ethProvider', async () => {
     const wallet = Wallet.createRandom();
     const oracleFactory = new IExecOracleFactory(
       getWeb3Provider(wallet.privateKey)
     );
+    expect(oracleFactory).toBeInstanceOf(IExecOracleFactory);
+  });
+  it('instantiates with an AbstractSigner as ethProvider', async () => {
+    const wallet = Wallet.createRandom(
+      new JsonRpcProvider('https://bellecour.iex.ec')
+    );
+    const oracleFactory = new IExecOracleFactory(wallet);
     expect(oracleFactory).toBeInstanceOf(IExecOracleFactory);
   });
   it('instantiates with a valid ethProvider and iexecOptions', async () => {

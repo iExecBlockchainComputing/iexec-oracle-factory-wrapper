@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## Next
 
+### Added
+
+- Support for ethers `AbstractProvider` and `AbstractSigner` in constructors
+
 ### Changed
 
-- Upgraded to iexec ^8.9.1
+- Upgraded to iexec ^8.10.0
 - [BREAKING] Ship ES2022 JavaScript instead of es2015 (aka es6) in order to support `errorCause` optional field in `Error`:
   - Minimum browser versions: <https://gist.github.com/Julien-Marcou/156b19aea4704e1d2f48adafc6e2acbf>
   - Minimum Node.js version: 18
