@@ -29,7 +29,6 @@ import {
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
 import { readOracle } from './readOracle.js';
-
 import { updateOracle } from './updateOracle.js';
 
 /**
