@@ -1,4 +1,8 @@
-import { AddressOrENS, ParamSet } from './common-types.js';
+import {
+  DatasetorderTemplate,
+  SignedDatasetorder,
+} from 'iexec/IExecOrderModule';
+import { Address, AddressOrENS, ParamSet } from './common-types.js';
 
 /**
  * Options for creating an oracle.
@@ -9,21 +13,73 @@ export type CreateOracleOptions = {
   ipfsNode?: string;
 };
 
-/**
- * Parameters required to create an API key dataset.
- */
-export type CreateApiKeyDatasetParams = {
-  apiKey: string;
-  callId: string;
+export type ApiKeyEncryptionKeyCreatedMessage = {
+  message: 'ENCRYPTION_KEY_CREATED';
+  key: string;
 };
 
-/**
- * Message indicating the successful deployment of a dataset.
- */
-export type DeployDatasetMessage = {
-  message: 'DATASET_DEPLOYMENT_SUCCESS';
-  address: AddressOrENS;
+export type ApiKeyEncryptedMessage = {
+  message: 'FILE_ENCRYPTED';
+  encryptedFile: Buffer;
+  checksum: string;
 };
+
+export type ApiKeyUploadedMessage = {
+  message: 'ENCRYPTED_FILE_UPLOADED';
+  cid: string;
+  multiaddr: string;
+};
+
+export type ApiKeyDatasetDeployRequestMessage = {
+  message: 'DATASET_DEPLOYMENT_SIGN_TX_REQUEST';
+};
+
+export type ApiKeyDatasetDeploySuccessMessage = {
+  message: 'DATASET_DEPLOYMENT_SUCCESS';
+  address: Address;
+  txHash: string;
+};
+
+export type ApiKeyPushSecretRequestMessage = {
+  message: 'PUSH_SECRET_TO_SMS_SIGN_REQUEST';
+};
+
+export type ApiKeyPushSecretSuccessMessage = {
+  message: 'PUSH_SECRET_TO_SMS_SUCCESS';
+};
+
+export type ApiKeySignOrderRequestMessage = {
+  message: 'DATASET_ORDER_SIGNATURE_SIGN_REQUEST';
+  order: DatasetorderTemplate;
+};
+
+export type ApiKeySignOrderSuccessMessage = {
+  message: 'DATASET_ORDER_SIGNATURE_SUCCESS';
+  order: SignedDatasetorder;
+};
+
+export type ApiKeyPublishOrderRequestMessage = {
+  message: 'DATASET_ORDER_PUBLISH_SIGN_REQUEST';
+  order: SignedDatasetorder;
+};
+
+export type ApiKeyPublishOrderSuccessMessage = {
+  message: 'DATASET_ORDER_PUBLISH_SUCCESS';
+  orderHash: string;
+};
+
+export type CreateApiKeyDatasetMessage =
+  | ApiKeyEncryptionKeyCreatedMessage
+  | ApiKeyEncryptedMessage
+  | ApiKeyUploadedMessage
+  | ApiKeyDatasetDeployRequestMessage
+  | ApiKeyDatasetDeploySuccessMessage
+  | ApiKeyPushSecretRequestMessage
+  | ApiKeyPushSecretSuccessMessage
+  | ApiKeySignOrderRequestMessage
+  | ApiKeySignOrderSuccessMessage
+  | ApiKeyPublishOrderRequestMessage
+  | ApiKeyPublishOrderSuccessMessage;
 
 export type CreateParamSetMessage = {
   message: 'PARAM_SET_CREATED';
@@ -42,7 +98,8 @@ export type UploadParamSetMessage = {
 };
 
 export type CreateOracleMessage =
-  | DeployDatasetMessage
+  | CreateApiKeyDatasetMessage
+  | ApiKeyDatasetDeploySuccessMessage
   | CreateParamSetMessage
   | ComputeOracleIDMessage
   | UploadParamSetMessage;

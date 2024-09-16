@@ -9,10 +9,13 @@ import * as ipfs from '../services/ipfs/index.js';
 import { Address, RawParams } from '../types/common-types.js';
 import {
   CreateOracleOptions,
-  CreateApiKeyDatasetParams,
   CreateOracleMessage,
+  CreateApiKeyDatasetMessage,
 } from '../types/createOracle-types.js';
-import { IExecConsumer } from '../types/internal-types.js';
+import {
+  IExecConsumer,
+  CreateApiKeyDatasetParams,
+} from '../types/internal-types.js';
 import {
   ValidationError,
   WorkflowError,
@@ -41,10 +44,10 @@ const createApiKeyDataset = ({
   oracleApp,
 }: CreateApiKeyDatasetParams &
   CreateOracleOptions &
-  IExecConsumer): Observable<CreateOracleMessage> =>
-  new Observable<CreateOracleMessage>(
+  IExecConsumer): Observable<CreateApiKeyDatasetMessage> =>
+  new Observable<CreateApiKeyDatasetMessage>(
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    (observer: SafeObserver<CreateOracleMessage>) => {
+    (observer: SafeObserver<CreateApiKeyDatasetMessage>) => {
       let abort = false;
       const safeObserver = new SafeObserver(observer);
       const start = async () => {
