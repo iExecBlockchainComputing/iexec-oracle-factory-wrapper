@@ -6,4 +6,4 @@
 
 # Type Alias: CreateOracleMessage
 
-> **CreateOracleMessage**: [`CreateApiKeyDatasetMessage`](CreateApiKeyDatasetMessage.md) \| [`ApiKeyDatasetDeploySuccessMessage`](ApiKeyDatasetDeploySuccessMessage.md) \| [`CreateParamSetMessage`](CreateParamSetMessage.md) \| [`ComputeOracleIDMessage`](ComputeOracleIDMessage.md) \| [`UploadParamSetMessage`](UploadParamSetMessage.md)
+> **CreateOracleMessage**: [`CreateApiKeyDatasetMessage`](CreateApiKeyDatasetMessage.md) \| [`ParamSetCreatedMessage`](ParamSetCreatedMessage.md) \| [`OracleIDComputedMessage`](OracleIDComputedMessage.md) \| [`ParamSetUploadedMessage`](ParamSetUploadedMessage.md)

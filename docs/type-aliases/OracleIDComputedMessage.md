@@ -2,11 +2,11 @@
 
 ***
 
-[@iexec/iexec-oracle-factory-wrapper](../globals.md) / ComputeOracleIDMessage
+[@iexec/iexec-oracle-factory-wrapper](../globals.md) / OracleIDComputedMessage
 
-# Type Alias: ComputeOracleIDMessage
+# Type Alias: OracleIDComputedMessage
 
-> **ComputeOracleIDMessage**: `object`
+> **OracleIDComputedMessage**: `object`
 
 ## Type declaration
 

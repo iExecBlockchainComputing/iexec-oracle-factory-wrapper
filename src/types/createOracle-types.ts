@@ -81,17 +81,17 @@ export type CreateApiKeyDatasetMessage =
   | ApiKeyPublishOrderRequestMessage
   | ApiKeyPublishOrderSuccessMessage;
 
-export type CreateParamSetMessage = {
+export type ParamSetCreatedMessage = {
   message: 'PARAM_SET_CREATED';
   paramSet: ParamSet;
 };
 
-export type ComputeOracleIDMessage = {
+export type OracleIDComputedMessage = {
   message: 'ORACLE_ID_COMPUTED';
   oracleId: string;
 };
 
-export type UploadParamSetMessage = {
+export type ParamSetUploadedMessage = {
   message: 'PARAM_SET_UPLOADED';
   cid: string;
   multiaddr: string;
@@ -99,7 +99,6 @@ export type UploadParamSetMessage = {
 
 export type CreateOracleMessage =
   | CreateApiKeyDatasetMessage
-  | ApiKeyDatasetDeploySuccessMessage
-  | CreateParamSetMessage
-  | ComputeOracleIDMessage
-  | UploadParamSetMessage;
+  | ParamSetCreatedMessage
+  | OracleIDComputedMessage
+  | ParamSetUploadedMessage;

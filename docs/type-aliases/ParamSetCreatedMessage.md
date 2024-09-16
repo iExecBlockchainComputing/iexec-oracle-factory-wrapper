@@ -2,11 +2,11 @@
 
 ***
 
-[@iexec/iexec-oracle-factory-wrapper](../globals.md) / CreateParamSetMessage
+[@iexec/iexec-oracle-factory-wrapper](../globals.md) / ParamSetCreatedMessage
 
-# Type Alias: CreateParamSetMessage
+# Type Alias: ParamSetCreatedMessage
 
-> **CreateParamSetMessage**: `object`
+> **ParamSetCreatedMessage**: `object`
 
 ## Type declaration
 

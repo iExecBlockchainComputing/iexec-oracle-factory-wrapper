@@ -2,11 +2,11 @@
 
 ***
 
-[@iexec/iexec-oracle-factory-wrapper](../globals.md) / UploadParamSetMessage
+[@iexec/iexec-oracle-factory-wrapper](../globals.md) / ParamSetUploadedMessage
 
-# Type Alias: UploadParamSetMessage
+# Type Alias: ParamSetUploadedMessage
 
-> **UploadParamSetMessage**: `object`
+> **ParamSetUploadedMessage**: `object`
 
 ## Type declaration
 
