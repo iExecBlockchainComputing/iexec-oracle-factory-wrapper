@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 import jp from 'jsonpath';
 import { API_KEY_PLACEHOLDER } from '../config/config.js';
-import { RawParams } from '../types/common-types.js';
+import { RawParams } from '../types/common.js';
 import { rawParamsSchema } from './validators.js';
 
 interface FinalHeaders {

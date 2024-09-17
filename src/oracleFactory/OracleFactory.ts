@@ -25,7 +25,7 @@ import {
   RawParams,
   CreateOracleMessage,
   UpdateOracleMessage,
-} from '../types/public-types.js';
+} from '../types/index.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
 import { readOracle } from './readOracle.js';

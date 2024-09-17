@@ -5,7 +5,7 @@ import {
   PublishedRequestorder,
   PublishedWorkerpoolorder,
 } from 'iexec/IExecOrderbookModule';
-import { AddressOrENS, ParamSet, ParamSetCID } from './common-types.js';
+import { AddressOrENS, ParamSet, ParamSetCID } from './common.js';
 
 export type EnsureParamsMessage = {
   message: 'ENSURE_PARAMS';

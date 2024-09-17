@@ -20,7 +20,7 @@ import {
   DataType,
   ParamSetCID,
   OracleID,
-} from '../types/public-types.js';
+} from '../types/index.js';
 import { readOracle } from './readOracle.js';
 
 /**

@@ -2,7 +2,7 @@ import {
   DatasetorderTemplate,
   SignedDatasetorder,
 } from 'iexec/IExecOrderModule';
-import { Address, AddressOrENS, ParamSet } from './common-types.js';
+import { Address, AddressOrENS, ParamSet } from './common.js';
 
 /**
  * Options for creating an oracle.

@@ -5,8 +5,8 @@ import {
   OracleValue,
   ReadOracleOptions,
   ReadOracleParams,
-} from '../types/common-types.js';
-import { EthersProviderConsumer } from '../types/internal-types.js';
+} from '../types/common.js';
+import { EthersProviderConsumer } from '../types/internal.js';
 import {
   NoValueError,
   ValidationError,

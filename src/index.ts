@@ -1,4 +1,4 @@
-export type * from './types/public-types.js';
+export type * from './types/index.js';
 
 export { IExecOracleFactory } from './oracleFactory/OracleFactory.js';
 export { IExecOracleReader } from './oracleFactory/OracleReader.js';
