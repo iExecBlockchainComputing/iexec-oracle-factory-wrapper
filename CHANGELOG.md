@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Support for ethers `AbstractProvider` and `AbstractSigner` in constructors
+- Export more types
 
 ### Changed
 
@@ -19,6 +20,11 @@ All notable changes to this project will be documented in this file.
   - Distinguish iExec protocol errors from other errors
   - Store original error as the error errorCause
 - [BREAKING] Removed `originalError` from `WorkflowError`
+- Fixed supported target chains for cross-chain (134 is not included)
+
+### Removed
+
+- Removed support for mumbai cross-chain oracles
 
 ## [2.1.0] 2024-03-15
 

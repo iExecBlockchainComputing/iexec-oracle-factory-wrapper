@@ -12,7 +12,7 @@
 
 • **error**: `Error`
 
-• **observer**: [`SafeObserver`](../../../-internal-/classes/SafeObserver.md)\<`unknown`\>
+• **observer**: [`SafeObserver`](../../../classes/SafeObserver.md)\<`unknown`\>
 
 ## Returns
 

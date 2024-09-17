@@ -71,7 +71,6 @@ const factory = new IExecOracleFactory(signer);
 ## Documentation
 
 - [OracleFactory documentation](https://tools.docs.iex.ec/tools/oracle-factory)
-<!-- - [OracleFactory technical design]() -->
 - [iExec Protocol documentation](https://protocol.docs.iex.ec)
 
 ## License

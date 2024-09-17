@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
 import { getReaderDefaults } from '../config/config.js';
 import { READ_ABI } from '../config/contract.js';
-import { EthersProviderConsumer } from '../types/internal-types.js';
 import {
   OracleValue,
   ReadOracleOptions,
   ReadOracleParams,
-} from '../types/public-types.js';
+} from '../types/common.js';
+import { EthersProviderConsumer } from '../types/internal.js';
 import {
   NoValueError,
   ValidationError,

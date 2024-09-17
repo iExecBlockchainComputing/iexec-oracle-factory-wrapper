@@ -130,7 +130,7 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    targetBlockchains: [134],
+    targetBlockchains: [],
   });
 
   factoryWithOptions.updateOracle(
@@ -143,7 +143,7 @@ test('standard - instantiation', async () => {
       url: 'https://api.market.iex.ec/version',
     },
     {
-      targetBlockchains: [80001, 137],
+      targetBlockchains: [1, 137],
     }
   );
   expect(updateOracle).toHaveBeenNthCalledWith(2, {
@@ -155,7 +155,7 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    targetBlockchains: [80001, 137],
+    targetBlockchains: [1, 137],
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
     ipfsNode: 'ipfsNode',
@@ -189,7 +189,7 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
-    targetBlockchains: [134],
+    targetBlockchains: [],
   });
 
   await factoryWithOptions.readOracle({

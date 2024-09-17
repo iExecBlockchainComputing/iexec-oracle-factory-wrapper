@@ -1,14 +1,14 @@
 import CID from 'cids';
 import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
+import { ParamSet } from '../types/common.js';
+import { IExecConsumer } from '../types/internal.js';
 import {
-  IExecConsumer,
   TaskExecutionMessage,
   UpdateOracleMessage,
   UpdateOracleOptions,
   UpdateOracleParams,
-} from '../types/internal-types.js';
-import { ParamSet } from '../types/public-types.js';
+} from '../types/updateOracle.js';
 import {
   ValidationError,
   WorkflowError,
