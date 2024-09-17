@@ -12,10 +12,7 @@ import {
   CreateOracleMessage,
   CreateApiKeyDatasetMessage,
 } from '../types/createOracle.js';
-import {
-  IExecConsumer,
-  CreateApiKeyDatasetParams,
-} from '../types/internal.js';
+import { IExecConsumer, CreateApiKeyDatasetParams } from '../types/internal.js';
 import {
   ValidationError,
   WorkflowError,
