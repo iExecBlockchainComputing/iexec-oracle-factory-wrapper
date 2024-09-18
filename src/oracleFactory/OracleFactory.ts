@@ -1,4 +1,9 @@
-import { Eip1193Provider, Provider } from 'ethers';
+import {
+  Eip1193Provider,
+  Provider,
+  AbstractSigner,
+  BrowserProvider,
+} from 'ethers';
 import { IExec } from 'iexec';
 import {
   DEFAULT_APP_ADDRESS,
@@ -9,10 +14,6 @@ import {
   DEFAULT_WORKERPOOL_ADDRESS,
 } from '../config/config.js';
 import {
-  CreateOracleMessage,
-  UpdateOracleMessage,
-} from '../types/internal-types.js';
-import {
   AddressOrENS,
   OracleValue,
   OracleFactoryOptions,
@@ -22,11 +23,12 @@ import {
   ParamSetCID,
   OracleID,
   RawParams,
-} from '../types/public-types.js';
+  CreateOracleMessage,
+  UpdateOracleMessage,
+} from '../types/index.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
 import { readOracle } from './readOracle.js';
-
 import { updateOracle } from './updateOracle.js';
 
 /**
@@ -53,7 +55,11 @@ class IExecOracleFactory {
    * @param options Optional configuration options OracleFactory.
    */
   constructor(
-    ethProvider: Eip1193Provider | Web3SignerProvider,
+    ethProvider:
+      | Eip1193Provider
+      | Web3SignerProvider
+      | AbstractSigner
+      | BrowserProvider,
     options?: OracleFactoryOptions
   ) {
     try {

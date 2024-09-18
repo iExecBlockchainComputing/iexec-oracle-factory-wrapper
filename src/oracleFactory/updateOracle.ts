@@ -1,15 +1,20 @@
 import CID from 'cids';
 import { DEFAULT_IPFS_GATEWAY, getFactoryDefaults } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
+import { ParamSet } from '../types/common.js';
+import { IExecConsumer } from '../types/internal.js';
 import {
-  IExecConsumer,
   TaskExecutionMessage,
   UpdateOracleMessage,
   UpdateOracleOptions,
   UpdateOracleParams,
-} from '../types/internal-types.js';
-import { ParamSet } from '../types/public-types.js';
-import { ValidationError, WorkflowError } from '../utils/errors.js';
+} from '../types/updateOracle.js';
+import {
+  ValidationError,
+  WorkflowError,
+  handleIfProtocolError,
+  updateErrorMessage,
+} from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
 import {
@@ -112,7 +117,10 @@ const updateOracle = ({
           if (e instanceof ValidationError) {
             throw e;
           } else {
-            throw new WorkflowError('Failed to load paramSet', e);
+            throw new WorkflowError({
+              message: 'Failed to load paramSet',
+              errorCause: e,
+            });
           }
         });
         if (abort) return;
@@ -125,7 +133,10 @@ const updateOracle = ({
           cid = await ipfs
             .add(paramsJson, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload paramSet', e);
+              throw new WorkflowError({
+                message: 'Failed to upload paramSet',
+                errorCause: e,
+              });
             });
           if (abort) return;
         }
@@ -140,17 +151,16 @@ const updateOracle = ({
           message: 'FETCH_APP_ORDER',
         });
         const datasetAddress = paramSet.dataset;
-        const apporderbook = await iexec.orderbook
-          .fetchAppOrderbook(ORACLE_APP_ADDRESS, {
+        const apporderbook = await iexec.orderbook.fetchAppOrderbook(
+          ORACLE_APP_ADDRESS,
+          {
             minTag: ['tee', 'scone'],
             maxTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             dataset: datasetAddress,
-          })
-          .catch((e) => {
-            throw new WorkflowError('Failed to fetch apporder', e);
-          });
+          }
+        );
         if (abort) return;
         const apporder =
           apporderbook &&
@@ -158,7 +168,10 @@ const updateOracle = ({
           apporderbook.orders[0].order;
 
         if (!apporder) {
-          throw new WorkflowError('No apporder published');
+          throw new WorkflowError({
+            message: updateErrorMessage,
+            errorCause: Error('No app order published'),
+          });
         }
         safeObserver.next({
           message: 'FETCH_APP_ORDER_SUCCESS',
@@ -174,24 +187,26 @@ const updateOracle = ({
           safeObserver.next({
             message: 'FETCH_DATASET_ORDER',
           });
-          const datasetorderbook = await iexec.orderbook
-            .fetchDatasetOrderbook(datasetAddress, {
+          const datasetorderbook = await iexec.orderbook.fetchDatasetOrderbook(
+            datasetAddress,
+            {
               minTag: ['tee', 'scone'],
               maxTag: ['tee', 'scone'],
               requester: await iexec.wallet.getAddress(),
               workerpool,
               app: ORACLE_APP_ADDRESS,
-            })
-            .catch((e) => {
-              throw new WorkflowError('Failed to fetch datasetorder', e);
-            });
+            }
+          );
           if (abort) return;
           datasetorder =
             datasetorderbook &&
             datasetorderbook.orders[0] &&
             datasetorderbook.orders[0].order;
           if (!datasetorder) {
-            throw new WorkflowError('No datasetorder published');
+            throw new WorkflowError({
+              message: updateErrorMessage,
+              errorCause: Error('No dataset order published'),
+            });
           }
           safeObserver.next({
             message: 'FETCH_DATASET_ORDER_SUCCESS',
@@ -203,16 +218,13 @@ const updateOracle = ({
         safeObserver.next({
           message: 'FETCH_WORKERPOOL_ORDER',
         });
-        const workerpoolorderbook = await iexec.orderbook
-          .fetchWorkerpoolOrderbook({
+        const workerpoolorderbook =
+          await iexec.orderbook.fetchWorkerpoolOrderbook({
             minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
             app: ORACLE_APP_ADDRESS,
             dataset: datasetAddress,
-          })
-          .catch((e) => {
-            throw new WorkflowError('Failed to fetch workerpoolorder', e);
           });
         if (abort) return;
         const workerpoolorder =
@@ -220,7 +232,10 @@ const updateOracle = ({
           workerpoolorderbook.orders[0] &&
           workerpoolorderbook.orders[0].order;
         if (!workerpoolorder) {
-          throw new WorkflowError('No workerpoolorder published');
+          throw new WorkflowError({
+            message: updateErrorMessage,
+            errorCause: Error('No workerpool order published'),
+          });
         }
         safeObserver.next({
           message: 'FETCH_WORKERPOOL_ORDER_SUCCESS',
@@ -247,7 +262,10 @@ const updateOracle = ({
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } as any)
           .catch((e) => {
-            throw new WorkflowError('Failed to create requestorder', e);
+            throw new WorkflowError({
+              message: 'Failed to create request order',
+              errorCause: e,
+            });
           });
         if (abort) return;
         safeObserver.next({
@@ -259,7 +277,10 @@ const updateOracle = ({
         const requestorder = await iexec.order
           .signRequestorder(requestorderToSign, { preflightCheck: false })
           .catch((e) => {
-            throw new WorkflowError('Failed to sign requestorder', e);
+            throw new WorkflowError({
+              message: 'Failed to sign requestorder',
+              errorCause: e,
+            });
           });
         if (abort) return;
         safeObserver.next({
@@ -275,19 +296,15 @@ const updateOracle = ({
           workerpoolorder,
           requestorder,
         });
-        const { dealid, txHash } = await iexec.order
-          .matchOrders(
-            {
-              apporder,
-              datasetorder,
-              workerpoolorder,
-              requestorder,
-            },
-            { preflightCheck: false }
-          )
-          .catch((e) => {
-            throw new WorkflowError('Failed to match orders', e);
-          });
+        const { dealid, txHash } = await iexec.order.matchOrders(
+          {
+            apporder,
+            datasetorder,
+            workerpoolorder,
+            requestorder,
+          },
+          { preflightCheck: false }
+        );
         if (abort) return;
         safeObserver.next({
           message: 'MATCH_ORDERS_SUCCESS',
@@ -309,10 +326,12 @@ const updateOracle = ({
                   const { message } = value;
                   if (message === 'TASK_TIMEDOUT') {
                     reject(
-                      new WorkflowError(
-                        'Oracle update task timed out, update failed',
-                        Error(`Task ${taskid} from deal ${dealid} timed out`)
-                      )
+                      new WorkflowError({
+                        message: 'Oracle update task timed out, update failed',
+                        errorCause: Error(
+                          `Task ${taskid} from deal ${dealid} timed out`
+                        ),
+                      })
                     );
                   }
                   if (message === 'TASK_COMPLETED') {
@@ -327,10 +346,15 @@ const updateOracle = ({
                     });
                   }
                 },
-                error: (e) =>
+                error: (e) => {
+                  handleIfProtocolError(e, safeObserver);
                   reject(
-                    new WorkflowError('Failed to monitor oracle update task', e)
-                  ),
+                    new WorkflowError({
+                      message: 'Failed to monitor oracle update task',
+                      errorCause: e,
+                    })
+                  );
+                },
                 complete: () => {},
               });
             });
@@ -343,11 +367,15 @@ const updateOracle = ({
         safeObserver.complete();
       } catch (e) {
         if (abort) return;
+        handleIfProtocolError(e, safeObserver);
         if (e instanceof WorkflowError || e instanceof ValidationError) {
           safeObserver.error(e);
         } else {
           safeObserver.error(
-            new WorkflowError('Update oracle unexpected error', e)
+            new WorkflowError({
+              message: 'Failed to update oracle',
+              errorCause: e,
+            })
           );
         }
       }

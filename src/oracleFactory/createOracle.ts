@@ -6,14 +6,18 @@ import {
   getFactoryDefaults,
 } from '../config/config.js';
 import * as ipfs from '../services/ipfs/index.js';
+import { Address, RawParams } from '../types/common.js';
 import {
-  CreateApiKeyDatasetParams,
-  CreateOracleMessage,
-  IExecConsumer,
   CreateOracleOptions,
-} from '../types/internal-types.js';
-import { Address, RawParams } from '../types/public-types.js';
-import { ValidationError, WorkflowError } from '../utils/errors.js';
+  CreateOracleMessage,
+  CreateApiKeyDatasetMessage,
+} from '../types/createOracle.js';
+import { IExecConsumer, CreateApiKeyDatasetParams } from '../types/internal.js';
+import {
+  ValidationError,
+  WorkflowError,
+  handleIfProtocolError,
+} from '../utils/errors.js';
 import { formatParamsJson } from '../utils/format.js';
 import { computeCallId, computeOracleId } from '../utils/hash.js';
 import { Observable, SafeObserver } from '../utils/reactive.js';
@@ -37,10 +41,10 @@ const createApiKeyDataset = ({
   oracleApp,
 }: CreateApiKeyDatasetParams &
   CreateOracleOptions &
-  IExecConsumer): Observable<CreateOracleMessage> =>
-  new Observable<CreateOracleMessage>(
+  IExecConsumer): Observable<CreateApiKeyDatasetMessage> =>
+  new Observable<CreateApiKeyDatasetMessage>(
     // eslint-disable-next-line sonarjs/cognitive-complexity
-    (observer: SafeObserver<CreateOracleMessage>) => {
+    (observer: SafeObserver<CreateApiKeyDatasetMessage>) => {
       let abort = false;
       const safeObserver = new SafeObserver(observer);
       const start = async () => {
@@ -63,16 +67,19 @@ const createApiKeyDataset = ({
           const encryptedFile = await iexec.dataset
             .encrypt(Buffer.from(dataset, 'utf8'), key)
             .catch((e: Error) => {
-              throw new WorkflowError('Failed to encrypt API key', e);
+              throw new WorkflowError({
+                message: 'Failed to encrypt API key',
+                errorCause: e,
+              });
             });
           if (abort) return;
           const checksum = await iexec.dataset
             .computeEncryptedFileChecksum(encryptedFile)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                'Failed to compute encrypted API key checksum',
-                e
-              );
+              throw new WorkflowError({
+                message: 'Failed to compute encrypted API key checksum',
+                errorCause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -84,7 +91,10 @@ const createApiKeyDataset = ({
           const cid = await ipfs
             .add(encryptedFile, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload encrypted API key', e);
+              throw new WorkflowError({
+                message: 'Failed to upload encrypted API key',
+                errorCause: e,
+              });
             });
           if (abort) return;
           const multiaddr = `/ipfs/${cid}`;
@@ -97,16 +107,12 @@ const createApiKeyDataset = ({
           safeObserver.next({
             message: 'DATASET_DEPLOYMENT_SIGN_TX_REQUEST',
           });
-          const { address, txHash } = await iexec.dataset
-            .deployDataset({
-              owner: await iexec.wallet.getAddress(),
-              name: 'api-key',
-              multiaddr,
-              checksum,
-            })
-            .catch((e: Error) => {
-              throw new WorkflowError('Failed to deploy API key dataset', e);
-            });
+          const { address, txHash } = await iexec.dataset.deployDataset({
+            owner: await iexec.wallet.getAddress(),
+            name: 'api-key',
+            multiaddr,
+            checksum,
+          });
           if (abort) return;
           safeObserver.next({
             message: 'DATASET_DEPLOYMENT_SUCCESS',
@@ -117,14 +123,7 @@ const createApiKeyDataset = ({
           safeObserver.next({
             message: 'PUSH_SECRET_TO_SMS_SIGN_REQUEST',
           });
-          await iexec.dataset
-            .pushDatasetSecret(address, key)
-            .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to push API key dataset's encryption key",
-                e
-              );
-            });
+          await iexec.dataset.pushDatasetSecret(address, key);
           if (abort) return;
           safeObserver.next({
             message: 'PUSH_SECRET_TO_SMS_SUCCESS',
@@ -138,10 +137,10 @@ const createApiKeyDataset = ({
               volume: Number.MAX_SAFE_INTEGER - 1,
             })
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to create API key datasetorder's",
-                e
-              );
+              throw new WorkflowError({
+                message: 'Failed to create API key dataset order',
+                errorCause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -151,10 +150,10 @@ const createApiKeyDataset = ({
           const order = await iexec.order
             .signDatasetorder(orderToSign)
             .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to sign API key datasetorder's",
-                e
-              );
+              throw new WorkflowError({
+                message: "Failed to sign API key datasetorder's",
+                errorCause: e,
+              });
             });
           if (abort) return;
           safeObserver.next({
@@ -166,14 +165,7 @@ const createApiKeyDataset = ({
             message: 'DATASET_ORDER_PUBLISH_SIGN_REQUEST',
             order,
           });
-          const orderHash = await iexec.order
-            .publishDatasetorder(order)
-            .catch((e: Error) => {
-              throw new WorkflowError(
-                "Failed to publish API key datasetorder's",
-                e
-              );
-            });
+          const orderHash = await iexec.order.publishDatasetorder(order);
           if (abort) return;
           safeObserver.next({
             message: 'DATASET_ORDER_PUBLISH_SUCCESS',
@@ -183,11 +175,16 @@ const createApiKeyDataset = ({
           safeObserver.complete();
         } catch (e) {
           if (abort) return;
+          handleIfProtocolError(e, safeObserver);
           if (e instanceof WorkflowError) {
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('API key dataset creation unexpected error', e)
+              new WorkflowError({
+                message:
+                  'Failed to create dataset containing encrypted API key',
+                errorCause: e,
+              })
             );
           }
         }
@@ -302,7 +299,10 @@ const createOracle = ({
           const cid = await ipfs
             .add(jsonParams, { ipfsGateway, ipfsNode })
             .catch((e) => {
-              throw new WorkflowError('Failed to upload paramSet', e);
+              throw new WorkflowError({
+                message: 'Failed to upload paramSet',
+                errorCause: e,
+              });
             });
           if (abort) return;
           const multiaddr = `/ipfs/${cid}`;
@@ -315,11 +315,15 @@ const createOracle = ({
           safeObserver.complete();
         } catch (e) {
           if (abort) return;
+          handleIfProtocolError(e, safeObserver);
           if (e instanceof WorkflowError || e instanceof ValidationError) {
             safeObserver.error(e);
           } else {
             safeObserver.error(
-              new WorkflowError('Create oracle unexpected error', e)
+              new WorkflowError({
+                message: 'Failed to create oracle',
+                errorCause: e,
+              })
             );
           }
         }
