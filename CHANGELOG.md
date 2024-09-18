@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
   - Minimum browser versions: <https://gist.github.com/Julien-Marcou/156b19aea4704e1d2f48adafc6e2acbf>
   - Minimum Node.js version: 18
 - Upgrade typescript version
-- Changed `fetchMyContacts`, `fetchUserContacts` and `sendEmail` error handling:
+- Changed `createOracle`, `updateOracle` and `readOracle` error handling:
   - Distinguish iExec protocol errors from other errors
   - Store original error as the error errorCause
 - [BREAKING] Removed `originalError` from `WorkflowError`
