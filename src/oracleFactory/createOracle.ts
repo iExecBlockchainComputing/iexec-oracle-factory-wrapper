@@ -38,7 +38,7 @@ const createApiKeyDataset = ({
   callId,
   ipfsGateway = DEFAULT_IPFS_GATEWAY,
   ipfsNode = DEFAULT_IPFS_UPLOAD_URL,
-  oracleApp,
+  oracleAppWhitelist,
 }: CreateApiKeyDatasetParams &
   CreateOracleOptions &
   IExecConsumer): Observable<CreateApiKeyDatasetMessage> =>
@@ -51,9 +51,6 @@ const createApiKeyDataset = ({
         try {
           const { chainId } = await iexec.network.getNetwork();
           if (abort) return;
-          const ORACLE_APP_ADDRESS =
-            oracleApp || getFactoryDefaults(chainId).ORACLE_APP_ADDRESS;
-
           const key = await iexec.dataset.generateEncryptionKey();
           safeObserver.next({
             message: 'ENCRYPTION_KEY_CREATED',
@@ -133,7 +130,9 @@ const createApiKeyDataset = ({
             .createDatasetorder({
               dataset: address,
               tag: ['tee', 'scone'],
-              apprestrict: ORACLE_APP_ADDRESS,
+              apprestrict:
+                oracleAppWhitelist ||
+                getFactoryDefaults(chainId).ORACLE_APP_WHITELIST_ADDRESS,
               volume: Number.MAX_SAFE_INTEGER - 1,
             })
             .catch((e: Error) => {
@@ -200,7 +199,7 @@ const createApiKeyDataset = ({
 
 /**
  * Creates a new oracle based on the provided parameters.
- * @param {RawParams & CreateOracleOptions & IExecConsumer} options Options for creating the oracle.
+ * @param {RawParams & CreateOracleConfig & IExecConsumer} options Options for creating the oracle.
  * @returns {Observable<CreateOracleMessage>} Observable regarding the oracle creation process.
  */
 const createOracle = ({
@@ -212,7 +211,7 @@ const createOracle = ({
   dataType,
   apiKey,
   iexec,
-  oracleApp,
+  oracleAppWhitelist,
   ipfsGateway,
   ipfsNode,
 }: RawParams &
@@ -258,7 +257,7 @@ const createOracle = ({
                 callId,
                 ipfsGateway,
                 ipfsNode,
-                oracleApp,
+                oracleAppWhitelist,
               }).subscribe({
                 error: (e) => reject(e),
                 next: (v: CreateOracleMessage) => {

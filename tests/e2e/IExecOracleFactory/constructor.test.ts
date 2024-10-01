@@ -1,14 +1,12 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 // needed to access and assert IExecDataProtector's private properties
 import { describe, it, expect } from '@jest/globals';
-import { Wallet } from 'ethers';
+import { Wallet, JsonRpcProvider } from 'ethers';
 import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
-  DEFAULT_ORACLE_CONTRACT_ADDRESS,
 } from '../../../src/config/config.js';
 import { IExecOracleFactory, getWeb3Provider } from '../../../src/index.js';
-import { JsonRpcProvider } from 'ethers';
 
 describe('IExecOracleFactory()', () => {
   it('should use default ipfs node url when ipfsNode is not provided', async () => {
@@ -52,7 +50,7 @@ describe('IExecOracleFactory()', () => {
       getWeb3Provider(Wallet.createRandom().privateKey)
     );
     const oracleContract = oracleFactory['oracleContract'];
-    expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
+    expect(oracleContract).toStrictEqual(undefined);
   });
   it('should use provided smart contract address when contractAddress is provided', async () => {
     const customSContractAddress = Wallet.createRandom().address;

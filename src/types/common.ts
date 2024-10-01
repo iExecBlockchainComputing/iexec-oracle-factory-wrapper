@@ -27,6 +27,7 @@ export type OracleFactoryOptions = {
   ipfsNode?: string;
   ipfsGateway?: string;
   oracleApp?: AddressOrENS;
+  oracleAppWhitelist?: AddressOrENS;
   workerpool?: AddressOrENS;
 };
 

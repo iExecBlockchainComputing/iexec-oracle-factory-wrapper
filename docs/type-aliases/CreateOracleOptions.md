@@ -20,6 +20,6 @@ Options for creating an oracle.
 
 > `optional` **ipfsNode**: `string`
 
-### oracleApp?
+### oracleAppWhitelist?
 
-> `optional` **oracleApp**: [`AddressOrENS`](AddressOrENS.md)
+> `optional` **oracleAppWhitelist**: [`AddressOrENS`](AddressOrENS.md)
