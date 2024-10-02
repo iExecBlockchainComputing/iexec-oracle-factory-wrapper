@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Next
+
+### Added
+
+- Support app whitelist for seamless oracles migration of oracles to latest oracle dapp
+
 ## [2.2.0] 2024-09-17
 
 ### Added
