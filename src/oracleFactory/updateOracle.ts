@@ -223,7 +223,7 @@ const updateOracle = ({
                 ),
             ]);
           if (abort) return;
-          if (datasetorderForApp && datasetorder) {
+          if (datasetorderForApp && datasetorderForWhitelist) {
             // get cheapest order
             datasetorder =
               datasetorderForApp.datasetprice <
@@ -316,7 +316,7 @@ const updateOracle = ({
         if (abort) return;
         safeObserver.next({
           message: 'REQUEST_ORDER_SIGNATURE_SUCCESS',
-          order: requestorderToSign,
+          order: requestorder,
         });
 
         // Match orders
