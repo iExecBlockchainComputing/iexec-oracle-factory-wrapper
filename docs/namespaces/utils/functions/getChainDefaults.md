@@ -20,6 +20,14 @@
 
 > `optional` **ORACLE\_APP\_ADDRESS**: `string`
 
-### ORACLE\_CONTRACT\_ADDRESS?
+### ORACLE\_APP\_WHITELIST\_ADDRESS?
 
-> `optional` **ORACLE\_CONTRACT\_ADDRESS**: `string`
+> `optional` **ORACLE\_APP\_WHITELIST\_ADDRESS**: `string`
+
+### ORACLE\_CONTRACT\_ADDRESS
+
+> **ORACLE\_CONTRACT\_ADDRESS**: `string`
+
+### WORKERPOOL\_ADDRESS?
+
+> `optional` **WORKERPOOL\_ADDRESS**: `string`

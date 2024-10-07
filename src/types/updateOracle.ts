@@ -132,6 +132,7 @@ export type UpdateOracleParams = {
  */
 export type UpdateOracleOptions = {
   oracleApp?: AddressOrENS;
+  oracleAppWhitelist?: AddressOrENS;
   oracleContract?: Address;
   workerpool?: AddressOrENS;
   ipfsGateway?: string;

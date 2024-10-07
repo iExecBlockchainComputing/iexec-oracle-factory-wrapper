@@ -24,6 +24,10 @@ Options for updating an oracle.
 
 > `optional` **oracleApp**: [`AddressOrENS`](AddressOrENS.md)
 
+### oracleAppWhitelist?
+
+> `optional` **oracleAppWhitelist**: [`AddressOrENS`](AddressOrENS.md)
+
 ### oracleContract?
 
 > `optional` **oracleContract**: `Address`

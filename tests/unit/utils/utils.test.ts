@@ -24,7 +24,9 @@ describe('getChainDefaults', () => {
     const bellecourDefaults = getChainDefaults(134);
     expect(bellecourDefaults.ORACLE_CONTRACT_ADDRESS).toBeDefined();
     expect(bellecourDefaults.ORACLE_APP_ADDRESS).toBeDefined();
-    expect(Object.keys(bellecourDefaults).length).toBe(2);
+    expect(bellecourDefaults.ORACLE_APP_WHITELIST_ADDRESS).toBeDefined();
+    expect(bellecourDefaults.WORKERPOOL_ADDRESS).toBeDefined();
+    expect(Object.keys(bellecourDefaults).length).toBe(4);
     const mainnetDefaults = getChainDefaults(1);
     expect(mainnetDefaults.ORACLE_CONTRACT_ADDRESS).toBeDefined();
     expect(Object.keys(mainnetDefaults).length).toBe(1);

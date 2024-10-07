@@ -83,6 +83,7 @@ const updateOracle = ({
   targetBlockchains,
   iexec,
   oracleApp,
+  oracleAppWhitelist,
   ipfsGateway,
   ipfsNode,
   workerpool,
@@ -101,9 +102,12 @@ const updateOracle = ({
           await updateTargetBlockchainsSchema().validate(targetBlockchains);
         const { chainId } = await iexec.network.getNetwork();
         if (abort) return;
-        const ORACLE_APP_ADDRESS =
+        const appAddress =
           oracleApp || getFactoryDefaults(chainId).ORACLE_APP_ADDRESS;
-        const ORACLE_CONTRACT_ADDRESS =
+        const appWhitelistAddress =
+          oracleAppWhitelist ||
+          getFactoryDefaults(chainId).ORACLE_APP_WHITELIST_ADDRESS;
+        const oracleAddress =
           oracleContract || getFactoryDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
 
         let cid;
@@ -152,7 +156,7 @@ const updateOracle = ({
         });
         const datasetAddress = paramSet.dataset;
         const apporderbook = await iexec.orderbook.fetchAppOrderbook(
-          ORACLE_APP_ADDRESS,
+          appAddress,
           {
             minTag: ['tee', 'scone'],
             maxTag: ['tee', 'scone'],
@@ -187,21 +191,48 @@ const updateOracle = ({
           safeObserver.next({
             message: 'FETCH_DATASET_ORDER',
           });
-          const datasetorderbook = await iexec.orderbook.fetchDatasetOrderbook(
-            datasetAddress,
-            {
-              minTag: ['tee', 'scone'],
-              maxTag: ['tee', 'scone'],
-              requester: await iexec.wallet.getAddress(),
-              workerpool,
-              app: ORACLE_APP_ADDRESS,
-            }
-          );
+          const [datasetorderForApp, datasetorderForWhitelist] =
+            await Promise.all([
+              iexec.orderbook
+                .fetchDatasetOrderbook(datasetAddress, {
+                  minTag: ['tee', 'scone'],
+                  maxTag: ['tee', 'scone'],
+                  requester: await iexec.wallet.getAddress(),
+                  workerpool,
+                  app: appAddress,
+                })
+                .then(
+                  (orderbook) =>
+                    orderbook &&
+                    orderbook.orders[0] &&
+                    orderbook.orders[0].order
+                ),
+              iexec.orderbook
+                .fetchDatasetOrderbook(datasetAddress, {
+                  minTag: ['tee', 'scone'],
+                  maxTag: ['tee', 'scone'],
+                  requester: await iexec.wallet.getAddress(),
+                  workerpool,
+                  app: appWhitelistAddress,
+                })
+                .then(
+                  (orderbook) =>
+                    orderbook &&
+                    orderbook.orders[0] &&
+                    orderbook.orders[0].order
+                ),
+            ]);
           if (abort) return;
-          datasetorder =
-            datasetorderbook &&
-            datasetorderbook.orders[0] &&
-            datasetorderbook.orders[0].order;
+          if (datasetorderForApp && datasetorderForWhitelist) {
+            // get cheapest order
+            datasetorder =
+              datasetorderForApp.datasetprice <
+              datasetorderForWhitelist.datasetprice
+                ? datasetorderForApp
+                : datasetorderForWhitelist;
+          } else {
+            datasetorder = datasetorderForApp || datasetorderForWhitelist;
+          }
           if (!datasetorder) {
             throw new WorkflowError({
               message: updateErrorMessage,
@@ -223,7 +254,7 @@ const updateOracle = ({
             minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool,
-            app: ORACLE_APP_ADDRESS,
+            app: appAddress,
             dataset: datasetAddress,
           });
         if (abort) return;
@@ -245,11 +276,11 @@ const updateOracle = ({
         // Create request order
         const requestorderToSign = await iexec.order
           .createRequestorder({
-            app: ORACLE_APP_ADDRESS,
+            app: appAddress,
             category: workerpoolorder.category,
             dataset: datasetAddress,
             workerpool,
-            callback: ORACLE_CONTRACT_ADDRESS,
+            callback: oracleAddress,
             appmaxprice: apporder.appprice,
             datasetmaxprice: datasetorder && datasetorder.datasetprice,
             workerpoolmaxprice: workerpoolorder.workerpoolprice,
@@ -285,7 +316,7 @@ const updateOracle = ({
         if (abort) return;
         safeObserver.next({
           message: 'REQUEST_ORDER_SIGNATURE_SUCCESS',
-          order: requestorderToSign,
+          order: requestorder,
         });
 
         // Match orders

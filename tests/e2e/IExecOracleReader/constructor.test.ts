@@ -1,12 +1,8 @@
 import { describe, it, expect } from '@jest/globals';
-import { Wallet, ethers } from 'ethers';
-import {
-  DEFAULT_IPFS_GATEWAY,
-  DEFAULT_ORACLE_CONTRACT_ADDRESS,
-} from '../../../src/config/config.js';
+import { Wallet, ethers, JsonRpcProvider } from 'ethers';
+import { DEFAULT_IPFS_GATEWAY } from '../../../src/config/config.js';
 import { IExecOracleReader, getWeb3Provider } from '../../../src/index.js';
 import { getWeb3ReadOnlyProvider } from '../../../src/utils/getWeb3Provider.js';
-import { JsonRpcProvider } from 'ethers';
 
 describe('IExecOracleFactory()', () => {
   it('instantiates with a chainId as ethProviderOrNetwork', async () => {
@@ -55,7 +51,7 @@ describe('IExecOracleFactory()', () => {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     const ipfsGateway = oracleReader['ipfsGateway'];
 
-    expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
+    expect(oracleContract).toStrictEqual(undefined);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
   });
 
