@@ -109,6 +109,8 @@ const updateOracle = ({
           getFactoryDefaults(chainId).ORACLE_APP_WHITELIST_ADDRESS;
         const oracleAddress =
           oracleContract || getFactoryDefaults(chainId).ORACLE_CONTRACT_ADDRESS;
+        const workerpoolAddress =
+          workerpool || getFactoryDefaults(chainId).WORKERPOOL_ADDRESS;
 
         let cid;
         safeObserver.next({
@@ -161,7 +163,7 @@ const updateOracle = ({
             minTag: ['tee', 'scone'],
             maxTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
-            workerpool,
+            workerpool: workerpoolAddress,
             dataset: datasetAddress,
           }
         );
@@ -198,7 +200,7 @@ const updateOracle = ({
                   minTag: ['tee', 'scone'],
                   maxTag: ['tee', 'scone'],
                   requester: await iexec.wallet.getAddress(),
-                  workerpool,
+                  workerpool: workerpoolAddress,
                   app: appAddress,
                 })
                 .then(
@@ -212,7 +214,7 @@ const updateOracle = ({
                   minTag: ['tee', 'scone'],
                   maxTag: ['tee', 'scone'],
                   requester: await iexec.wallet.getAddress(),
-                  workerpool,
+                  workerpool: workerpoolAddress,
                   app: appWhitelistAddress,
                 })
                 .then(
@@ -253,7 +255,7 @@ const updateOracle = ({
           await iexec.orderbook.fetchWorkerpoolOrderbook({
             minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
-            workerpool,
+            workerpool: workerpoolAddress,
             app: appAddress,
             dataset: datasetAddress,
           });
@@ -279,7 +281,7 @@ const updateOracle = ({
             app: appAddress,
             category: workerpoolorder.category,
             dataset: datasetAddress,
-            workerpool,
+            workerpool: workerpoolAddress,
             callback: oracleAddress,
             appmaxprice: apporder.appprice,
             datasetmaxprice: datasetorder && datasetorder.datasetprice,
