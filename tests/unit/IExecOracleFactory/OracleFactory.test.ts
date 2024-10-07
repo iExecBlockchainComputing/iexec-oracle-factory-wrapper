@@ -2,11 +2,8 @@ import { jest } from '@jest/globals';
 import { Wallet } from 'ethers';
 import { IExec, utils } from 'iexec';
 import {
-  DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
-  DEFAULT_ORACLE_CONTRACT_ADDRESS,
-  DEFAULT_WORKERPOOL_ADDRESS,
 } from '../../../src/config/config.js';
 
 jest.unstable_mockModule('../../../src/oracleFactory/createOracle.js', () => ({
@@ -47,12 +44,14 @@ test('standard - instantiation', async () => {
     ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
+    oracleAppWhitelist: 'oracleAppWhitelist',
+    workerpool: 'workerpool',
   });
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
   expect(factoryWithOptions).toBeInstanceOf(IExecOracleFactory);
-  expect(Object.keys(factoryWithOptions).length).toBe(11);
+  expect(Object.keys(factoryWithOptions).length).toBe(12);
   expect(factoryWithoutOption).toBeInstanceOf(IExecOracleFactory);
-  expect(Object.keys(factoryWithoutOption).length).toBe(11);
+  expect(Object.keys(factoryWithoutOption).length).toBe(12);
 
   const iexecWithOptions = factoryWithOptions.getIExec();
   expect(iexecWithOptions).toBeInstanceOf(IExec);
@@ -73,7 +72,7 @@ test('standard - instantiation', async () => {
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
     ipfsNode: 'ipfsNode',
-    oracleApp: 'oracleApp',
+    oracleAppWhitelist: 'oracleAppWhitelist',
     JSONPath: '$.ok',
     body: '',
     dataType: 'boolean',
@@ -102,7 +101,6 @@ test('standard - instantiation', async () => {
     iexec: iexecWithoutOption,
     ipfsGateway: DEFAULT_IPFS_GATEWAY,
     ipfsNode: DEFAULT_IPFS_UPLOAD_URL,
-    oracleApp: DEFAULT_APP_ADDRESS,
   });
 
   factoryWithOptions.updateOracle({
@@ -120,7 +118,8 @@ test('standard - instantiation', async () => {
     ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
-    workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+    oracleAppWhitelist: 'oracleAppWhitelist',
+    workerpool: 'workerpool',
     paramSetOrCid: {
       JSONPath: '$.ok',
       body: '',
@@ -161,7 +160,8 @@ test('standard - instantiation', async () => {
     ipfsNode: 'ipfsNode',
     oracleContract: 'oracleContract',
     oracleApp: 'oracleApp',
-    workerpool: 'prod-v8-bellecour.main.pools.iexec.eth',
+    oracleAppWhitelist: 'oracleAppWhitelist',
+    workerpool: 'workerpool',
   });
 
   factoryWithoutOption.updateOracle({
@@ -177,9 +177,6 @@ test('standard - instantiation', async () => {
     iexec: iexecWithoutOption,
     ipfsGateway: DEFAULT_IPFS_GATEWAY,
     ipfsNode: DEFAULT_IPFS_UPLOAD_URL,
-    oracleApp: DEFAULT_APP_ADDRESS,
-    oracleContract: DEFAULT_ORACLE_CONTRACT_ADDRESS,
-    workerpool: DEFAULT_WORKERPOOL_ADDRESS,
     paramSetOrCid: {
       JSONPath: '$.ok',
       body: '',
@@ -246,7 +243,6 @@ test('standard - instantiation', async () => {
   expect(readOracle).toHaveBeenNthCalledWith(3, {
     ethersProvider: ethProvider.provider,
     ipfsGateway: DEFAULT_IPFS_GATEWAY,
-    oracleContract: DEFAULT_ORACLE_CONTRACT_ADDRESS,
     paramSetOrCidOrOracleId: 'paramSetOrCidOrOracleId',
   });
 

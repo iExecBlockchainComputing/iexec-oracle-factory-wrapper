@@ -8,7 +8,7 @@ import { Address, AddressOrENS, ParamSet } from './common.js';
  * Options for creating an oracle.
  */
 export type CreateOracleOptions = {
-  oracleApp?: AddressOrENS;
+  oracleAppWhitelist?: AddressOrENS;
   ipfsGateway?: string;
   ipfsNode?: string;
 };
