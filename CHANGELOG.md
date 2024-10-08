@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Next
+
+### Changed
+
+- Fixed use of default workerpool
+
 ## [2.3.0] 2024-10-07
 
 ### Added
