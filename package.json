@@ -15,15 +15,20 @@
   "scripts": {
     "build": "rm -rf dist && tsc --project tsconfig.build.json && npm run generate-doc",
     "check-types": "tsc --noEmit",
-    "test": "npm run test:prepare && NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"(src|tests)/**/*.ts\"",
     "check-format": "prettier --check \"(src|tests)/**/*.ts|tests/**/*.ts\"",
     "generate-doc": "./node_modules/typedoc/bin/typedoc --tsconfig tsconfig.json --disableSources",
     "stop-test-stack": "cd tests && docker compose down --volumes --remove-orphans",
-    "start-test-stack": "cd tests && npm run stop-test-stack && node scripts/prepare-test-env.js && docker compose pull &&  docker compose up -d",
-    "test:prepare": "cd tests && node scripts/prepare-bellecour-fork-for-tests.js"
+    "start-test-stack": "cd tests && npm run stop-test-stack && node scripts/prepare-test-env.js && docker compose pull &&  docker compose up -d && node scripts/prepare-bellecour-fork-for-tests.js",
+    "test:prepare": "node tests/scripts/prepare-bellecour-fork-for-tests.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch \"**/tests/**/*.test.ts\" --forceExit -b",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch \"**/tests/**/*.test.ts\" --forceExit --coverage",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch \"**/tests/unit/**/*.test.ts\" --forceExit -b",
+    "test:unit:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch \"**/tests/unit/**/*.unit.ts\" --forceExit --coverage",
+    "test:e2e": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch \"**/tests/**/*.test.ts\" --forceExit -b",
+    "test:e2e:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --testMatch \"**/tests/**/*.test.ts\" --forceExit --coverage"
   },
   "repository": {
     "type": "git",
