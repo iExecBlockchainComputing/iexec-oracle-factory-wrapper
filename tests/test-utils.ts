@@ -10,6 +10,7 @@ import { VOUCHER_HUB_ADDRESS } from './bellecour-fork/voucher-config.js';
 const { DRONE } = process.env;
 
 export const OF_APP_ADDRESS: AddressOrENS = 'oracle-factory.apps.iexec.eth';
+export const OF_APP_WHITELIST_ADDRESS: Address = '0x26472b355849B409769545A8595fe97846a8F0C9';
 
 export const TEST_CHAIN = {
   rpcURL: DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545',

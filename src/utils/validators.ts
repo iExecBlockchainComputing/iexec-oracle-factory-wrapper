@@ -5,7 +5,7 @@ import {
   API_KEY_PLACEHOLDER,
   SUPPORTED_TARGET_BLOCKCHAINS,
 } from '../config/config.js';
-import { ParamSet } from '../types/public-types.js';
+import { ParamSet } from '../types/common.js';
 
 const countSubstrAllowOverlap = (str, substr) => {
   if (substr.length <= 0) return str.length + 1;

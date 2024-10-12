@@ -1,7 +1,9 @@
-@iexec/iexec-oracle-factory-wrapper / [Exports](modules.md)
+**@iexec/iexec-oracle-factory-wrapper** • [**Docs**](globals.md)
+
+***
 
 <p align="center">
-  <a href="https://iex.ec/" rel="noopener" target="_blank"><img width="150" src="./logo-iexec.png" alt="iExec logo"/></a>
+  <a href="https://iex.ec/" rel="noopener" target="_blank"><img width="150" src="" alt="iExec logo"/></a>
 </p>
 
 <h1 align="center">OracleFactory</h1>
@@ -69,7 +71,6 @@ const factory = new IExecOracleFactory(signer);
 ## Documentation
 
 - [OracleFactory documentation](https://tools.docs.iex.ec/tools/oracle-factory)
-<!-- - [OracleFactory technical design](./technical-design/index.md) -->
 - [iExec Protocol documentation](https://protocol.docs.iex.ec)
 
 ## License

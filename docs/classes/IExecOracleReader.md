@@ -1,86 +1,57 @@
-[@iexec/iexec-oracle-factory-wrapper](../README.md) / [Exports](../modules.md) / IExecOracleReader
+[**@iexec/iexec-oracle-factory-wrapper**](../README.md) • **Docs**
+
+***
+
+[@iexec/iexec-oracle-factory-wrapper](../globals.md) / IExecOracleReader
 
 # Class: IExecOracleReader
 
 Oracle Reader that interacts with iExec Oracle.
 
-## Table of contents
-
-### Constructors
-
-- [constructor](IExecOracleReader.md#constructor)
-
-### Properties
-
-- [ethersProvider](IExecOracleReader.md#ethersprovider)
-- [ipfsGateway](IExecOracleReader.md#ipfsgateway)
-- [oracleContract](IExecOracleReader.md#oraclecontract)
-
-### Methods
-
-- [readOracle](IExecOracleReader.md#readoracle)
-
 ## Constructors
 
-### constructor
+### new IExecOracleReader()
 
-• **new IExecOracleReader**(`ethProviderOrNetwork?`, `options?`): [`IExecOracleReader`](IExecOracleReader.md)
+> **new IExecOracleReader**(`ethProviderOrNetwork`?, `options`?): [`IExecOracleReader`](IExecOracleReader.md)
 
 Creates an instance of IExecOracleReader.
 
 #### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `ethProviderOrNetwork?` | `string` \| `number` \| `EnhancedWallet` \| `AbstractProvider` \| `Eip1193Provider` | `134` | Ethereum provider, chainId or network name. |
-| `options?` | [`OracleReaderOptions`](../modules.md#oraclereaderoptions) | `undefined` | Options for the Oracle Reader. |
+• **ethProviderOrNetwork?**: `string` \| `number` \| `EnhancedWallet` \| `AbstractProvider` \| `Eip1193Provider` = `134`
+
+Ethereum provider, chainId or network name.
+
+• **options?**: [`OracleReaderOptions`](../type-aliases/OracleReaderOptions.md)
+
+Options for the Oracle Reader.
 
 #### Returns
 
 [`IExecOracleReader`](IExecOracleReader.md)
 
-## Properties
-
-### ethersProvider
-
-• `Private` **ethersProvider**: `Provider`
-
-Ethereum provider.
-
-___
-
-### ipfsGateway
-
-• `Private` **ipfsGateway**: `string`
-
-IPFS gateway URL.
-
-___
-
-### oracleContract
-
-• `Private` **oracleContract**: `string`
-
-Ethereum contract address or ENS (Ethereum Name Service) for the oracle contract.
-
 ## Methods
 
-### readOracle
+### readOracle()
 
-▸ **readOracle**(`paramSetOrCidOrOracleId`, `options?`): `Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
+> **readOracle**(`paramSetOrCidOrOracleId`, `options`?): `Promise`\<[`OracleValue`](../type-aliases/OracleValue.md)\>
 
 Reads data from the oracle.
 
 #### Parameters
 
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `paramSetOrCidOrOracleId` | `string` \| [`ParamSet`](../modules.md#paramset) | Parameters, CID or Oracle ID to read. |
-| `options?` | `Object` | Options for reading the oracle. |
-| `options.dataType?` | [`DataType`](../modules.md#datatype) | - |
+• **paramSetOrCidOrOracleId**: `string` \| [`ParamSet`](../type-aliases/ParamSet.md)
+
+Parameters, CID or Oracle ID to read.
+
+• **options?**
+
+Options for reading the oracle.
+
+• **options.dataType?**: [`DataType`](../type-aliases/DataType.md)
 
 #### Returns
 
-`Promise`\<[`OracleValue`](../modules.md#oraclevalue)\>
+`Promise`\<[`OracleValue`](../type-aliases/OracleValue.md)\>
 
 Promise that resolves to the read oracle data.
