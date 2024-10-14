@@ -1,9 +1,6 @@
 import { describe, it, expect } from '@jest/globals';
-import { Wallet, ethers } from 'ethers';
-import {
-  DEFAULT_IPFS_GATEWAY,
-  DEFAULT_ORACLE_CONTRACT_ADDRESS,
-} from '../../../src/config/config.js';
+import { Wallet, ethers, JsonRpcProvider } from 'ethers';
+import { DEFAULT_IPFS_GATEWAY } from '../../../src/config/config.js';
 import { IExecOracleReader } from '../../../src/index.js';
 import { getWeb3ReadOnlyProvider } from '../../../src/utils/getWeb3Provider.js';
 import { getTestWeb3SignerProvider, TEST_CHAIN } from '../../test-utils.js';
@@ -33,6 +30,12 @@ describe('IExecOracleFactory()', () => {
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
 
+  it('instantiates with an AbstractProvider as ethProviderOrNetwork', async () => {
+    const provider = new JsonRpcProvider('https://bellecour.iex.ec');
+    const oracleReader = new IExecOracleReader(provider);
+    expect(oracleReader).toBeInstanceOf(IExecOracleReader);
+  });
+
   it('instantiates with a valid ethProviderOrNetwork', async () => {
     const provider = ethers.getDefaultProvider('mainnet');
     const oracleReader = new IExecOracleReader(provider);
@@ -51,7 +54,7 @@ describe('IExecOracleFactory()', () => {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     const ipfsGateway = oracleReader['ipfsGateway'];
 
-    expect(oracleContract).toStrictEqual(DEFAULT_ORACLE_CONTRACT_ADDRESS);
+    expect(oracleContract).toStrictEqual(undefined);
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
   });
 

@@ -5,11 +5,7 @@ import {
   BrowserProvider,
   Wallet,
 } from 'ethers';
-import {
-  DEFAULT_IPFS_GATEWAY,
-  DEFAULT_ORACLE_CONTRACT_ADDRESS,
-  getDefaultProvider,
-} from '../config/config.js';
+import { DEFAULT_IPFS_GATEWAY, getDefaultProvider } from '../config/config.js';
 import {
   AddressOrENS,
   OracleValue,
@@ -20,7 +16,7 @@ import {
   DataType,
   ParamSetCID,
   OracleID,
-} from '../types/public-types.js';
+} from '../types/index.js';
 import { readOracle } from './readOracle.js';
 
 /**
@@ -51,6 +47,7 @@ class IExecOracleReader {
     ethProviderOrNetwork:
       | Web3ReadOnlyProvider
       | Web3SignerProvider
+      | AbstractProvider
       | Eip1193Provider
       | string
       | number = 134,
@@ -75,8 +72,7 @@ class IExecOracleReader {
       // case Eip1193Provider
       this.ethersProvider = new BrowserProvider(ethProviderOrNetwork);
     }
-    this.oracleContract =
-      options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
+    this.oracleContract = options?.oracleContract;
     this.ipfsGateway = options?.ipfsGateway || DEFAULT_IPFS_GATEWAY;
   }
 

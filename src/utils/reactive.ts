@@ -1,4 +1,4 @@
-class SafeObserver<DataMessageType> {
+export class SafeObserver<DataMessageType> {
   destination;
 
   unsub;
@@ -52,17 +52,17 @@ class SafeObserver<DataMessageType> {
   }
 }
 
-type ObservableNext<DataMessageType> = (data: DataMessageType) => void;
-type ObservableError = (e: Error) => void;
-type ObservableComplete = () => void;
+export type ObservableNext<DataMessageType> = (data: DataMessageType) => void;
+export type ObservableError = (e: Error) => void;
+export type ObservableComplete = () => void;
 
-type Observer<DataMessageType> = {
+export type Observer<DataMessageType> = {
   next: ObservableNext<DataMessageType>;
   error: ObservableError;
   complete: ObservableComplete;
 };
 
-class Observable<DataMessageType> {
+export class Observable<DataMessageType> {
   private _subscribe;
 
   constructor(_subscribe) {
@@ -89,5 +89,3 @@ class Observable<DataMessageType> {
     return this._subscribe(safeObserver);
   }
 }
-
-export { Observable, SafeObserver };
