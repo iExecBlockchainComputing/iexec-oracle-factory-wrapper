@@ -1,17 +1,15 @@
-import { Eip1193Provider, Provider } from 'ethers';
+import {
+  Eip1193Provider,
+  Provider,
+  AbstractSigner,
+  BrowserProvider,
+} from 'ethers';
 import { IExec } from 'iexec';
 import {
-  DEFAULT_APP_ADDRESS,
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
-  DEFAULT_ORACLE_CONTRACT_ADDRESS,
   DEFAULT_TARGET_BLOCKCHAIN,
-  DEFAULT_WORKERPOOL_ADDRESS,
 } from '../config/config.js';
-import {
-  CreateOracleMessage,
-  UpdateOracleMessage,
-} from '../types/internal-types.js';
 import {
   AddressOrENS,
   OracleValue,
@@ -22,11 +20,12 @@ import {
   ParamSetCID,
   OracleID,
   RawParams,
-} from '../types/public-types.js';
+  CreateOracleMessage,
+  UpdateOracleMessage,
+} from '../types/index.js';
 import { Observable } from '../utils/reactive.js';
 import { createOracle } from './createOracle.js';
 import { readOracle } from './readOracle.js';
-
 import { updateOracle } from './updateOracle.js';
 
 /**
@@ -36,6 +35,8 @@ class IExecOracleFactory {
   private oracleContract: AddressOrENS;
 
   private oracleApp: AddressOrENS;
+
+  private oracleAppWhitelist: AddressOrENS;
 
   private workerpool: AddressOrENS;
 
@@ -53,7 +54,11 @@ class IExecOracleFactory {
    * @param options Optional configuration options OracleFactory.
    */
   constructor(
-    ethProvider: Eip1193Provider | Web3SignerProvider,
+    ethProvider:
+      | Eip1193Provider
+      | Web3SignerProvider
+      | AbstractSigner
+      | BrowserProvider,
     options?: OracleFactoryOptions
   ) {
     try {
@@ -65,12 +70,12 @@ class IExecOracleFactory {
       .resolveContractsClient()
       .then((client) => client.provider);
     this.ethersProviderPromise.catch(() => {});
-    this.oracleContract =
-      options?.oracleContract || DEFAULT_ORACLE_CONTRACT_ADDRESS;
+    this.oracleContract = options?.oracleContract;
     this.ipfsNode = options?.ipfsNode || DEFAULT_IPFS_UPLOAD_URL;
     this.ipfsGateway = options?.ipfsGateway || DEFAULT_IPFS_GATEWAY;
-    this.oracleApp = options?.oracleApp || DEFAULT_APP_ADDRESS;
-    this.workerpool = options?.workerpool || DEFAULT_WORKERPOOL_ADDRESS;
+    this.oracleApp = options?.oracleApp;
+    this.oracleAppWhitelist = options?.oracleAppWhitelist;
+    this.workerpool = options?.workerpool;
   }
 
   /**
@@ -84,7 +89,7 @@ class IExecOracleFactory {
       ipfsGateway: this.ipfsGateway,
       ipfsNode: this.ipfsNode,
       iexec: this.iexec,
-      oracleApp: this.oracleApp,
+      oracleAppWhitelist: this.oracleAppWhitelist,
     });
 
   /**
@@ -117,6 +122,7 @@ class IExecOracleFactory {
       useVoucher: options?.useVoucher || false,
       iexec: this.iexec,
       oracleApp: this.oracleApp,
+      oracleAppWhitelist: this.oracleAppWhitelist,
       oracleContract: this.oracleContract,
       ipfsGateway: this.ipfsGateway,
       ipfsNode: this.ipfsNode,

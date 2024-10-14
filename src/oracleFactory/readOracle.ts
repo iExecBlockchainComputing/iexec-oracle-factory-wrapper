@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
 import { getReaderDefaults } from '../config/config.js';
 import { READ_ABI } from '../config/contract.js';
-import { EthersProviderConsumer } from '../types/internal-types.js';
 import {
   OracleValue,
   ReadOracleOptions,
   ReadOracleParams,
-} from '../types/public-types.js';
+} from '../types/common.js';
+import { EthersProviderConsumer } from '../types/internal.js';
 import {
   NoValueError,
   ValidationError,
@@ -64,7 +64,10 @@ const readOracle = async ({
       if (e instanceof ValidationError) {
         throw e;
       } else {
-        throw new WorkflowError('Failed to load paramSet', e);
+        throw new WorkflowError({
+          message: 'Failed to load paramSet',
+          errorCause: e,
+        });
       }
     });
     readDataType = paramSet.dataType;
