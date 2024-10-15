@@ -1,4 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Wallet, JsonRpcProvider, ethers, Contract, isAddress } from 'ethers';
 import { IExec, utils } from 'iexec';
 import { getSignerFromPrivateKey } from 'iexec/utils';
