@@ -259,7 +259,7 @@ const updateOracle = ({
             minTag: ['tee', 'scone'],
             requester: await iexec.wallet.getAddress(),
             workerpool: workerpoolAddress,
-            app: appAddress,
+            app: oracleAppWhitelist,
             dataset: datasetAddress,
           });
         if (abort) return;
