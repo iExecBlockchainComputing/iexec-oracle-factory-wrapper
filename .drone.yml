@@ -347,7 +347,7 @@ steps:
       - format
       - lint
       - check-types
-      - test
+      - test:e2e
       - build
 
 ---
