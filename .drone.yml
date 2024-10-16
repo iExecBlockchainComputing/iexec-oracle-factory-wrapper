@@ -18,7 +18,7 @@ steps:
       - npm ci
 
   - name: format
-    image: node:18.19
+    image: node:18
     commands:
       - npm run check-format
     depends_on:
@@ -39,7 +39,7 @@ steps:
       - install
 
   - name: test:unit
-    image: node:18.19
+    image: node:18
     commands:
       - npm run test:unit
     depends_on:
@@ -324,7 +324,7 @@ steps:
 
   ### START LOCAL STACK END ###
   - name: test:e2e
-    image: node:18.19
+    image: node:18
     commands:
       - npm run test:prepare
       - npm run test:e2e
