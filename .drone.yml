@@ -9,6 +9,42 @@ trigger:
       - promote
 
 steps:
+  - name: install
+    image: node:18
+    pull: always
+    commands:
+      - node -v
+      - npm -v
+      - npm ci
+
+  - name: format
+    image: node:18
+    commands:
+      - npm run check-format
+    depends_on:
+      - install
+
+  - name: lint
+    image: node:18
+    commands:
+      - npm run lint
+    depends_on:
+      - install
+
+  - name: check-types
+    image: node:18
+    commands:
+      - npm run check-types
+    depends_on:
+      - install
+
+  - name: test:unit
+    image: node:18
+    commands:
+      - npm run test:unit
+    depends_on:
+      - install
+
   ##### START LOCAL STACK #####
   - name: prepare-local-stack-env
     image: node
@@ -25,6 +61,7 @@ steps:
       - anvil --host 0.0.0.0 --port 8545 --block-time 1 --hardfork berlin --fork-url $(cat local-stack-env/BELLECOUR_FORK_URL) --fork-block-number $(cat local-stack-env/BELLECOUR_FORK_BLOCK) --chain-id 134 --gas-limit 6700000 --gas-price 0
     depends_on:
       - prepare-local-stack-env
+      - test:unit
 
   - name: bellecour-fork-healthy
     image: bash
@@ -39,6 +76,8 @@ steps:
     expose:
       - 8080
       - 5001
+    depends_on:
+      - test:unit
 
   - name: ipfs-healthy
     image: bash
@@ -53,6 +92,8 @@ steps:
     detach: true
     expose:
       - 27017
+    depends_on:
+      - test:unit
 
   - name: market-mongo-healthy
     image: bash
@@ -68,6 +109,8 @@ steps:
       - redis-server --appendonly yes
     expose:
       - 6379
+    depends_on:
+      - test:unit
 
   - name: market-redis-healthy
     image: bash
@@ -83,6 +126,8 @@ steps:
       - mongod --bind_ip_all --port 13202
     expose:
       - 13202
+    depends_on:
+      - test:unit
 
   - name: result-proxy-mongo-healthy
     image: bash
@@ -111,6 +156,8 @@ steps:
       - while ! nc -z graphnode-postgres 5432 ; do sleep 1 ; done && echo "graphnode-postgres ready"
     depends_on:
       - graphnode-postgres
+    depends_on:
+      - test:unit
 
   - name: graphnode
     image: graphprotocol/graph-node:v0.34.1
@@ -276,40 +323,11 @@ steps:
       - bellecour-fork-voucher-deployment
 
   ### START LOCAL STACK END ###
-
-  - name: install
-    image: node:18
-    pull: always
-    commands:
-      - node -v
-      - npm -v
-      - npm ci
-
-  - name: format
-    image: node:18.19
-    commands:
-      - npm run check-format
-    depends_on:
-      - install
-
-  - name: lint
+  - name: test:e2e
     image: node:18
     commands:
-      - npm run lint
-    depends_on:
-      - install
-
-  - name: check-types
-    image: node:18
-    commands:
-      - npm run check-types
-    depends_on:
-      - install
-
-  - name: test
-    image: node:18
-    commands:
-      - npm run test
+      - npm run test:prepare
+      - npm run test:e2e
     depends_on:
       - install
       - stack-ready
@@ -329,7 +347,7 @@ steps:
       - format
       - lint
       - check-types
-      - test
+      - test:e2e
       - build
 
 ---
