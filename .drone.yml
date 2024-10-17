@@ -693,6 +693,8 @@ steps:
         - voucher
       target:
         - sdk-voucher-nightly
+    depends_on:
+      - set-version-nightly 
 
   - name: npm publish voucher nightly version
     image: plugins/npm
