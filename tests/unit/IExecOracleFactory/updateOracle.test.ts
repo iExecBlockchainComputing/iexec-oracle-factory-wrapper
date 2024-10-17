@@ -41,10 +41,26 @@ const mockedDatasetOrderbookMoreExpensive = {
   orders: [{ order: mockedDatasetOrderMoreExpensive }],
 } as never;
 
-const mockedWorkerpoolOrder = 'mockedWorkerpoolOrder' as never;
+const mockedWorkerpoolOrder = {
+  workerpoolprice: 0,
+} as never;
+
+const mockedWorkerpoolOrderForaApp = {
+  workerpoolprice: 0,
+} as never;
+
+const mockedWorkerpoolOrderForaWhitelist = {
+  workerpoolprice: 1,
+} as never;
+
 const mockedWorkerpoolOrderbook = {
   count: 1,
-  orders: [{ order: mockedWorkerpoolOrder }],
+  orders: [{ order: mockedWorkerpoolOrderForaApp }],
+} as never;
+
+const mockedWorkerpoolOrderbookForWhitelist = {
+  count: 1,
+  orders: [{ order: mockedWorkerpoolOrderForaWhitelist }],
 } as never;
 
 const mockedRequestOrderToSign = 'mockedRequestorderToSign' as never;
@@ -77,6 +93,7 @@ beforeEach(() => {
 
   iexec.orderbook.fetchWorkerpoolOrderbook = jest
     .fn()
+    .mockResolvedValueOnce(mockedWorkerpoolOrderbookForWhitelist)
     .mockResolvedValueOnce(mockedWorkerpoolOrderbook) as any;
 
   iexec.order.createRequestorder = jest
@@ -820,6 +837,9 @@ describe('updateOracle', () => {
       .fn()
       .mockRejectedValueOnce(
         Error('iexec.orderbook.fetchWorkerpoolOrderbook fail') as never
+      )
+      .mockRejectedValueOnce(
+        Error('iexec.orderbook.fetchWorkerpoolOrderbook fail') as never
       ) as any;
 
     const messages: any = [];
@@ -874,6 +894,7 @@ describe('updateOracle', () => {
       .mockResolvedValueOnce(datasetOrderbook) as any;
     iexec.orderbook.fetchWorkerpoolOrderbook = jest
       .fn()
+      .mockResolvedValueOnce({ count: 0, orders: [] } as never)
       .mockResolvedValueOnce({ count: 0, orders: [] } as never) as any;
 
     const messages: any = [];
@@ -926,10 +947,16 @@ describe('updateOracle', () => {
       .fn()
       .mockResolvedValueOnce(datasetOrderbook)
       .mockResolvedValueOnce(datasetOrderbook) as any;
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
-      count: 0,
-      orders: [{ order: 'workerpoolorder' }],
-    } as never) as any;
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForApp' }],
+      } as never)
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForWhitelist' }],
+      } as never) as any;
     iexec.order.createRequestorder = jest
       .fn()
       .mockRejectedValueOnce(
@@ -986,10 +1013,16 @@ describe('updateOracle', () => {
       .fn()
       .mockResolvedValueOnce(datasetOrderbook)
       .mockResolvedValueOnce(datasetOrderbook) as any;
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
-      count: 0,
-      orders: [{ order: 'workerpoolorder' }],
-    } as never) as any;
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForApp' }],
+      } as never)
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForWhitelist' }],
+      } as never) as any;
     iexec.order.createRequestorder = jest
       .fn()
       .mockResolvedValueOnce('requestorder' as never) as any;
@@ -1049,10 +1082,16 @@ describe('updateOracle', () => {
       .fn()
       .mockResolvedValueOnce(datasetOrderbook)
       .mockResolvedValueOnce(datasetOrderbook) as any;
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
-      count: 0,
-      orders: [{ order: 'workerpoolorder' }],
-    } as never) as any;
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForApp' }],
+      } as never)
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForWhitelist' }],
+      } as never) as any;
     iexec.order.createRequestorder = jest
       .fn()
       .mockResolvedValueOnce('requestorder' as never) as any;
@@ -1115,10 +1154,16 @@ describe('updateOracle', () => {
       .fn()
       .mockResolvedValueOnce(datasetOrderbook)
       .mockResolvedValueOnce(datasetOrderbook) as any;
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
-      count: 0,
-      orders: [{ order: 'workerpoolorder' }],
-    } as never) as any;
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForApp' }],
+      } as never)
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForWhitelist' }],
+      } as never) as any;
     iexec.order.createRequestorder = jest
       .fn()
       .mockResolvedValueOnce('requestorder' as never) as any;
@@ -1186,10 +1231,16 @@ describe('updateOracle', () => {
       .fn()
       .mockResolvedValueOnce(datasetOrderbook)
       .mockResolvedValueOnce(datasetOrderbook) as any;
-    iexec.orderbook.fetchWorkerpoolOrderbook = jest.fn().mockResolvedValueOnce({
-      count: 0,
-      orders: [{ order: 'workerpoolorder' }],
-    } as never) as any;
+    iexec.orderbook.fetchWorkerpoolOrderbook = jest
+      .fn()
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForApp' }],
+      } as never)
+      .mockResolvedValueOnce({
+        count: 1,
+        orders: [{ order: 'workerpoolorderForWhitelist' }],
+      } as never) as any;
     iexec.order.createRequestorder = jest
       .fn()
       .mockResolvedValueOnce('requestorder' as never) as any;

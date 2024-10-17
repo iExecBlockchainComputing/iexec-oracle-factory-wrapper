@@ -254,20 +254,47 @@ const updateOracle = ({
         safeObserver.next({
           message: 'FETCH_WORKERPOOL_ORDER',
         });
-        const workerpoolorderbook =
-          await iexec.orderbook.fetchWorkerpoolOrderbook({
-            minTag: ['tee', 'scone'],
-            requester: await iexec.wallet.getAddress(),
-            workerpool: workerpoolAddress,
-            app: appAddress,
-            dataset: datasetAddress,
-          });
-        if (abort) return;
-        const workerpoolorder =
-          workerpoolorderbook &&
-          workerpoolorderbook.orders[0] &&
-          workerpoolorderbook.orders[0].order;
 
+        const [workerpoolorderForApp, workerpoolorderForWhitelist] =
+          await Promise.all([
+            iexec.orderbook
+              .fetchWorkerpoolOrderbook({
+                minTag: ['tee', 'scone'],
+                requester: await iexec.wallet.getAddress(),
+                workerpool: workerpoolAddress,
+                app: appAddress,
+                dataset: datasetAddress,
+              })
+              .then(
+                (orderbook) =>
+                  orderbook && orderbook.orders[0] && orderbook.orders[0].order
+              ),
+            iexec.orderbook
+              .fetchWorkerpoolOrderbook({
+                minTag: ['tee', 'scone'],
+                requester: await iexec.wallet.getAddress(),
+                workerpool: workerpoolAddress,
+                app: oracleAppWhitelist,
+                dataset: datasetAddress,
+              })
+              .then(
+                (orderbook) =>
+                  orderbook && orderbook.orders[0] && orderbook.orders[0].order
+              ),
+          ]);
+        if (abort) return;
+        let workerpoolorder;
+        if (workerpoolorderForApp && workerpoolorderForWhitelist) {
+          // get cheapest order
+          workerpoolorder =
+            workerpoolorderForApp.workerpoolprice <
+            workerpoolorderForWhitelist.workerpoolprice
+              ? workerpoolorderForApp
+              : workerpoolorderForWhitelist;
+        } else {
+          workerpoolorder =
+            workerpoolorderForApp || workerpoolorderForWhitelist;
+        }
         if (!workerpoolorder) {
           throw new WorkflowError({
             message: updateErrorMessage,
