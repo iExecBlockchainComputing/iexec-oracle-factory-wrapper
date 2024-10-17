@@ -56,7 +56,7 @@
     "cross-fetch": "^4.0.0",
     "debug": "^4.3.4",
     "ethers": "^6.13.2",
-    "iexec": "^8.10.1-nightly-813f2ed240da94bd9b6e297b5bf026ce0a699df1-voucher",
+    "iexec": "8.10.1-nightly-813f2ed240da94bd9b6e297b5bf026ce0a699df1-voucher",
     "jsonpath": "^1.1.1",
     "kubo-rpc-client": "^3.0.2",
     "yup": "^1.3.3"
