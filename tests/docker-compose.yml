@@ -17,10 +17,10 @@ services:
       retries: 3
       start_period: 30s
 
-  bellecour-fork-voucher-deployment:
+  voucher-subgraph-deployer:
     restart: 'no'
-    # https://github.com/iExecBlockchainComputing/voucher-deployer
-    image: pierreiexec/voucher-deployer
+    # https://github.com/iExecBlockchainComputing/iexec-voucher-subgraph
+    image: iexechub/voucher-subgraph-deployer:c0640e8d
     environment:
       RPC_URL: http://bellecour-fork:8545
       GRAPHNODE_URL: http://graphnode:8020
@@ -238,5 +238,5 @@ services:
         condition: service_started
       result-proxy:
         condition: service_started
-      bellecour-fork-voucher-deployment:
+      voucher-subgraph-deployer:
         condition: service_completed_successfully
