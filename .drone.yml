@@ -414,7 +414,7 @@ steps:
         from_secret: npm_username
       token:
         from_secret: npm_token
-      tag: ${DRONE_BRANCH}
+      tag: nightly
       access: public
     depends_on:
       - format
