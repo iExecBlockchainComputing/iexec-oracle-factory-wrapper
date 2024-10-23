@@ -293,9 +293,9 @@ steps:
       - market-api
       - market-watcher
 
-  - name: bellecour-fork-voucher-deployment
-    #  https://github.com/iExecBlockchainComputing/voucher-deployer
-    image: pierreiexec/voucher-deployer
+  - name: voucher-subgraph-deployer
+    # https://github.com/iExecBlockchainComputing/iexec-voucher-subgraph
+    image: iexechub/voucher-subgraph-deployer:c0640e8d
     pull: always
     environment:
       RPC_URL: http://bellecour-fork:8545
@@ -304,9 +304,9 @@ steps:
       VOUCHER_HUB_ADDRESS: '0x3137B6DF4f36D338b82260eDBB2E7bab034AFEda'
     commands:
       - export VOUCHER_HUB_START_BLOCK=$(cat local-stack-env/BELLECOUR_FORK_BLOCK)
-      - sh /app/entrypoint.sh
+      - cd /iexec-voucher-subgraph && npm run all
     depends_on:
-      - bellecour-fork-healthy
+      - prepare-local-stack-env
       - ipfs-healthy
       - graphnode-healthy
 
@@ -321,7 +321,7 @@ steps:
       - market-api-healthy
       - ipfs-healthy
       - graphnode-healthy
-      - bellecour-fork-voucher-deployment
+      - voucher-subgraph-deployer
 
   ### START LOCAL STACK END ###
   - name: test:e2e
@@ -362,10 +362,8 @@ trigger:
     - promote
   target:
     - sdk-nightly
-    - sdk-voucher-nightly
   branch:
     - develop
-    - voucher
 
 steps:
   - name: install
@@ -409,39 +407,6 @@ steps:
     commands:
       - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
 
-  - name: set-voucher-nightly-version
-    image: node:18
-    commands:
-      - eval npm pkg set version="$(npm pkg get version)-voucher"
-    when:
-      branch:
-        - voucher
-      target:
-        - sdk-voucher-nightly
-    depends_on:
-      - set-version-nightly 
-
-  - name: npm publish voucher nightly version
-    image: plugins/npm
-    settings:
-      username:
-        from_secret: npm_username
-      token:
-        from_secret: npm_token
-      tag: ${DRONE_BRANCH}
-      access: public
-    depends_on:
-      - format
-      - lint
-      - check-types
-      - build
-      - set-voucher-nightly-version
-    when:
-      branch:
-        - voucher
-      target:
-        - sdk-voucher-nightly
-
   - name: npm publish nightly version
     image: plugins/npm
     settings:
@@ -449,7 +414,7 @@ steps:
         from_secret: npm_username
       token:
         from_secret: npm_token
-      tag: ${DRONE_BRANCH}
+      tag: nightly
       access: public
     depends_on:
       - format
