@@ -362,10 +362,8 @@ trigger:
     - promote
   target:
     - sdk-nightly
-    - sdk-voucher-nightly
   branch:
     - develop
-    - voucher
 
 steps:
   - name: install
@@ -408,39 +406,6 @@ steps:
     image: node:18
     commands:
       - eval npm pkg set version="$(npm pkg get version)-nightly-$DRONE_COMMIT"
-
-  - name: set-voucher-nightly-version
-    image: node:18
-    commands:
-      - eval npm pkg set version="$(npm pkg get version)-voucher"
-    when:
-      branch:
-        - voucher
-      target:
-        - sdk-voucher-nightly
-    depends_on:
-      - set-version-nightly 
-
-  - name: npm publish voucher nightly version
-    image: plugins/npm
-    settings:
-      username:
-        from_secret: npm_username
-      token:
-        from_secret: npm_token
-      tag: ${DRONE_BRANCH}
-      access: public
-    depends_on:
-      - format
-      - lint
-      - check-types
-      - build
-      - set-voucher-nightly-version
-    when:
-      branch:
-        - voucher
-      target:
-        - sdk-voucher-nightly
 
   - name: npm publish nightly version
     image: plugins/npm
