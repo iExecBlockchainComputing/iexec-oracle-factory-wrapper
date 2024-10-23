@@ -71,6 +71,8 @@ const getParamSet = async ({
  * Updates an oracle with new parameters.
  * @param paramSetOrCid Parameter set or CID.
  * @param iexec iExec SDK instance.
+ * @param targetBlockchains Chain ID of target blockchains for cross-chain update
+ * @param useVoucher Whether to use a voucher for payment (default: false)
  * @param oracleApp Oracle application address.
  * @param workerpool Workerpool address.
  * @param ipfsGateway IPFS gateway URL.
@@ -81,6 +83,7 @@ const getParamSet = async ({
 const updateOracle = ({
   paramSetOrCid,
   targetBlockchains,
+  useVoucher,
   iexec,
   oracleApp,
   oracleAppWhitelist,
@@ -251,19 +254,47 @@ const updateOracle = ({
         safeObserver.next({
           message: 'FETCH_WORKERPOOL_ORDER',
         });
-        const workerpoolorderbook =
-          await iexec.orderbook.fetchWorkerpoolOrderbook({
-            minTag: ['tee', 'scone'],
-            requester: await iexec.wallet.getAddress(),
-            workerpool: workerpoolAddress,
-            app: appAddress,
-            dataset: datasetAddress,
-          });
+
+        const [workerpoolorderForApp, workerpoolorderForWhitelist] =
+          await Promise.all([
+            iexec.orderbook
+              .fetchWorkerpoolOrderbook({
+                minTag: ['tee', 'scone'],
+                requester: await iexec.wallet.getAddress(),
+                workerpool: workerpoolAddress,
+                app: appAddress,
+                dataset: datasetAddress,
+              })
+              .then(
+                (orderbook) =>
+                  orderbook && orderbook.orders[0] && orderbook.orders[0].order
+              ),
+            iexec.orderbook
+              .fetchWorkerpoolOrderbook({
+                minTag: ['tee', 'scone'],
+                requester: await iexec.wallet.getAddress(),
+                workerpool: workerpoolAddress,
+                app: oracleAppWhitelist,
+                dataset: datasetAddress,
+              })
+              .then(
+                (orderbook) =>
+                  orderbook && orderbook.orders[0] && orderbook.orders[0].order
+              ),
+          ]);
         if (abort) return;
-        const workerpoolorder =
-          workerpoolorderbook &&
-          workerpoolorderbook.orders[0] &&
-          workerpoolorderbook.orders[0].order;
+        let workerpoolorder;
+        if (workerpoolorderForApp && workerpoolorderForWhitelist) {
+          // get cheapest order
+          workerpoolorder =
+            workerpoolorderForApp.workerpoolprice <
+            workerpoolorderForWhitelist.workerpoolprice
+              ? workerpoolorderForApp
+              : workerpoolorderForWhitelist;
+        } else {
+          workerpoolorder =
+            workerpoolorderForApp || workerpoolorderForWhitelist;
+        }
         if (!workerpoolorder) {
           throw new WorkflowError({
             message: updateErrorMessage,
@@ -336,7 +367,7 @@ const updateOracle = ({
             workerpoolorder,
             requestorder,
           },
-          { preflightCheck: false }
+          { preflightCheck: false, useVoucher }
         );
         if (abort) return;
         safeObserver.next({

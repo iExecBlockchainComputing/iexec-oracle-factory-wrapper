@@ -129,6 +129,7 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
+    useVoucher: false,
     targetBlockchains: [],
   });
 
@@ -154,6 +155,7 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
+    useVoucher: false,
     targetBlockchains: [1, 137],
     iexec: iexecWithOptions,
     ipfsGateway: 'ipfsGateway',
@@ -186,6 +188,7 @@ test('standard - instantiation', async () => {
       method: 'GET',
       url: 'https://api.market.iex.ec/version',
     },
+    useVoucher: false,
     targetBlockchains: [],
   });
 

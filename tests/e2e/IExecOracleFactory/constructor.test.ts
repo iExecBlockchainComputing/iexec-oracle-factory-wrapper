@@ -6,12 +6,13 @@ import {
   DEFAULT_IPFS_GATEWAY,
   DEFAULT_IPFS_UPLOAD_URL,
 } from '../../../src/config/config.js';
-import { IExecOracleFactory, getWeb3Provider } from '../../../src/index.js';
+import { IExecOracleFactory } from '../../../src/index.js';
+import { getTestWeb3SignerProvider } from '../../test-utils.js';
 
 describe('IExecOracleFactory()', () => {
   it('should use default ipfs node url when ipfsNode is not provided', async () => {
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey)
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey)
     );
     const ipfsNode = oracleFactory['ipfsNode'];
     expect(ipfsNode).toStrictEqual(DEFAULT_IPFS_UPLOAD_URL);
@@ -19,7 +20,7 @@ describe('IExecOracleFactory()', () => {
   it('should use provided ipfs node url when ipfsNode is provided', async () => {
     const customIpfsUploadUrl = 'https://example.com/node';
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey),
       {
         ipfsNode: customIpfsUploadUrl,
       }
@@ -29,7 +30,7 @@ describe('IExecOracleFactory()', () => {
   });
   it('should use default ipfs gateway url when ipfsGateway is not provided', async () => {
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey)
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey)
     );
     const ipfsGateway = oracleFactory['ipfsGateway'];
     expect(ipfsGateway).toStrictEqual(DEFAULT_IPFS_GATEWAY);
@@ -37,7 +38,7 @@ describe('IExecOracleFactory()', () => {
   it('should use default ipfs gateway url when ipfsGateway is provided', async () => {
     const customIpfsGateway = 'https://example.com/ipfs_gateway';
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey),
       {
         ipfsGateway: customIpfsGateway,
       }
@@ -47,7 +48,7 @@ describe('IExecOracleFactory()', () => {
   });
   it('should use default smart contract address when contractAddress is not provided', async () => {
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey)
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey)
     );
     const oracleContract = oracleFactory['oracleContract'];
     expect(oracleContract).toStrictEqual(undefined);
@@ -55,7 +56,7 @@ describe('IExecOracleFactory()', () => {
   it('should use provided smart contract address when contractAddress is provided', async () => {
     const customSContractAddress = Wallet.createRandom().address;
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey),
       {
         oracleContract: customSContractAddress,
       }
@@ -67,7 +68,7 @@ describe('IExecOracleFactory()', () => {
   it('should use provided workerpool address when workerpool is provided', async () => {
     const customWorkerpoolAddress = Wallet.createRandom().address;
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey),
       {
         workerpool: customWorkerpoolAddress,
       }
@@ -85,7 +86,7 @@ describe('IExecOracleFactory()', () => {
     const smsURL = 'https://custom-sms-url.com';
     const iexecGatewayURL = 'https://custom-market-api-url.com';
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(Wallet.createRandom().privateKey),
+      getTestWeb3SignerProvider(Wallet.createRandom().privateKey),
       {
         oracleContract: customSContractAddress,
         oracleApp: customAppAddress,
@@ -121,7 +122,7 @@ describe('IExecOracleFactory()', () => {
   it('instantiates with getWeb3Provider as ethProvider', async () => {
     const wallet = Wallet.createRandom();
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(wallet.privateKey)
+      getTestWeb3SignerProvider(wallet.privateKey)
     );
     expect(oracleFactory).toBeInstanceOf(IExecOracleFactory);
   });
@@ -136,7 +137,7 @@ describe('IExecOracleFactory()', () => {
     const smsURL = 'https://custom-sms-url.com';
     const wallet = Wallet.createRandom();
     const oracleFactory = new IExecOracleFactory(
-      getWeb3Provider(wallet.privateKey),
+      getTestWeb3SignerProvider(wallet.privateKey),
       {
         iexecOptions: {
           smsURL,

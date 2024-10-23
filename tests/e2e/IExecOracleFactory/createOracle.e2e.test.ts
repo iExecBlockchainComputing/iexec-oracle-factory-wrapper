@@ -3,10 +3,13 @@ import { utils } from 'iexec';
 import { SmsCallError, MarketCallError } from 'iexec/errors';
 import { IExecOracleFactory } from '../../../src/index.js';
 import { WorkflowError } from '../../../src/utils/errors.js';
+import {
+  getTestIExecOption,
+  getTestWeb3SignerProvider,
+} from '../../test-utils.js';
 
 test('create oracle - without dataset', async () => {
-  const ethProvider = utils.getSignerFromPrivateKey(
-    'bellecour',
+  const ethProvider = getTestWeb3SignerProvider(
     Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -36,11 +39,12 @@ test('create oracle - without dataset', async () => {
 });
 
 test('create oracle - with dataset', async () => {
-  const ethProvider = utils.getSignerFromPrivateKey(
-    'bellecour',
+  const ethProvider = getTestWeb3SignerProvider(
     Wallet.createRandom().privateKey
   );
-  const factoryWithoutOption = new IExecOracleFactory(ethProvider);
+  const factoryWithoutOption = new IExecOracleFactory(ethProvider, {
+    iexecOptions: getTestIExecOption(),
+  });
 
   const messages: any = [];
   await new Promise((resolve: any, reject) => {
@@ -69,8 +73,7 @@ test('create oracle - with dataset', async () => {
 }, 30000);
 
 test('cancel - without apiKey', async () => {
-  const ethProvider = utils.getSignerFromPrivateKey(
-    'bellecour',
+  const ethProvider = getTestWeb3SignerProvider(
     Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);
@@ -100,8 +103,7 @@ test('cancel - without apiKey', async () => {
 }, 10000);
 
 test('cancel - with apiKey', async () => {
-  const ethProvider = utils.getSignerFromPrivateKey(
-    'bellecour',
+  const ethProvider = getTestWeb3SignerProvider(
     Wallet.createRandom().privateKey
   );
   const factoryWithoutOption = new IExecOracleFactory(ethProvider);

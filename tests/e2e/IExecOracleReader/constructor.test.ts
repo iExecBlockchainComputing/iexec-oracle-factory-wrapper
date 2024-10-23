@@ -1,8 +1,9 @@
 import { describe, it, expect } from '@jest/globals';
 import { Wallet, ethers, JsonRpcProvider } from 'ethers';
 import { DEFAULT_IPFS_GATEWAY } from '../../../src/config/config.js';
-import { IExecOracleReader, getWeb3Provider } from '../../../src/index.js';
+import { IExecOracleReader } from '../../../src/index.js';
 import { getWeb3ReadOnlyProvider } from '../../../src/utils/getWeb3Provider.js';
+import { getTestWeb3SignerProvider, TEST_CHAIN } from '../../test-utils.js';
 
 describe('IExecOracleFactory()', () => {
   it('instantiates with a chainId as ethProviderOrNetwork', async () => {
@@ -16,7 +17,9 @@ describe('IExecOracleFactory()', () => {
   });
 
   it('instantiates with a Web3SignerProvider as ethProviderOrNetwork', async () => {
-    const provider = getWeb3Provider(Wallet.createRandom().privateKey);
+    const provider = getTestWeb3SignerProvider(
+      Wallet.createRandom().privateKey
+    );
     const oracleReader = new IExecOracleReader(provider);
     expect(oracleReader).toBeInstanceOf(IExecOracleReader);
   });
@@ -56,8 +59,8 @@ describe('IExecOracleFactory()', () => {
   });
 
   it('should use default ipfs gateway url when ipfsGateway is provided', async () => {
-    const customIpfsGateway = 'https://example.com/ipfs_gateway';
-    const provider = ethers.getDefaultProvider('https://bellecour.iex.ec');
+    const customIpfsGateway = TEST_CHAIN.resultProxyURL;
+    const provider = ethers.getDefaultProvider(TEST_CHAIN.rpcURL);
     const oracleReader = new IExecOracleReader(provider, {
       ipfsGateway: customIpfsGateway,
     });
@@ -68,7 +71,7 @@ describe('IExecOracleFactory()', () => {
 
   it('should use provided smart contract address when contractAddress is provided', async () => {
     const customSContractAddress = Wallet.createRandom().address;
-    const provider = ethers.getDefaultProvider('https://bellecour.iex.ec');
+    const provider = ethers.getDefaultProvider(TEST_CHAIN.rpcURL);
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
     });
@@ -78,9 +81,9 @@ describe('IExecOracleFactory()', () => {
   });
 
   it('should use provided options', async () => {
-    const customIpfsGateway = 'https://example.com/ipfs_gateway';
+    const customIpfsGateway = TEST_CHAIN.resultProxyURL;
     const customSContractAddress = Wallet.createRandom().address;
-    const provider = ethers.getDefaultProvider('https://bellecour.iex.ec');
+    const provider = ethers.getDefaultProvider(TEST_CHAIN.rpcURL);
 
     const oracleReader = new IExecOracleReader(provider, {
       oracleContract: customSContractAddress,
