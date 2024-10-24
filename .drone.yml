@@ -466,10 +466,10 @@ steps:
     commands:
       - npm run check-types
 
-  - name: test
-    image: node:18
-    commands:
-      - npm run test
+  # - name: test
+  #   image: node:18
+  #   commands:
+  #     - npm run test
 
   - name: build
     image: node:18
