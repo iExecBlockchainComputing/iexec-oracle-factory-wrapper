@@ -1,3 +1,30 @@
-coverage
-dist
-node_modules
+# Compiled output
+/dist
+
+# Dependency directories
+**/node_modules/
+
+# IDE files
+/.vscode
+/.idea
+
+# Miscellaneous
+/.DS_Store
+*/.env
+/*.log
+
+# TypeScript specific
+*.tsbuildinfo
+
+# tests output
+/coverage
+
+# CI
+.drone.yml
+
+
+# sonar output
+.scannerwork
+
+#dist
+**/dist/

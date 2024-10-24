@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] 2024-10-23
+
+## Added
+
+- support for iExec voucher in `updateOracle()` via `useVoucher` option
+
+### Changed
+
+- upgraded the `iexec` dependency to ^8.12.0
+
 ## [2.3.1] 2024-10-08
 
 ### Changed
