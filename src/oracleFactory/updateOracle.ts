@@ -276,7 +276,7 @@ const updateOracle = ({
                 requester: await iexec.wallet.getAddress(),
                 isRequesterStrict: useVoucher,
                 workerpool: workerpoolAddress,
-                app: oracleAppWhitelist,
+                app: appWhitelistAddress,
                 dataset: datasetAddress,
               })
               .then(
