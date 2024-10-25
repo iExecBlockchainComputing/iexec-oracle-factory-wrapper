@@ -261,6 +261,7 @@ const updateOracle = ({
               .fetchWorkerpoolOrderbook({
                 minTag: ['tee', 'scone'],
                 requester: await iexec.wallet.getAddress(),
+                isRequesterStrict: useVoucher,
                 workerpool: workerpoolAddress,
                 app: appAddress,
                 dataset: datasetAddress,
@@ -273,8 +274,9 @@ const updateOracle = ({
               .fetchWorkerpoolOrderbook({
                 minTag: ['tee', 'scone'],
                 requester: await iexec.wallet.getAddress(),
+                isRequesterStrict: useVoucher,
                 workerpool: workerpoolAddress,
-                app: oracleAppWhitelist,
+                app: appWhitelistAddress,
                 dataset: datasetAddress,
               })
               .then(
