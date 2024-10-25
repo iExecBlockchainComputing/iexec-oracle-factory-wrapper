@@ -362,8 +362,8 @@ trigger:
     - promote
   target:
     - sdk-nightly
-  branch:
-    - develop
+  # branch:
+    # - develop
 
 steps:
   - name: install
