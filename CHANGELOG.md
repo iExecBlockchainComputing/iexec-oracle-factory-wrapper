@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.1] 2024-10-25
+
+### Changed
+
+- Use user specific workerpool orders if `useVoucher` is set to `true`
+
 ## [2.4.0] 2024-10-23
 
 ## Added
