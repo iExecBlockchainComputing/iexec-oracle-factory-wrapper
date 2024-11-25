@@ -2,6 +2,8 @@ import {
   Contract,
   JsonRpcProvider,
   JsonRpcSigner,
+  Network,
+  EnsPlugin,
   formatEther,
   keccak256,
   toBeHex,
@@ -16,14 +18,27 @@ const DEBUG_WORKERPOOL_OWNER_WALLET =
   '0x02D0e61355e963210d0DE382e6BA09781181bB94';
 const PROD_WORKERPOOL_OWNER_WALLET =
   '0x1Ff6AfF580e8Ca738F76485E0914C2aCaDa7B462';
-const DEBUG_WORKERPOOL = '0xdb214a4a444d176e22030be1ed89da1b029320f2'; // 'debug-v8-bellecour.main.pools.iexec.eth';
-const PROD_WORKERPOOL = '0x0e7bc972c99187c191a17f3cae4a2711a4188c3f'; // 'prod-v8-bellecour.main.pools.iexec.eth';
-const ORACLE_DAPP_ADDRESS = '0x45415a4a63e773d84da37c857b308b47396d8153'; // oracle-factory.apps.iexec.eth
 const APP_OWNER_WALLET = '0x626D65C778fB98f813C25F84249E3012B80e8d91';
+
+const DEBUG_WORKERPOOL_ENS = 'debug-v8-bellecour.main.pools.iexec.eth';
+const PROD_WORKERPOOL_ENS = 'prod-v8-bellecour.main.pools.iexec.eth';
+const ORACLE_DAPP_ADDRESS_ENS = 'oracle-factory.apps.iexec.eth';
 
 const rpcURL = DRONE ? 'http://bellecour-fork:8545' : 'http://127.0.0.1:8545';
 
-const provider = new JsonRpcProvider(rpcURL);
+const provider = new JsonRpcProvider(
+  rpcURL,
+  new Network('bellecour-fork', 134).attachPlugin(
+    new EnsPlugin('0x5f5B93fca68c9C79318d1F3868A354EE67D8c006', 134)
+  ),
+  {
+    pollingInterval: 1000, // speed up tests
+  }
+);
+
+const DEBUG_WORKERPOOL = await provider.resolveName(DEBUG_WORKERPOOL_ENS);
+const PROD_WORKERPOOL = await provider.resolveName(PROD_WORKERPOOL_ENS);
+const ORACLE_DAPP_ADDRESS = await provider.resolveName(ORACLE_DAPP_ADDRESS_ENS);
 
 const setBalance = async (address, weiAmount) => {
   fetch(rpcURL, {
