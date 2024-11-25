@@ -619,7 +619,7 @@ describe('oracleFactory.updateOracle()', () => {
           factoryWithoutOption
             .updateOracle(cid, {
               useVoucher: false,
-              targetBlockchains: [134, 80002, 11155111],
+              targetBlockchains: [137, 80002, 11155111],
             })
             .subscribe({
               complete: resolve,
