@@ -60,7 +60,7 @@ const DEFAULT_IPFS_GATEWAY: string = 'https://ipfs-gateway.v8-bellecour.iex.ec';
 const DEFAULT_IPFS_UPLOAD_URL: string =
   '/dns4/ipfs-upload.v8-bellecour.iex.ec/https';
 
-const SUPPORTED_TARGET_BLOCKCHAINS: number[] = [1, 137, 11155111, 80002];
+const SUPPORTED_TARGET_BLOCKCHAINS: number[] = [1, 137, 80002, 11155111];
 
 const DEFAULT_TARGET_BLOCKCHAIN: number[] = [];
 
