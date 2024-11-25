@@ -479,7 +479,7 @@ describe('oracleFactory.updateOracle()', () => {
                 method: 'GET',
                 url: 'https://foo.io',
               },
-              { useVoucher: false }
+              { targetBlockchains: [134, 80002, 11155111], useVoucher: false }
             )
             .subscribe({
               complete: resolve,
@@ -619,6 +619,7 @@ describe('oracleFactory.updateOracle()', () => {
           factoryWithoutOption
             .updateOracle(cid, {
               useVoucher: false,
+              targetBlockchains: [134, 80002, 11155111],
             })
             .subscribe({
               complete: resolve,
@@ -733,7 +734,7 @@ describe('oracleFactory.updateOracle()', () => {
         await new Promise((resolve: any, reject) => {
           factory
             .updateOracle('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh', {
-              targetBlockchains: [137],
+              targetBlockchains: [137, 80002, 11155111],
             })
             .subscribe({
               complete: resolve,
@@ -773,7 +774,7 @@ test.skip('standard - from CID', async () => {
   await new Promise((resolve: any, reject) => {
     factoryWithoutOption
       .updateOracle('QmTJ41EuPEwiPTGrYVPbXgMGvmgzsRYWWMmw6krVDN94nh', {
-        targetBlockchains: [137],
+        targetBlockchains: [137, 80002, 11155111],
       })
       .subscribe({
         complete: resolve,

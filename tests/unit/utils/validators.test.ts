@@ -1099,7 +1099,9 @@ describe('updateTargetBlockchainsSchema', () => {
     await expect(
       updateTargetBlockchainsSchema().validate(['5'])
     ).rejects.toThrow(
-      new ValidationError('[0] must be one of the following values: 1, 137')
+      new ValidationError(
+        '[0] must be one of the following values: 1, 137, 11155111, 80002'
+      )
     );
   });
 });
