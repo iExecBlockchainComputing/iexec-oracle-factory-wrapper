@@ -479,7 +479,7 @@ describe('oracleFactory.updateOracle()', () => {
                 method: 'GET',
                 url: 'https://foo.io',
               },
-              { targetBlockchains: [134, 80002, 11155111], useVoucher: false }
+              { targetBlockchains: [137, 80002, 11155111], useVoucher: false }
             )
             .subscribe({
               complete: resolve,
