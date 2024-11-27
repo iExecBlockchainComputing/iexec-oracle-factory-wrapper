@@ -34,15 +34,25 @@ const readerConfMap: Record<number, { ORACLE_CONTRACT_ADDRESS: AddressOrENS }> =
     137: {
       ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
     },
+    80002: {
+      ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+    },
+    11155111: {
+      ORACLE_CONTRACT_ADDRESS: '0x36dA71ccAd7A67053f0a4d9D5f55b725C9A25A3E',
+    },
   };
 
 const networkMap: Record<string | number, string> = {
   1: 'homestead',
   134: 'https://bellecour.iex.ec',
   137: 'matic',
+  80002: 'https://rpc-amoy.polygon.technology',
+  11155111: 'sepolia',
   mainnet: 'homestead',
   bellecour: 'https://bellecour.iex.ec',
   polygon: 'matic',
+  amoy: 'https://rpc-amoy.polygon.technology',
+  sepolia: 'sepolia',
 };
 
 const DEFAULT_IPFS_GATEWAY: string = 'https://ipfs-gateway.v8-bellecour.iex.ec';
@@ -50,7 +60,7 @@ const DEFAULT_IPFS_GATEWAY: string = 'https://ipfs-gateway.v8-bellecour.iex.ec';
 const DEFAULT_IPFS_UPLOAD_URL: string =
   '/dns4/ipfs-upload.v8-bellecour.iex.ec/https';
 
-const SUPPORTED_TARGET_BLOCKCHAINS: number[] = [1, 137];
+const SUPPORTED_TARGET_BLOCKCHAINS: number[] = [1, 137, 80002, 11155111];
 
 const DEFAULT_TARGET_BLOCKCHAIN: number[] = [];
 
