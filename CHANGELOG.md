@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] 2024-11-27
+
+## Added
+
+- Support for Amoy and Sepolia networks
+
 ## [2.4.1] 2024-10-25
 
 ### Changed
