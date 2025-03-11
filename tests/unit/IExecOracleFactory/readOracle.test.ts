@@ -279,7 +279,7 @@ describe('readOracle', () => {
   });
 
   test('error - unsupported chain', async () => {
-    const provider = getDefaultProvider('optimism', {});
+    const provider = getDefaultProvider('arbitrum', {});
     await expect(
       readOracle({
         ethersProvider: provider,
@@ -293,6 +293,6 @@ describe('readOracle', () => {
           url: 'https://foo.io',
         },
       })
-    ).rejects.toThrow(Error('Unsupported chain 10'));
+    ).rejects.toThrow(Error('Unsupported chain 42161'));
   });
 });
