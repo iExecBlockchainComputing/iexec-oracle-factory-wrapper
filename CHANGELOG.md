@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.6.0] 2025-03-12
+
+### Changed
+
+- Upgraded the iexec dependency to ^8.13.1, which includes:
+  - Migrated default SMS URL to https://sms.iex.ec.
+  - Migrated from the deprecated SMS apps secrets endpoint.
+
 ## [2.5.0] 2024-11-27
 
 ## Added
