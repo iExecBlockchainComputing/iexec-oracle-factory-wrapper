@@ -1,6 +1,6 @@
 {
   "name": "@iexec/iexec-oracle-factory-wrapper",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "description": "A wrapper for creating API based oracles for ethereum on the top of iExec",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -56,7 +56,7 @@
     "cross-fetch": "^4.0.0",
     "debug": "^4.3.4",
     "ethers": "^6.13.2",
-    "iexec": "^8.12.0",
+    "iexec": "^8.13.1",
     "jsonpath": "^1.1.1",
     "kubo-rpc-client": "^3.0.2",
     "yup": "^1.3.3"
